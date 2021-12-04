@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:17251",
-      "sslPort": 44371
+      "applicationUrl": "http://localhost:42144",
+      "sslPort": 44329
     }
   },
   "profiles": {
@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "UntoMeWorld.WASMClient": {
+    "UntoMeWorld.WebClient": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
