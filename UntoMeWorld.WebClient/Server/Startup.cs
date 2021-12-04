@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.WebClient.Server
 {
@@ -25,6 +26,12 @@ namespace UntoMeWorld.WebClient.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var mongoDb = Configuration["MongoDatabase"];
+            var mongoServer = Configuration["MongoServer"];
+            var mongoUsername = Configuration["MongoUsername"];
+            var mongoPassword = Configuration["MongoPassword"];
+            services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 

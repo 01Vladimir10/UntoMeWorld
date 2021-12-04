@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UntoMeWorld.MongoDatabase\UntoMeWorld.MongoDatabase.csproj" />
     <ProjectReference Include="..\Client\UntoMeWorld.WebClient.Client.csproj" />
     <ProjectReference Include="..\Shared\UntoMeWorld.WebClient.Shared.csproj" />
   </ItemGroup>

@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Repositories;
+using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Repositories
 {
     public class MongoChurchesRepository : IChurchesRepository
     {
+        private readonly MongoDbService _service;
+
+        public MongoChurchesRepository(MongoDbService service)
+        {
+            _service = service;
+        }
+
         public Task<IEnumerable<IChurch>> GetAll()
         {
             throw new NotImplementedException();
