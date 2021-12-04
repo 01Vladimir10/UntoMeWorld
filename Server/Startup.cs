@@ -14,6 +14,9 @@ namespace UntoMeWorld.WebClient.Server
 {
     public class Startup
     {
+        
+        //dotnet new blazorwasm -au SingleOrg --api-client-id "c3f5c1d4-0938-4f1c-bc87-6de6fdc96493" --app-id-uri "c3f5c1d4-0938-4f1c-bc87-6de6fdc96493" --client-id "09292c1d-9ec0-40d6-b299-53ccbb98fe58" --default-scope "ServerAPI" --domain "untome.onmicrosoft.com" -ho -o UntoMeWorld.WebClient --tenant-id "8a414ad8-1139-4352-8c1b-b0dab1afa86b"
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
