@@ -1,6 +1,6 @@
 ﻿namespace UntoMeWorld.Domain.Model
 {
-    public enum Sex
+    public enum Gender
     {
         Female,
         Male
