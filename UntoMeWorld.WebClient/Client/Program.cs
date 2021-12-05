@@ -1,13 +1,14 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.MongoDatabase.Services;
+using UntoMeWorld.MongoDatabase.Stores;
 
 namespace UntoMeWorld.WebClient.Client
 {
@@ -23,7 +24,9 @@ namespace UntoMeWorld.WebClient.Client
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("UntoMeWorld.WebClient.ServerAPI"));
-
+            builder.Services.AddBlazoredLocalStorage();
+            var service = new MongoDbService("ganduDev", "c4xgvy5lmdLVzihi", "untomeworld.9itjc.mongodb.net", "kids");
+            builder.Services.AddSingleton<IChurchesStore>(new MongoChurchesStore(service));
             builder.Services.AddMsalAuthentication(options =>
             {
                 builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);

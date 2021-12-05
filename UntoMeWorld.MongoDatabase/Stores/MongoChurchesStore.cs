@@ -9,12 +9,12 @@ using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public class MongoChurchesRepository : IChurchesRepository
+    public class MongoChurchesStore : IChurchesStore
     {
         private const string ChurchesCollection = "churches";
         private readonly IMongoCollection<IChurch> _churches;
 
-        public MongoChurchesRepository(MongoDbService service)
+        public MongoChurchesStore(MongoDbService service)
         {
             _churches = service.GetCollection<IChurch>(ChurchesCollection);
         }

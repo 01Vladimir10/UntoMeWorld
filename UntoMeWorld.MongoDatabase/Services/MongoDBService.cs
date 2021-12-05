@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using System;
+using MongoDB.Driver;
 
 namespace UntoMeWorld.MongoDatabase.Services
 {
@@ -17,8 +18,16 @@ namespace UntoMeWorld.MongoDatabase.Services
         }
         private void InitializeDatabase(string connection, string database = "default")
         {
-            _client = new MongoClient(connection);
-            _database = _client.GetDatabase(database);
+            try
+            {
+                _client = new MongoClient(connection);
+                _database = _client.GetDatabase(database);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
         public IMongoCollection<T> GetCollection<T>(string collection)
             => _database.GetCollection<T>(collection);
