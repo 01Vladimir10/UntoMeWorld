@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace UntoMeWorld.Domain.Repositories
+namespace UntoMeWorld.Domain.Stores
 {
     public interface IRepository<T>
     {
