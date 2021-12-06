@@ -2,7 +2,7 @@
 
 namespace UntoMeWorld.Domain.Stores
 {
-    public interface IPastorsRepository : IRepository<IPastor>
+    public interface IPastorsStore : IRepository<IPastor>
     {
     }
 }

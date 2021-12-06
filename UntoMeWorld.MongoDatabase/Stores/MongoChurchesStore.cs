@@ -21,7 +21,15 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task<IEnumerable<IChurch>> GetAll()
         {
-            return await _churches.AsQueryable().ToListAsync();
+            try
+            {
+                return await _churches.AsQueryable().ToListAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<IChurch>> GetByQuery(string query)

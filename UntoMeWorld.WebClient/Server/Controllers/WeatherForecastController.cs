@@ -23,7 +23,7 @@ namespace UntoMeWorld.WebClient.Server.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
 
         // The Web API will only accept tokens 1) for users, and 2) having the "ServerAPI" scope for this API
-        static readonly string[] scopeRequiredByApi = new string[] { "ServerAPI" };
+        static readonly string[] ScopeRequiredByApi = new string[] { "ServerAPI" };
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
@@ -33,7 +33,7 @@ namespace UntoMeWorld.WebClient.Server.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            HttpContext.VerifyUserHasAnyAcceptedScope(ScopeRequiredByApi);
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

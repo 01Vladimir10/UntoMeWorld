@@ -4,6 +4,7 @@
 @using UntoMeWorld.Domain.Stores
 @using UntoMeWorld.WebClient.Client.Model
 @using UntoMeWorld.WebClient.Client.Services.Caching
+@using IChurch = UntoMeWorld.WebClient.Client.Model.IChurch
 @inject ILocalStorageService LocalStorageService
 @inject IChurchesStore ChurchesStore;
 
@@ -31,12 +32,12 @@
 }
 
 @code {
-    private ICacheService<IChurch> _cache;
-    private List<IChurch> _churches;
+    private ICacheService<Domain.Model.IChurch> _cache;
+    private List<Domain.Model.IChurch> _churches;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _cache = new LocalStorageCache<IChurch, string>(LocalStorageService, c => c.Id, "churches");
+        _cache = new LocalStorageCache<Domain.Model.IChurch, string>(LocalStorageService, c => c.Id, "churches");
         await _cache.InitializeCacheAsync();
         _cache.OnAdded = ChurchesStore.Insert;
         await base.OnAfterRenderAsync(firstRender);
@@ -50,7 +51,7 @@
 
     private async Task AddChurch()
     {
-        var church = new Church
+        var church = new IChurch
         {
             Name = "Test Church"
         };
