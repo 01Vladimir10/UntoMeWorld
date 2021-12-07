@@ -1,17 +1,15 @@
-using Microsoft.AspNetCore.Authentication;
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
 using UntoMeWorld.MongoDatabase.Stores;
+using UntoMeWorld.WebClient.Server.Services;
 
 namespace UntoMeWorld.WebClient.Server
 {
@@ -33,19 +31,20 @@ namespace UntoMeWorld.WebClient.Server
             var mongoUsername = Configuration["MongoUsername"];
             var mongoPassword = Configuration["MongoPassword"];
             services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
             // Add stores.
             services.AddSingleton<IChurchesStore, MongoChurchesStore>();
-            
+            services.AddSingleton<ChurchesService>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -55,7 +54,6 @@ namespace UntoMeWorld.WebClient.Server
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

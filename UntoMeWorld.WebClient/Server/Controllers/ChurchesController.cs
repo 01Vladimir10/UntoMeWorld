@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WebClient.Server.Services;
 using UntoMeWorld.WebClient.Shared.Model;
 
 namespace UntoMeWorld.WebClient.Server.Controllers
 {
-    [Authorize]
-    [ApiController]
-    [Route("[controller]")]
     public class ChurchesController : BaseController<Church>
     {
         private readonly ChurchesService _service;
@@ -19,7 +17,6 @@ namespace UntoMeWorld.WebClient.Server.Controllers
         {
             _service = service;
         }
-        
         public override async Task<ActionResult<ResponseDto<Church>>> Add(Church item)
         {
             try
@@ -27,11 +24,12 @@ namespace UntoMeWorld.WebClient.Server.Controllers
                 var result = await _service.AddChurch(item);
                 if (result == null)
                     throw new Exception("Something went wrong");
+                item.Id = result.Id;
                 return ResponseDto<Church>.Successful(item);
             }
             catch (Exception e)
             {
-                return new JsonResult(ResponseDto<Domain.Model.IChurch>.Error(e.Message));
+                return new JsonResult(ResponseDto<IChurch>.Error(e.Message));
             }
         }
 
@@ -59,7 +57,7 @@ namespace UntoMeWorld.WebClient.Server.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult(ResponseDto<Domain.Model.IChurch>.Error(e.Message));
+                return new JsonResult(ResponseDto<IChurch>.Error(e.Message));
             }
         }
         
@@ -74,7 +72,7 @@ namespace UntoMeWorld.WebClient.Server.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult(ResponseDto<Domain.Model.IChurch>.Error(e.Message));
+                return new JsonResult(ResponseDto<IChurch>.Error(e.Message));
             }
         }
     }

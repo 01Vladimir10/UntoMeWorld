@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.MongoDatabase.Models;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
@@ -12,11 +14,11 @@ namespace UntoMeWorld.MongoDatabase.Stores
     public class MongoChurchesStore : IChurchesStore
     {
         private const string ChurchesCollection = "churches";
-        private readonly IMongoCollection<IChurch> _churches;
+        private readonly IMongoCollection<MongoChurch> _churches;
 
         public MongoChurchesStore(MongoDbService service)
         {
-            _churches = service.GetCollection<IChurch>(ChurchesCollection);
+            _churches = service.GetCollection<MongoChurch>(ChurchesCollection);
         }
 
         public async Task<IEnumerable<IChurch>> GetAll()
@@ -47,13 +49,14 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task<IChurch> Insert(IChurch data)
         {
-            await _churches.InsertOneAsync(data);
-            return data;
+            var church = new MongoChurch(data);
+            await _churches.InsertOneAsync(church);
+            return church as IChurch;
         }
 
         public async Task<IChurch> Modify(IChurch data)
         {
-            await _churches.ReplaceOneAsync(c => c.Id == data.Id, data);
+            await _churches.ReplaceOneAsync(c => c.Id == data.Id, data as MongoChurch);
             return data;
         }
 
@@ -65,7 +68,7 @@ namespace UntoMeWorld.MongoDatabase.Stores
         public async Task<IEnumerable<IChurch>> Insert(IEnumerable<IChurch> data)
         {
             var enumerable = data as IChurch[] ?? data.ToArray();
-            await _churches.InsertManyAsync(enumerable);
+            await _churches.InsertManyAsync(enumerable.Cast<MongoChurch>());
             return enumerable;
         }
 

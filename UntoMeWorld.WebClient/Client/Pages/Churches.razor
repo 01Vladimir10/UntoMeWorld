@@ -2,11 +2,10 @@
 @using Blazored.LocalStorage
 @using UntoMeWorld.Domain.Model
 @using UntoMeWorld.Domain.Stores
-@using UntoMeWorld.WebClient.Client.Model
 @using UntoMeWorld.WebClient.Client.Services.Caching
-@using IChurch = UntoMeWorld.WebClient.Client.Model.IChurch
-@inject ILocalStorageService LocalStorageService
-@inject IChurchesStore ChurchesStore;
+@using UntoMeWorld.WebClient.Shared.Model
+@inject ILocalStorageService _localStorageService
+@inject IChurchesStore _churchesStore;
 
 @if (_churches?.Any() ?? false)
 {
@@ -32,31 +31,31 @@
 }
 
 @code {
-    private ICacheService<Domain.Model.IChurch> _cache;
-    private List<Domain.Model.IChurch> _churches;
+    private ICacheService<IChurch> _cache;
+    private List<IChurch> _churches;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _cache = new LocalStorageCache<Domain.Model.IChurch, string>(LocalStorageService, c => c.Id, "churches");
+        _cache = new LocalStorageCache<IChurch, string>(_localStorageService, c => c.Id, "churches");
         await _cache.InitializeCacheAsync();
-        _cache.OnAdded = ChurchesStore.Insert;
+        _cache.OnAdded = _churchesStore.Insert;
         await base.OnAfterRenderAsync(firstRender);
     }
 
     private async Task UpdateForce()
     {
-        var x = await _cache.GetAll( ChurchesStore.GetAll, true);
+        var x = await _cache.GetAll( _churchesStore.GetAll, true);
         _churches = x.ToList();
     }
 
     private async Task AddChurch()
     {
-        var church = new IChurch
+        var church = new Church
         {
             Name = "Test Church"
         };
         await _cache.Add(church);
-        var _ = await _cache.GetAll(ChurchesStore.GetAll);
+        var _ = await _cache.GetAll(_churchesStore.GetAll);
         _churches = _.ToList();
     }
 

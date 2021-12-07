@@ -5,6 +5,8 @@ using UntoMeWorld.WebClient.Shared.Model;
 
 namespace UntoMeWorld.WebClient.Server.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public abstract class BaseController<T> : ControllerBase
     {
         [HttpPost]

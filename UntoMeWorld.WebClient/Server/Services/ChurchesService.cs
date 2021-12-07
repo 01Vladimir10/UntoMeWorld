@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
@@ -24,13 +25,14 @@ namespace UntoMeWorld.WebClient.Server.Services
             return _churches.GetByQuery(query);
         }
 
-        public Task<IChurch> AddChurch(IChurch church)
+        public async Task<IChurch> AddChurch(IChurch church)
         {
-            return _churches.Insert(church);
+            return await _churches.Insert(church);;
         }
-        public Task<IChurch> UpdateChurch(IChurch church)
+        public async Task<IChurch> UpdateChurch(IChurch church)
         {
-            return _churches.Modify(church);
+            await _churches.Insert(church);
+            return church;
         }
         public Task DeleteChurch(IChurch church)
         {
