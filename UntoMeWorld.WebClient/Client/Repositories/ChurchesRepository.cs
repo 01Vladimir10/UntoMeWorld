@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WebClient.Client.Utils;
-using UntoMeWorld.WebClient.Shared.Model;
 
 namespace UntoMeWorld.WebClient.Client.Repositories
 {

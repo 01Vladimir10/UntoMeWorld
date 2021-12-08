@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
@@ -9,34 +8,50 @@ namespace UntoMeWorld.WebClient.Server.Services
     public class ChurchesService
     {
         private readonly IChurchesStore _churches;
-
         public ChurchesService(IChurchesStore churches)
         {
             _churches = churches;
         }
 
-        public Task<IEnumerable<IChurch>> GetAllChurches()
+        public async Task<IEnumerable<Church>> GetAllChurches()
         {
-            return _churches.GetAll();
+            var churches = await _churches.All();
+            return churches;
         }
         
-        public Task<IEnumerable<IChurch>> GetChurchesByQuery(string query)
+        public async Task<IEnumerable<Church>> GetChurchesByQuery(string query)
         {
-            return _churches.GetByQuery(query);
-        }
-
-        public async Task<IChurch> AddChurch(IChurch church)
-        {
-            return await _churches.Insert(church);;
-        }
-        public async Task<IChurch> UpdateChurch(IChurch church)
-        {
-            await _churches.Insert(church);
+            var church = await _churches.All(query);
             return church;
         }
-        public Task DeleteChurch(IChurch church)
+
+        public async Task<Church> AddChurch(Church church)
         {
-            return _churches.Remove(church);
+            await _churches.Add(church);;
+            return church;
+        }
+        public async Task<IEnumerable<Church>> AddChurch(List<Church> church)
+        {
+            await _churches.Add(church);;
+            return church;
+        }
+        public async Task<Church> UpdateChurch(Church church)
+        {
+            await _churches.Add(church);
+            return church;
+        }
+        public async Task<IEnumerable<Church>> UpdateChurch(List<Church> church)
+        {
+            await _churches.Update(church);
+            return church;
+        }
+        public Task DeleteChurch(Church church)
+        {
+            return _churches.Delete(church);
+        }
+        public Task DeleteChurch(IEnumerable<Church> church)
+        {
+            return _churches.Delete(church);
         }
     }
 }

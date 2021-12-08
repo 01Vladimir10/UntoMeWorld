@@ -2,7 +2,7 @@
 
 namespace UntoMeWorld.Domain.Stores
 {
-    public interface IChildrenRepository : IRepository<IChild>
+    public interface IChildrenStore : IStore<Child>
     {
         
     }

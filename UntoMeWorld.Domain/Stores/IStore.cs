@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 
 namespace UntoMeWorld.Domain.Stores
 {
-    public interface IRepository<T>
+    public interface IStore<T>
     {
-        public Task<IEnumerable<T>> GetAll();
-        public Task<IEnumerable<T>> GetByQuery(string query);
-        public Task<IEnumerable<T>> GetByQuery(Predicate<T> query);
-        public Task<T> Insert(T data);
-        public Task<T> Modify(T data);
-        public Task Remove(T data);
-        public Task<IEnumerable<T>> Insert(IEnumerable<T> data);
-        public Task<IEnumerable<T>> Modify(IEnumerable<T> data);
-        public Task Remove(IEnumerable<T> data);
+        public Task<IEnumerable<T>> All();
+        public Task<IEnumerable<T>> All(string query);
+        public Task<IEnumerable<T>> All(Predicate<T> query);
+        public Task<T> Add(T data);
+        public Task<T> Update(T data);
+        public Task Delete(T data);
+        public Task<IEnumerable<T>> Add(List<T> data);
+        public Task<IEnumerable<T>> Update(List<T> data);
+        public Task Delete(IEnumerable<T> data);
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿@page "/fetchdata"
 @using UntoMeWorld.WebClient.Client.Repositories
-@using UntoMeWorld.WebClient.Shared.Model
-@inject HttpClient _http
+@using UntoMeWorld.Domain.Model
+@inject HttpClient Http
 
 <h1>Weather forecast</h1>
 
@@ -40,7 +40,7 @@ else
     {
         try
         {
-            _repository = new ChurchesRepository(_http);
+            _repository = new ChurchesRepository(Http);
             _churches = await _repository.All();
         }
         catch (Exception exception)

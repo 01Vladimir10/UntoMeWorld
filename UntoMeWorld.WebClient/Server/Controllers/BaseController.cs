@@ -7,15 +7,26 @@ namespace UntoMeWorld.WebClient.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class BaseController<T> : ControllerBase
+    public abstract class BaseController<T, TKey> : ControllerBase
     {
         [HttpPost]
         public abstract Task<ActionResult<ResponseDto<T>>> Add(T item);
+        
         [HttpDelete]
-        public abstract Task<ActionResult<ResponseDto<bool>>> Delete(T item);
+        public abstract Task<ActionResult<ResponseDto<bool>>> Delete(TKey itemId);
+        
         [HttpPut]
         public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
+        
         [HttpGet]
         public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> All(string query = null);
+
+        [HttpPost("bulk")]
+        public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);
+        
+        [HttpPut("bulk")]
+        public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkUpdate(List<T> items);
+        [HttpDelete("bulk")]
+        public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
     }
 }

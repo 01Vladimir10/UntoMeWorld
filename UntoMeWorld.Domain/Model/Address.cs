@@ -1,7 +1,7 @@
 ﻿#nullable enable
 namespace UntoMeWorld.Domain.Model
 {
-    public interface IAddress
+    public interface Address
     {
         public string Country { get; set; }
         public string City { get; set; }
