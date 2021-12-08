@@ -37,7 +37,10 @@ namespace UntoMeWorld.WebClient.Server
 
             // Add stores.
             services.AddSingleton<IChurchesStore, MongoChurchesStore>();
+            services.AddSingleton<IChildrenStore, MongoChildrenStore>();
+            // Add services
             services.AddSingleton<ChurchesService>();
+            services.AddSingleton<ChildrenService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

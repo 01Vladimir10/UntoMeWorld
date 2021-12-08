@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UntoMeWorld.WebClient.Shared.Model;
@@ -28,5 +29,20 @@ namespace UntoMeWorld.WebClient.Server.Controllers
         public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkUpdate(List<T> items);
         [HttpDelete("bulk")]
         public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
+        
+        public static async Task<ActionResult<ResponseDto<TResponse>>> ServiceCallResult<TResponse>(Func<Task<TResponse>> func)
+        {
+            ResponseDto<TResponse> response;
+            try
+            {
+                var result = await func();
+                response =  ResponseDto<TResponse>.Successful(result);
+            }
+            catch (Exception e)
+            {
+                response = ResponseDto<TResponse>.Error(e.Message);
+            }
+            return new JsonResult(response);
+        }
     }
 }
