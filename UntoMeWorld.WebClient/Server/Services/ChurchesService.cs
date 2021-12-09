@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
@@ -45,13 +46,13 @@ namespace UntoMeWorld.WebClient.Server.Services
             await _churches.Update(church);
             return church;
         }
-        public Task DeleteChurch(Church church)
+        public Task DeleteChurch(string id)
         {
-            return _churches.Delete(church);
+            return _churches.Delete(new Church {Id = id});
         }
-        public Task DeleteChurch(IEnumerable<Church> church)
+        public Task DeleteChurch(IEnumerable<string> ids)
         {
-            return _churches.Delete(church);
+            return _churches.Delete(ids.Select(id => new Church {Id = id}));
         }
     }
 }
