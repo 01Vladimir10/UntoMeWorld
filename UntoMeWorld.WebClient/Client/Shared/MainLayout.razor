@@ -1,35 +1,28 @@
 @using UntoMeWorld.WebClient.Client.Model
 @inherits LayoutComponentBase
 
-<div class="main-layout @(_isSideBarOpen ? "open" : "")">
-    <div class="sidebar">
-        <button class="sidebar__closer" @onclick="ToggleSidebar">
-            <span class="material-icons">
-                close
-            </span>
-        </button>
 
+<NavigationDrawer>
+    <Header>
+        <div class="d-flex pt-2">
+            <div class="ml-auto">
+                <LoginDisplay>
+                </LoginDisplay>
+            </div>
+        </div>
+    </Header>
+    <Logo>
         <img
             class="logo"
             src="https://s3.amazonaws.com/assets.reachapp.co/accounts/000/000/308/open-uri20200818-4-q095ne.toolbar.?1597782915" alt="">
+    </Logo>
+    <Sidebar>
         <NavMenu MenuItems="_menuItems"/>
-
-    </div>
-    <div class="body">
-        <div class="topBar">
-            <button class="sidebar__opener" @onclick="ToggleSidebar">
-                <span class="material-icons">
-                    menu
-                </span>
-            </button>
-
-            <LoginDisplay/>
-        </div>
-        <div class="content">
-            @Body
-        </div>
-    </div>
-</div>
+    </Sidebar>
+    <Body>
+    @Body
+    </Body>
+</NavigationDrawer>
 
 @code {
 
@@ -51,12 +44,4 @@
             Url = "churches"
         }
     };
-
-    private bool _isSideBarOpen = true;
-
-    private void ToggleSidebar()
-    {
-        _isSideBarOpen = !_isSideBarOpen;
-    }
-
 }
