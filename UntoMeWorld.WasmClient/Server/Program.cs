@@ -19,7 +19,7 @@ try
     var mongoPassword = builder.Configuration["MongoPassword"];
 // Add data store services to the container.
     builder.Services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
-    builder.Services.AddSingleton<IStore<Church>, MongoChurchesStore>();
+    builder.Services.AddSingleton<IChurchesStore, MongoChurchesStore>();
     builder.Services.AddSingleton<IChildrenStore, MongoChildrenStore>();
 // Add services that consume the datastore services and are used by the controllers.
     builder.Services.AddSingleton<IDatabaseService<Church, string>, ChurchesService>();

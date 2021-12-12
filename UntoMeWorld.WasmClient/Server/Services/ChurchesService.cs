@@ -5,8 +5,8 @@ namespace UntoMeWorld.WasmClient.Server.Services;
 
 public class ChurchesService : IDatabaseService<Church, string>
 {
-    private readonly IStore<Church> _churchStore;
-    public ChurchesService(IStore<Church> churchStore)
+    private readonly IChurchesStore _churchStore;
+    public ChurchesService(IChurchesStore churchStore)
     {
         _churchStore = churchStore;
     }

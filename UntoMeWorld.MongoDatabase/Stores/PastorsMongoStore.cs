@@ -1,9 +1,10 @@
 ﻿using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public class PastorsMongoStore : GenericMongoStore<Pastor, string>
+    public class PastorsMongoStore : GenericMongoStore<Pastor, string>, IPastorsStore
     {
         public PastorsMongoStore(MongoDbService service) : 
             base(service, "pastors", p => p.Id, Filter)
@@ -11,9 +12,6 @@ namespace UntoMeWorld.MongoDatabase.Stores
             
         }
         private static bool Filter(Pastor p, string query)
-        {
-            query = query.ToLower();
-            return p != null && p.ToString().ToLower().Contains(query);
-        }
+         => p != null && !string.IsNullOrWhiteSpace(query) && p.ToString().ToLower().Contains(query.ToLower());
     }
 }

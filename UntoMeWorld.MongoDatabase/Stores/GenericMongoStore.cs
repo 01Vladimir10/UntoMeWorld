@@ -82,8 +82,10 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task Delete(IEnumerable<TModel> data)
         {
-            var churches = data.Select(c => _keySelector(c)).ToHashSet();
-            await _collection.DeleteManyAsync(c => churches.Contains(_keySelector(c)));
+            var tasks = from item in data
+                let filter = Builders<TModel>.Filter.Eq(c => _keySelector(c), _keySelector(item))
+                select new DeleteOneModel<TModel>(filter);
+            await _collection.BulkWriteAsync(tasks);
         }
     }
 }
