@@ -1,0 +1,39 @@
+﻿<div class="navigation-drawer-layout@(_isOPen ? " open" : "")">
+    <div class="sidebar">
+        <div class="d-flex">
+            <button class="navigation-drawer-closer material-icons" @onclick="ToggleDrawer">
+                close
+            </button>
+        </div>
+        <div class="logo-container">
+            @Logo
+        </div>
+        @Sidebar
+    </div>
+    <div class="main-layout">
+        <div class="header">
+            <button class="navigation-drawer__opener material-icons"  @onclick="ToggleDrawer">
+                menu
+            </button>
+            <div class="header-container">
+                @Header
+            </div>
+        </div>
+        <div class="body">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? Sidebar { get; set; }
+    [Parameter] public RenderFragment? Body { get; set; }
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? Logo { get; set; }
+    private bool _isOPen;
+    
+    private void ToggleDrawer()
+    {
+        _isOPen = !_isOPen;
+    }
+}

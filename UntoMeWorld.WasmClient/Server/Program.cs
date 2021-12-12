@@ -13,14 +13,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 try
 {
-    
     var mongoDb = builder.Configuration["MongoDatabase"];
     var mongoServer = builder.Configuration["MongoServer"];
     var mongoUsername = builder.Configuration["MongoUsername"];
     var mongoPassword = builder.Configuration["MongoPassword"];
 // Add data store services to the container.
     builder.Services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
-    builder.Services.AddSingleton<IChurchesStore, MongoChurchesStore>();
+    builder.Services.AddSingleton<IStore<Church>, MongoChurchesStore>();
     builder.Services.AddSingleton<IChildrenStore, MongoChildrenStore>();
 // Add services that consume the datastore services and are used by the controllers.
     builder.Services.AddSingleton<IDatabaseService<Church, string>, ChurchesService>();
@@ -30,6 +29,7 @@ catch (Exception ex)
 {
     Console.WriteLine(ex.Message);
 }
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -61,7 +61,5 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllers();
 
-
 app.MapFallbackToFile("index.html");
-
 app.Run();

@@ -1,0 +1,49 @@
+﻿@page "/churches"
+@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.Data.Repositories
+@inject HttpClient _http
+
+
+@if (_churches == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var church in _churches)
+        {
+            <tr>
+                <td>@church.Id</td>
+                <td>@church.Name</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Church>? _churches;
+    private ChurchesRepository? _repository;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _repository = new ChurchesRepository(_http);
+            _churches = await _repository.All();
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine("Fetch error: => " + exception);
+        }
+    }
+
+}

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>UntoMeWorld.WasmClient.Server-EFF271FB-5707-49A9-ACB4-731335814124</UserSecretsId>
     <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\UntoMeWorld.Domain\UntoMeWorld.Domain.csproj" />
     <ProjectReference Include="..\..\UntoMeWorld.MongoDatabase\UntoMeWorld.MongoDatabase.csproj" />
+    <ProjectReference Include="..\Client\UntoMeWorld.WasmClient.Client.csproj" />
     <ProjectReference Include="..\Shared\UntoMeWorld.WasmClient.Shared.csproj" />
   </ItemGroup>
 

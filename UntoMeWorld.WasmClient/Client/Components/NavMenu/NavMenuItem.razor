@@ -1,0 +1,59 @@
+﻿@using UntoMeWorld.WasmClient.Client.Models
+
+
+<li class="nav-menu__item @_cssClasses" data-indentation="@Indentation">
+    <NavLink href="@MenuItem.Url" Match="NavLinkMatch" class="nav-menu__link">@MenuItem.Title</NavLink>
+    @if (MenuItem.Items.Any())
+    {
+        <span class="nav-menu__item-toggle" @onclick="() => _isExpanded = !_isExpanded"></span>
+    }
+
+    @if (MenuItem.Items.Any())
+    {
+        foreach (var child in MenuItem.Items)
+        {
+            <NavMenuItem MenuItem="@child" OnItemClick="@OnItemClicked" Indentation="@(Indentation + 1)"/>
+        }
+    }
+</li>
+
+@code {
+    private NavLinkMatch NavLinkMatch  => MenuItem.Url.Trim().Equals("/") ? NavLinkMatch.All : NavLinkMatch.Prefix;
+    
+    private string _cssClasses = "";
+    
+    private bool _isExpanded;
+
+    [CascadingParameter]
+    public string CurrentPage { get; set; } = string.Empty;
+    
+    [Parameter]
+    public int Indentation { get; set; }
+
+    [Parameter]
+    public Action<MenuItem> OnItemClicked { get; set; } = _ => { };
+
+    [Parameter]
+    public MenuItem MenuItem { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        InitMenu();
+    }
+
+    private void InitMenu()
+    {
+        MenuItem.IsSelected = CurrentPage.ToLower().EndsWith(MenuItem.Url.ToLower());
+        
+        var classes = new List<string>();
+        var hasChildren = MenuItem.Items.Any();
+        if (hasChildren)
+            classes.Add("nav-menu__item submenu");
+        if (!MenuItem.IsActive)
+            classes.Add("disabled");
+        if (MenuItem.IsSelected)
+            classes.Add("selected");
+        _cssClasses = string.Join(" ", classes);
+    }
+}

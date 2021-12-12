@@ -8,5 +8,10 @@
         public string Lastname { get; set; }
         public int Age { get; set; }
         public Gender Gender { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Phone)}: {Phone}, {nameof(Name)}: {Name}, {nameof(Lastname)}: {Lastname}, {nameof(Age)}: {Age}, {nameof(Gender)}: {Gender}";
+        }
     }
 }

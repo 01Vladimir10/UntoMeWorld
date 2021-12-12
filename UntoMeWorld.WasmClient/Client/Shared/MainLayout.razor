@@ -1,18 +1,47 @@
 ﻿@inherits LayoutComponentBase
+@using UntoMeWorld.WasmClient.Client.Models
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<NavigationDrawer>
+    <Header>
+        <div class="d-flex pt-2">
+            <div class="ml-auto">
+                <LoginDisplay>
+                </LoginDisplay>
 
-    <main>
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            </div>
         </div>
+    </Header>
+    <Logo>
+        <img
+            class="logo"
+            src="/content/images/logo.png" alt="">
+    </Logo>
+    <Sidebar>
+        <NavMenu MenuItems="_menuItems"/>
+    </Sidebar>
+    <Body>
+    @Body
+    </Body>
+</NavigationDrawer>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+@code {
+
+    private readonly List<MenuItem> _menuItems = new()
+    {
+        new MenuItem
+        {
+            Title = "Home",
+            Url = "/"
+        },
+        new MenuItem
+        {
+            Title = "Counter",
+            Url = "counter"
+        },
+        new MenuItem
+        {
+            Title = "Churches",
+            Url = "churches"
+        }
+    };
+}

@@ -5,9 +5,8 @@ namespace UntoMeWorld.WasmClient.Server.Services;
 
 public class ChurchesService : IDatabaseService<Church, string>
 {
-    private readonly IChurchesStore _churchStore;
-
-    public ChurchesService(IChurchesStore churchStore)
+    private readonly IStore<Church> _churchStore;
+    public ChurchesService(IStore<Church> churchStore)
     {
         _churchStore = churchStore;
     }
@@ -34,7 +33,7 @@ public class ChurchesService : IDatabaseService<Church, string>
 
     public Task<IEnumerable<Church>> GetAll(string? query = null)
     {
-        return _churchStore.All(query);
+        return string.IsNullOrEmpty(query) ? _churchStore.All() : _churchStore.All(query);
     }
 
     public Task<IEnumerable<Church>> Add(IEnumerable<Church> item)
