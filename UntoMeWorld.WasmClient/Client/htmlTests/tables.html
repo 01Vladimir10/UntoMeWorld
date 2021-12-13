@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./styles/tables.css">
+    <link rel="stylesheet" href="../wwwroot/css/app.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+        <th>Column 3</th>
+    </tr>
+    </thead>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td colspan="100%">
+            <div class="table-options__layout">
+                <button>Test</button>
+                <button>Test</button>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td colspan="100%">
+            <div class="table-options__layout">
+                <br>
+                <button>Test</button>
+                <button>Test</button>
+                <br>
+                <br>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script>
+    function configureTableListeners() {
+        let rows = document.querySelectorAll('table.table > tbody > tr');
+        for (let row of rows) {
+            row.addEventListener('click', function (){
+                this.classList.toggle('expanded');
+            });
+        }
+    }
+    window.addEventListener('load', configureTableListeners);
+</script>
+</body>
+</html>

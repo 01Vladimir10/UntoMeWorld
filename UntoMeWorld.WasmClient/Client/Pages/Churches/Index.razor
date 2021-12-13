@@ -1,49 +1,25 @@
 ﻿@page "/churches"
-@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.ViewModels
 @using UntoMeWorld.WasmClient.Client.Data.Repositories
-@inject HttpClient _http
+@using UntoMeWorld.Domain.Model
+@inject IRepository<Church> _repository;
 
+<div class="main-container">
+    <h3>Churches</h3>
+    <div class="d-flex">
+        <SearchBox OnQueryChanged="_viewModel!.Filter">
+        </SearchBox>
+    </div>
 
-@if (_churches == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var church in _churches)
-        {
-            <tr>
-                <td>@church.Id</td>
-                <td>@church.Name</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
+</div>
 
 @code {
-    private IEnumerable<Church>? _churches;
-    private ChurchesRepository? _repository;
+    private ChurchesViewModel? _viewModel;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        try
-        {
-            _repository = new ChurchesRepository(_http);
-            _churches = await _repository.All();
-        }
-        catch (Exception exception)
-        {
-            Console.WriteLine("Fetch error: => " + exception);
-        }
+        base.OnInitialized();
+        _viewModel = new ChurchesViewModel(_repository);
     }
 
 }

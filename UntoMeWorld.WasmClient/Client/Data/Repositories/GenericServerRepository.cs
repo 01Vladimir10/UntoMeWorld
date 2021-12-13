@@ -46,19 +46,19 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel>
         await _client.DeleteJsonAsync<TModel>(_endPoint, item);
     }
 
-    public async Task<IEnumerable<TModel>?> All()
+    public async Task<IEnumerable<TModel>> All()
     {
         var response = await _client.GetJsonAsync<IEnumerable<TModel>>(_endPoint);
-        return response!.IsSuccessful ? response.Data : null;
+        return response is { IsSuccessful: true, Data: { } } ? response.Data : new List<TModel>();
     }
 
-    public async Task<IEnumerable<TModel>?> All(string query)
+    public async Task<IEnumerable<TModel>> All(string query)
     {
         var response = await _client.GetJsonAsync<IEnumerable<TModel>>(_endPoint + $"?query={query}");
-        return response!.IsSuccessful ? response.Data : null;
+        return response is { IsSuccessful: true, Data: { } } ? response.Data : new List<TModel>();
     }
 
-    public Task<IEnumerable<TModel>?> All(Predicate<TModel> query)
+    public Task<IEnumerable<TModel>> All(Predicate<TModel> query)
     {
         throw new NotImplementedException();
     }

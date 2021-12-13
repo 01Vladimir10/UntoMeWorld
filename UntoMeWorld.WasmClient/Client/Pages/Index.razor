@@ -1,6 +1,24 @@
 ﻿@page "/"
-<h3>Hello World!</h3>
+<h3>Testing</h3>
+
+<div class="d-flex">
+    <SearchBox 
+        NotifyOnSubmitOnly="false"
+        OnQueryChanged="OnQueryChanged">
+    </SearchBox>
+</div>
+<p class="pt-2">
+    @_query
+</p>
 
 @code {
-    
+    private string _query = "";
+
+    private Task OnQueryChanged(string query)
+    {
+        _query = query;
+        
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 }
