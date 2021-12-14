@@ -2,24 +2,42 @@
 @using UntoMeWorld.WasmClient.Client.ViewModels
 @using UntoMeWorld.WasmClient.Client.Data.Repositories
 @using UntoMeWorld.Domain.Model
-@inject IRepository<Church> _repository;
+@inject IRepository<Church> _repository
+@inject IRepository<Pastor> _pastorsRepository
+
 
 <div class="main-container">
     <h3>Churches</h3>
     <div class="d-flex">
         <SearchBox OnQueryChanged="_viewModel!.Filter">
         </SearchBox>
+        <CascadingValue Value="@_viewModel">
+            <ChurchesList OnChurchClick="OnChurchClick">
+            </ChurchesList>
+            <ChurchesDialog @ref="_dialog">
+            </ChurchesDialog>
+        </CascadingValue>
     </div>
-
 </div>
 
+
 @code {
+    private ChurchesDialog? _dialog;
     private ChurchesViewModel? _viewModel;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _viewModel = new ChurchesViewModel(_repository);
+        await base.OnInitializedAsync();
+        _viewModel = new ChurchesViewModel(_repository, _pastorsRepository);
+        await _viewModel.UpdateList();
+        await _viewModel.UpdatePastors();
+
+    }
+
+    private Task OnChurchClick(Church church)
+    {
+        _dialog!.Show(church);
+        return Task.CompletedTask;
     }
 
 }

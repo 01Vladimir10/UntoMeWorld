@@ -5,7 +5,16 @@ namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
 public class ChurchesViewModel : GenericViewModel<Church>
 {
-    public ChurchesViewModel(IRepository<Church> repository) : base(repository)
+    private readonly IRepository<Pastor> _pastorsRepository;
+    public ChurchesViewModel(IRepository<Church> repository, IRepository<Pastor> pastorsRepository) : base(repository)
     {
+        _pastorsRepository = pastorsRepository;
+    }
+    public List<Pastor> Pastors {  get; set; } = new();
+    public IDictionary<string, Pastor> PastorsDictionary => Pastors.ToDictionary(p => p.Id, p => p);
+    public async Task UpdatePastors()
+    {
+        var pastors = await _pastorsRepository.All();
+        Pastors = pastors.ToList();
     }
 }

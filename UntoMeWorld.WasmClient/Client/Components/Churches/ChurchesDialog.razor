@@ -1,0 +1,89 @@
+﻿@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.ViewModels
+
+<Dialog @ref="_dialog">
+    
+    <Content>
+        <div class="d-flex flex-column justify-content-start p-3">
+            @if (!_isNew)
+            {
+                <label for="ChurchId">
+                    Id
+                </label>
+                <input id="ChurchId" value="@_church.Id" disabled="disabled"/>
+            }
+
+            <br>
+            <label for="ChurchName">
+                Name
+            </label>
+            <input type="text" id="ChurchName" @bind="@_church.Name">
+
+            <br>
+            <label for="ChurchPastor">
+                Pastor
+            </label>
+            <select @bind="_church.PastorId" id="ChurchPastor">
+                @foreach (var pastor in ViewModel!.Pastors)
+                {
+                    <option value="@pastor.Id">@pastor.Name, @pastor.Lastname</option>
+                }
+            </select>
+
+        </div>
+
+        <div class="d-flex mt-auto">
+            @if (_isNew)
+            {
+                <button class="btn" @onclick="StartEditing">
+                    Edit
+                </button>
+            }
+            <button class="btn btn-primary">
+                Save
+            </button>
+        </div>
+    </Content>
+</Dialog>
+
+
+
+@code {
+    [CascadingParameter]
+    public ChurchesViewModel? ViewModel { get; set; }
+    private Church _church = new() { Name = "" };
+    private bool _isNew = true;
+    private bool _isEditing;
+    private Dialog? _dialog;
+
+    public void Show(Church church)
+    {
+        _isNew = false;
+        _isEditing = false;
+        _church = church;
+        _dialog?.Show();
+    }
+
+    public void NewChurch()
+    {
+        _church = new Church();
+        _isNew = true;
+        _isEditing = true;
+        _dialog?.Show();
+    }
+
+    private void StartEditing()
+    {
+        _isEditing = true;
+    }
+
+    private async Task Save()
+    {
+        if (_isNew)
+            await ViewModel!.Add(_church);
+        else
+            await ViewModel!.Update(_church);
+        _dialog?.Hide();
+    }
+    
+}

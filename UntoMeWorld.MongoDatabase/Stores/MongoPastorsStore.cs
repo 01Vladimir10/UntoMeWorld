@@ -4,9 +4,9 @@ using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public class PastorsMongoStore : GenericMongoStore<Pastor, string>, IPastorsStore
+    public class MongoPastorsStore : GenericMongoStore<Pastor, string>, IPastorsStore
     {
-        public PastorsMongoStore(MongoDbService service) : 
+        public MongoPastorsStore(MongoDbService service) : 
             base(service, "pastors", p => p.Id, Filter)
         {
             

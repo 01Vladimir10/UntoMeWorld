@@ -21,9 +21,11 @@ try
     builder.Services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
     builder.Services.AddSingleton<IChurchesStore, MongoChurchesStore>();
     builder.Services.AddSingleton<IChildrenStore, MongoChildrenStore>();
+    builder.Services.AddSingleton<IPastorsStore, MongoPastorsStore>();
 // Add services that consume the datastore services and are used by the controllers.
     builder.Services.AddSingleton<IDatabaseService<Church, string>, ChurchesService>();
     builder.Services.AddSingleton<IDatabaseService<Child, string>, ChildrenService>();
+    builder.Services.AddSingleton<IDatabaseService<Pastor, string>, PastorsService>();
 }
 catch (Exception ex)
 {

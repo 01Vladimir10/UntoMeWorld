@@ -1,0 +1,28 @@
+﻿
+
+<div class="dialog @(IsOpen ? "show" : "")">
+    <div class="button-container">
+        <button class="material-icons dialog-toggle">
+            close
+        </button>
+    </div>
+    
+    @Content
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+    
+    public bool IsOpen { get; set; }
+
+    public void Show()
+    {
+        IsOpen = true;
+    }
+
+    public void Hide()
+    {
+        IsOpen = false;
+    }
+}

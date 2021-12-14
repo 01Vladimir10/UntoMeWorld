@@ -1,0 +1,38 @@
+﻿table.base-table {
+  border-spacing: 0;
+  margin: 1em;
+  width: calc(100% - 2em);
+  background-color: var(--card-color);
+  $borderRadius: 1em;
+
+  thead tr {
+    font-size: .875rem;
+    font-weight: 600;
+    box-sizing: border-box;
+    background-color: rgba(var(--primary-color--source), .1);
+    color: var(--primary-color);
+    &:hover {
+      background-color: rgba(var(--primary-color--source), .1);
+    }
+    th:first-child {
+      border-top-left-radius: .5em;
+      border-bottom-left-radius: .5em;
+    }
+    th:last-child {
+      border-top-right-radius: .5em;
+      border-bottom-right-radius: .5em;
+    }
+  }
+  tr {
+    border-radius: .5em;
+    color: var(--secondary-text-color);
+  }
+  td, th {
+    padding: .5em .75em;
+  }
+
+  tr:hover {
+    background-color: rgba(var(--card-color--source), .1);
+    box-shadow: 0 1px 4px 0 var(--shadow-color);
+  }
+}

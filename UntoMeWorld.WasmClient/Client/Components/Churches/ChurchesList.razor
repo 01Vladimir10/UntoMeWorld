@@ -1,0 +1,31 @@
+﻿@using UntoMeWorld.WasmClient.Client.ViewModels
+@using UntoMeWorld.Domain.Model
+
+@if (ViewModel!.Items.Any())
+{
+    <table class="base-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var church in ViewModel.Items)
+            {
+                <tr>
+                    <td>@church.Name</td>
+                    <td>@church.Address!.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [CascadingParameter]
+    public ChurchesViewModel? ViewModel { get; set; }
+    
+    [Parameter]
+    public Func<Church, Task> OnChurchClick { get; set; } = _ => Task.CompletedTask;
+}
