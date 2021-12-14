@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace UntoMeWorld.Domain.Model
 {
-    public class Pastor : IPerson
+    public class Pastor : IModel, IPerson
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }

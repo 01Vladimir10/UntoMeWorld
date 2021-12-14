@@ -37,6 +37,7 @@ public abstract class BaseController<T, TKey> : ControllerBase
         }
         catch (Exception e)
         {
+            Console.WriteLine("Error: " + e.Message);
             response = ResponseDto<TResponse>.Error(e.Message);
         }
         return new JsonResult(response);

@@ -32,6 +32,7 @@ public abstract class GenericViewModel<TModel> : BaseViewModel
     {
         try
         {
+            Console.WriteLine("Updating church = " + church!);
             var newChurch = await _repository.Update(church);
             if (newChurch == null)
                 throw new Exception("The church could not be added");

@@ -1,4 +1,8 @@
-﻿using UntoMeWorld.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
 
@@ -9,16 +13,9 @@ namespace UntoMeWorld.MongoDatabase.Stores
         private const string ChildrenCollectionName = "children";
 
         public MongoChildrenStore(MongoDbService service) :
-            base(service, ChildrenCollectionName, KeySelector, Filter)
+            base(service, ChildrenCollectionName)
         {
             // Magic, there is nothing else to be done!!! 
         }
-
-        private static string KeySelector(Child c) => c.Id;
-
-
-        private static bool Filter(Child child, string query)
-            => child != null && !string.IsNullOrWhiteSpace(query) &&
-               child.ToString().ToLower().Contains(query.Trim().ToLower());
     }
 }

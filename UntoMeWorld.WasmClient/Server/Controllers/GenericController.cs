@@ -30,6 +30,7 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
 
     public override Task<ActionResult<ResponseDto<TModel>>> Update(TModel item)
     {
+        Console.WriteLine("Updating  element => " + item);
         return ServiceCallResult(() => DatabaseService.Update(item));
     }
 

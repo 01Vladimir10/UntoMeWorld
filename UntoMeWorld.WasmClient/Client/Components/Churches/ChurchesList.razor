@@ -13,9 +13,9 @@
         <tbody>
             @foreach (var church in ViewModel.Items)
             {
-                <tr>
+                <tr @onclick="async () => await OnChurchClick(church)">
                     <td>@church.Name</td>
-                    <td>@church.Address!.ToString()</td>
+                    <td>@church.Address?.ToString()</td>
                 </tr>
             }
         </tbody>

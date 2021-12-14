@@ -1,31 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public abstract class GenericMongoStore<TModel, TKey> : IStore<TModel>
+    public abstract class GenericMongoStore<TModel, TKey> : IStore<TModel> where TModel : IModel
     {
-        private readonly Func<TModel, TKey> _keySelector;
-        private readonly Func<TModel, string, bool> _queryFunction;
-        private readonly IMongoCollection<TModel> _collection;
+        protected readonly IMongoCollection<TModel> Collection;
 
-        protected GenericMongoStore(MongoDbService service, string collection, Func<TModel, TKey> keySelector, Func<TModel, string, bool> queryFunction)
+        protected GenericMongoStore(MongoDbService service, string collection)
         {
-            _collection = service.GetCollection<TModel>(collection);
-            _keySelector = keySelector;
-            _queryFunction = queryFunction;
+            Collection = service.GetCollection<TModel>(collection);
         }
 
         public async Task<IEnumerable<TModel>> All()
         {
             try
             {
-                return await _collection.Find(_ => true).ToListAsync();
+                return await Collection.Find(_ => true).ToListAsync();
             }
             catch (Exception e)
             {
@@ -36,37 +34,37 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task<IEnumerable<TModel>> All(string query)
         {
-            query = query.ToLower();
-            var churches = await _collection.FindAsync(c => _queryFunction(c, query));
-            return await churches.ToListAsync();
+            var items = await Collection.FindAsync(Builders<TModel>.Filter.Text(query));
+            return await items.ToListAsync();
         }
 
         public async Task<IEnumerable<TModel>> All(Predicate<TModel> query)
         {
-            var result = await _collection.FindAsync(_ => query(_));
+            var result = await Collection.FindAsync(_ => query(_));
             return await result.ToListAsync();
         }
 
         public async Task<TModel> Add(TModel church)
         {
-            await _collection.InsertOneAsync(church);
+            await Collection.InsertOneAsync(church);
             return church;
         }
 
         public async Task<TModel> Update(TModel data)
         {
-            await _collection.ReplaceOneAsync(c => _keySelector(c).Equals(_keySelector(data)), data);
+            Console.WriteLine("Store: Updating element with id: " + data.Id);
+            await Collection.ReplaceOneAsync(Builders<TModel>.Filter.Eq(c => c.Id, data.Id), data);
             return data;
         }
 
         public async Task Delete(TModel data)
         {
-            await _collection.DeleteOneAsync(c => _keySelector(c).Equals(_keySelector(data)));
+            await Collection.DeleteOneAsync(c => c.Id.Equals(data.Id));
         }
 
         public async Task<IEnumerable<TModel>> Add(List<TModel> data)
         {
-            await _collection.InsertManyAsync(data);
+            await Collection.InsertManyAsync(data);
             return data;
         }
 
@@ -74,18 +72,18 @@ namespace UntoMeWorld.MongoDatabase.Stores
         {
             var tasks =
                 from item in data
-                let filter = Builders<TModel>.Filter.Eq(c => _keySelector(c), _keySelector(item))
+                let filter = Builders<TModel>.Filter.Eq(c => c.Id, item.Id)
                 select new ReplaceOneModel<TModel>(filter, item);
-            await _collection.BulkWriteAsync(tasks);
+            await Collection.BulkWriteAsync(tasks);
             return data;
         }
 
         public async Task Delete(IEnumerable<TModel> data)
         {
             var tasks = from item in data
-                let filter = Builders<TModel>.Filter.Eq(c => _keySelector(c), _keySelector(item))
+                let filter = Builders<TModel>.Filter.Eq(c => c.Id, item.Id)
                 select new DeleteOneModel<TModel>(filter);
-            await _collection.BulkWriteAsync(tasks);
+            await Collection.BulkWriteAsync(tasks);
         }
     }
 }

@@ -2,6 +2,7 @@
 @using UntoMeWorld.WasmClient.Client.ViewModels
 @using UntoMeWorld.WasmClient.Client.Data.Repositories
 @using UntoMeWorld.Domain.Model
+@using System.ComponentModel
 @inject IRepository<Church> _repository
 @inject IRepository<Pastor> _pastorsRepository
 
@@ -11,13 +12,14 @@
     <div class="d-flex">
         <SearchBox OnQueryChanged="_viewModel!.Filter">
         </SearchBox>
-        <CascadingValue Value="@_viewModel">
-            <ChurchesList OnChurchClick="OnChurchClick">
-            </ChurchesList>
-            <ChurchesDialog @ref="_dialog">
-            </ChurchesDialog>
-        </CascadingValue>
     </div>
+    
+    <CascadingValue Value="@_viewModel">
+        <ChurchesList OnChurchClick="OnChurchClick">
+        </ChurchesList>
+        <ChurchesDialog @ref="_dialog">
+        </ChurchesDialog>
+    </CascadingValue>
 </div>
 
 
@@ -29,14 +31,21 @@
     {
         await base.OnInitializedAsync();
         _viewModel = new ChurchesViewModel(_repository, _pastorsRepository);
+        _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         await _viewModel.UpdateList();
         await _viewModel.UpdatePastors();
 
     }
 
+    private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
     private Task OnChurchClick(Church church)
     {
-        _dialog!.Show(church);
+        _dialog?.Hide();
+        _dialog?.Show(church);
         return Task.CompletedTask;
     }
 

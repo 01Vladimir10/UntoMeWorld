@@ -7,11 +7,9 @@ namespace UntoMeWorld.MongoDatabase.Stores
     public class MongoPastorsStore : GenericMongoStore<Pastor, string>, IPastorsStore
     {
         public MongoPastorsStore(MongoDbService service) : 
-            base(service, "pastors", p => p.Id, Filter)
+            base(service, "pastors")
         {
             
         }
-        private static bool Filter(Pastor p, string query)
-         => p != null && !string.IsNullOrWhiteSpace(query) && p.ToString().ToLower().Contains(query.ToLower());
     }
 }

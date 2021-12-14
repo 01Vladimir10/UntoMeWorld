@@ -1,6 +1,6 @@
 ﻿namespace UntoMeWorld.Domain.Model
 {
-    public class Child : IPerson
+    public class Child : IModel, IPerson
     {
         public string Id { get; set; }
         public int Grade { get; set; }
