@@ -13,12 +13,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 try
 {
-    var mongoDb = builder.Configuration["MongoDatabase"];
-    var mongoServer = builder.Configuration["MongoServer"];
-    var mongoUsername = builder.Configuration["MongoUsername"];
-    var mongoPassword = builder.Configuration["MongoPassword"];
-// Add data store services to the container.
-    builder.Services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
+    var connectionString = builder.Configuration["MongoConnectionString"];
+    
+    if (!string.IsNullOrEmpty(connectionString))
+        builder.Services.AddSingleton(new MongoDbService(connectionString));
+    else
+    {
+        var mongoDb = builder.Configuration["MongoDatabase"];
+        var mongoServer = builder.Configuration["MongoServer"];
+        var mongoUsername = builder.Configuration["MongoUsername"];
+        var mongoPassword = builder.Configuration["MongoPassword"];
+        // Add data store services to the container.
+        builder.Services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb ));
+    }
     builder.Services.AddSingleton<IChurchesStore, MongoChurchesStore>();
     builder.Services.AddSingleton<IChildrenStore, MongoChildrenStore>();
     builder.Services.AddSingleton<IPastorsStore, MongoPastorsStore>();

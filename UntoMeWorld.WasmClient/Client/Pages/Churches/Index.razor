@@ -10,7 +10,7 @@
 <div class="main-container">
     <h3>Churches</h3>
     <div class="d-flex">
-        <SearchBox OnQueryChanged="_viewModel!.Filter">
+        <SearchBox OnQueryChanged="_viewModel.Filter">
         </SearchBox>
     </div>
     
@@ -44,8 +44,8 @@
 
     private Task OnChurchClick(Church church)
     {
-        _dialog?.Hide();
-        _dialog?.Show(church);
+        _dialog.Hide();
+        _dialog.Show(church);
         return Task.CompletedTask;
     }
 

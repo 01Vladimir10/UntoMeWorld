@@ -1,0 +1,87 @@
+﻿POST https://localhost:5001/api/pastors/bulk
+Content-Type: application/json
+
+[
+  {
+    "phone": null,
+    "name": "Osmani Manzanares",
+    "lastname": "Ulloa",
+    "age": 0,
+    "gender": 0
+  },
+  {
+    "id": "61b8383eae7c2182294716f7",
+    "phone": null,
+    "name": "Erwin",
+    "lastname": "Ulloa",
+    "age": 0,
+    "gender": 0
+  },
+  {
+    "id": "61b8383eae7c2182294716f8",
+    "phone": null,
+    "name": "Jose Luis",
+    "lastname": "Alvarado",
+    "age": 0,
+    "gender": 0
+  },
+  {
+    "id": "61b8383eae7c2182294716f9",
+    "phone": null,
+    "name": "Julio",
+    "lastname": "Soza",
+    "age": 0,
+    "gender": 0
+  }
+]
+
+###
+POST https://localhost:5001/api/churches/bulk
+Content-Type: application/json
+
+[
+  {
+    "id": "61b03cf9eb3fe7eab894ed03",
+    "name": "",
+    "address": null,
+    "pastorId": "Erwin, Ulloa"
+  },
+  {
+    "id": "61b03cf9eb3fe7eab894ed04",
+    "name": "Hebrón",
+    "address": null,
+    "pastorId": null
+  },
+  {
+    "id": "61b03cf9eb3fe7eab894ed05",
+    "name": "Nueva Vida en Cristo",
+    "address": null,
+    "pastorId": "61b8383eae7c2182294716f7"
+  },
+  {
+    "id": "61b03cf9eb3fe7eab894ed06",
+    "name": "Camino al cielo",
+    "address": null,
+    "pastorId": "61b8383eae7c2182294716f9"
+  },
+  {
+    "id": "61b03cf9eb3fe7eab894ed07",
+    "name": "Camino al paraiso",
+    "address": null,
+    "pastorId": "61b8383eae7c2182294716f9"
+  },
+  {
+    "id": "61b03cf9eb3fe7eab894ed08",
+    "name": "Fuente de vida",
+    "address": null,
+    "pastorId": "61b8383eae7c2182294716f7"
+  },
+  {
+    "id": "61b58f54c5602166118fd909",
+    "name": "Jehova es Mi Pastor",
+    "address": null,
+    "pastorId": "61b8383eae7c2182294716f9"
+  }
+]
+
+###
