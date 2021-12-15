@@ -7,6 +7,7 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th>Pastor</th>
             <th>Address</th>
         </tr>
         </thead>
@@ -15,6 +16,7 @@
             {
                 <tr @onclick="async () => await OnChurchClick(church)">
                     <td>@church.Name</td>
+                    <td>@GetPastorName(church)</td>
                     <td>@church.Address?.ToString()</td>
                 </tr>
             }
@@ -28,4 +30,11 @@
     
     [Parameter]
     public Func<Church, Task> OnChurchClick { get; set; } = _ => Task.CompletedTask;
+
+    private string GetPastorName(Church church)
+    {
+        if (string.IsNullOrEmpty(church.PastorId)) return "";
+        var pastor = ViewModel.PastorsDictionary != null && ViewModel.PastorsDictionary.ContainsKey(church.PastorId) ? ViewModel.PastorsDictionary[church.PastorId] : null;
+        return pastor == null ? "" : $"{pastor.Name} {pastor.Lastname}";
+    }
 }
