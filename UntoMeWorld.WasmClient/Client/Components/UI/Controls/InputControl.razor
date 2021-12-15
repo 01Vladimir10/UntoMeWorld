@@ -1,72 +1,24 @@
-﻿@typeparam T
-
 <div class="input-control">
-    <label>@Label</label>
-    <input type="@Type" @attributes="_attributes" @onchange="Callback">
+    <label>
+        @Label
+        <input type="text" @onchange="OnInputChanged">
+    </label>
 </div>
-
-
 @code {
 
     [Parameter]
-    public string Type { get; set; } = "text";
-
-    private bool _isEnabled;
-
-    [Parameter]
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set
-        {
-            _isEnabled = value;
-            PropertyChanged();
-        }
-    }
-
-    private string _label = "";
-
-    [Parameter]
-    public string Label
-    {
-        get => _label;
-        set
-        {
-            _label = value;
-            PropertyChanged();
-        }
-    }
-
-    [Parameter]
-    public T Value { get; set; }
-
-    [Parameter]
-    public string Placeholder { get; set; } = "";
-
-    [Parameter]
-    public Action<T> OnValueChanged { get; set; } = _ => { };
-
-    private IDictionary<string, object> _attributes = new Dictionary<string, object>();
-
+    public string Label { get; set; } = "";
     
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
 
-    private void PropertyChanged()
-    {
-        _attributes = new Dictionary<string, object>();
-        if (!IsEnabled)
-            _attributes["disabled"] = "disabled";
-        
-        if (!string.IsNullOrEmpty(Placeholder))
-            _attributes["placeholder"] = Placeholder;
-        
-        StateHasChanged();
-    }
+    [Parameter]
+    public string? Value { get; set; }
 
-    private void Callback(ChangeEventArgs obj)
+    private async Task OnInputChanged(ChangeEventArgs obj)
     {
-        Console.WriteLine("Input has changed");
-        Value = (T) obj.Value;
-        OnValueChanged(Value);
+        Value = obj.Value?.ToString() ?? "";
+        await ValueChanged.InvokeAsync(Value);
     }
 
 }
