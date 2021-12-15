@@ -26,10 +26,10 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? Sidebar { get; set; }
-    [Parameter] public RenderFragment? Body { get; set; }
-    [Parameter] public RenderFragment? Header { get; set; }
-    [Parameter] public RenderFragment? Logo { get; set; }
+    [Parameter] public RenderFragment Sidebar { get; set; }
+    [Parameter] public RenderFragment Body { get; set; }
+    [Parameter] public RenderFragment Header { get; set; }
+    [Parameter] public RenderFragment Logo { get; set; }
     private bool _isOPen;
     
     private void ToggleDrawer()

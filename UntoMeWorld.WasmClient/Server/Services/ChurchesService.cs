@@ -31,7 +31,7 @@ public class ChurchesService : IDatabaseService<Church, string>
         return _churchStore.Delete(new Church { Id = id });
     }
 
-    public Task<IEnumerable<Church>> GetAll(string? query = null)
+    public Task<IEnumerable<Church>> GetAll(string query = null)
     {
         return string.IsNullOrEmpty(query) ? _churchStore.All() : _churchStore.All(query);
     }
@@ -48,6 +48,6 @@ public class ChurchesService : IDatabaseService<Church, string>
 
     public Task Delete(IEnumerable<string> ids)
     {
-        return _churchStore.Add(ids.Select(id => new Church {Id = id}).ToList());;
+        return _churchStore.Add(ids.Select(id => new Church {Id = id}).ToList());
     }
 }

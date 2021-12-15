@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using UntoMeWorld.Domain.Model;
@@ -10,7 +9,7 @@ using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public abstract class GenericMongoStore<TModel, TKey> : IStore<TModel> where TModel : IModel
+    public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel
     {
         protected readonly IMongoCollection<TModel> Collection;
 

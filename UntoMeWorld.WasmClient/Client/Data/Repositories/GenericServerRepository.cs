@@ -23,7 +23,7 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel>
         _endPoint = endPoint;
     }
         
-    public async Task<TModel?> Add(TModel item)
+    public async Task<TModel> Add(TModel item)
     {
         if (item == null)
             throw new NoNullAllowedException();
@@ -31,7 +31,7 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel>
         return response!.IsSuccessful ? response.Data : default;
     }
 
-    public async Task<TModel?> Update(TModel item)
+    public async Task<TModel> Update(TModel item)
     {
         if (item == null)
             throw new NoNullAllowedException();

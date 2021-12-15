@@ -24,8 +24,8 @@
 
 
 @code {
-    private ChurchesDialog? _dialog;
-    private ChurchesViewModel? _viewModel;
+    private ChurchesDialog _dialog;
+    private ChurchesViewModel _viewModel;
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,7 +37,7 @@
 
     }
 
-    private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         StateHasChanged();
     }

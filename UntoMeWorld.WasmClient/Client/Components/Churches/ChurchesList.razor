@@ -24,7 +24,7 @@
 
 @code {
     [CascadingParameter]
-    public ChurchesViewModel? ViewModel { get; set; }
+    public ChurchesViewModel ViewModel { get; set; }
     
     [Parameter]
     public Func<Church, Task> OnChurchClick { get; set; } = _ => Task.CompletedTask;

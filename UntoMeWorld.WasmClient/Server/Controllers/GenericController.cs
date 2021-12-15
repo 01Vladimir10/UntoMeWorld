@@ -34,7 +34,7 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
         return ServiceCallResult(() => DatabaseService.Update(item));
     }
 
-    public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> All(string? query = null)
+    public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> All(string query = null)
     {
         return ServiceCallResult(() => DatabaseService.GetAll(query));
     }

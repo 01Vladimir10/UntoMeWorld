@@ -32,7 +32,7 @@ public class ChildrenService : IDatabaseService<Child, string>
         return _childrenStore.Delete(new Child { Id = id });
     }
 
-    public Task<IEnumerable<Child>> GetAll(string? query = null)
+    public Task<IEnumerable<Child>> GetAll(string query = null)
     {
         return _childrenStore.All(query);
     }

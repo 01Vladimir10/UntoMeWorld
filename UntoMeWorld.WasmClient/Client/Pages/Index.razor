@@ -2,23 +2,23 @@
 <h3>Testing</h3>
 
 <div class="d-flex">
-    <SearchBox 
-        NotifyOnSubmitOnly="false"
-        OnQueryChanged="OnQueryChanged">
-    </SearchBox>
+    <InputControl
+        Placeholder="Testing" Type="string" OnValueChanged="value => _query = value ?? string.Empty"
+        Value="_query" Label="Test label" IsEnabled="true" @ref="_input">
+    </InputControl>
 </div>
-<p class="pt-2">
+<button @onclick="() => _input.IsEnabled = !_input.IsEnabled">
+    toggle
+</button>
+<button @onclick="StateHasChanged">
+    Update
+</button>
+<h3 class="pt-2">
     @_query
-</p>
+</h3>
 
 @code {
+    private InputControl<string> _input;
     private string _query = "";
 
-    private Task OnQueryChanged(string query)
-    {
-        _query = query;
-        
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
 }

@@ -17,7 +17,7 @@ public abstract class BaseController<T, TKey> : ControllerBase
     public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
         
     [HttpGet]
-    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> All(string? query = null);
+    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> All(string query = null);
 
     [HttpPost("bulk")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);

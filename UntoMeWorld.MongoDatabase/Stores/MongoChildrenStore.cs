@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using UntoMeWorld.Domain.Model;
+﻿using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public class MongoChildrenStore : GenericMongoStore<Child, string>, IChildrenStore
+    public class MongoChildrenStore : GenericMongoStore<Child>, IChildrenStore
     {
         private const string ChildrenCollectionName = "children";
 

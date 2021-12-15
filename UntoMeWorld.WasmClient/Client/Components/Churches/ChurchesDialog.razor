@@ -7,28 +7,30 @@
         <div class="d-flex flex-column justify-content-start p-3">
             @if (!_isNew)
             {
-                <label for="ChurchId">
-                    Id
-                </label>
-                <input id="ChurchId" value="@_church.Id" disabled="disabled"/>
+                <div class="form-control">
+                    <label for="ChurchId">
+                        Id
+                    </label>
+                    <input id="ChurchId" value="@_church.Id" disabled="disabled"/>
+                </div>
+            
             }
 
-            <br>
-            <label for="ChurchName">
-                Name
-            </label>
-            <input type="text" id="ChurchName" @bind="@_church.Name" @attributes="InputAttributes">
+            <div class="form-control">
+                <label for="ChurchName">
+                    Name
+                </label>
+                <input type="text" id="ChurchName" @bind="@_church.Name" @attributes="InputAttributes">
+            </div>
 
-            <br>
             <label for="ChurchPastor">
                 Pastor
             </label>
             <select @bind="_church.PastorId" id="ChurchPastor" @attributes="InputAttributes">
                 @if (string.IsNullOrEmpty(_church.PastorId))
                 {
-                    <option value="">Select a pastor </option>
+                    <option value=""> </option>
                 }
-                
                 @foreach (var pastor in ViewModel!.Pastors)
                 {
                     if (_isEditing && _church.PastorId == pastor.Id)
@@ -68,11 +70,11 @@
         _isEditing ? new Dictionary<string, object>() : new Dictionary<string, object> { { "disabled", "disabled" } };
     
     [CascadingParameter]
-    public ChurchesViewModel? ViewModel { get; set; }
+    public ChurchesViewModel ViewModel { get; set; }
     private Church _church = new() { Name = "" };
     private bool _isNew = true;
     private bool _isEditing;
-    private Dialog? _dialog;
+    private Dialog _dialog;
     
     public void Hide()
     {
