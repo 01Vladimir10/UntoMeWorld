@@ -1,0 +1,26 @@
+.input-control {
+    display: block;
+    width: 100%;
+}
+label {
+    font-size: .875rem;
+    color: var(--primary-text-color);
+    font-weight: 600;
+}
+input {
+    border: none;
+    color: var(--primary-text-color);
+    background-color: rgba(var(--background-color--source), .3);
+    padding: .375em .5em;
+    border-radius: .375em;
+    display: block;
+    font-size: 1rem;
+    transition: background-color 200ms linear;
+}
+input:focus, input:hover, input:active {
+    outline: none;
+}
+input:hover {
+    background-color: rgba(var(--background-color--source), .5);
+    box-shadow: 0 1px 2px var(--shadow-color);
+}
