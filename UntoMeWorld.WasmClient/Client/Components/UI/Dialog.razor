@@ -1,18 +1,21 @@
 ﻿
 
 <div class="dialog @(IsOpen ? "show" : "")">
-    <div class="button-container">
-        <button class="material-icons dialog-toggle" @onclick="Hide">
+    <div class="header">
+        <h3>@Title</h3>
+        <button class="material-icons dialog-toggle close" @onclick="Hide">
             close
         </button>
     </div>
-    
     @Content
 </div>
 
 @code {
     [Parameter]
     public RenderFragment Content { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "";
     
     public bool IsOpen { get; set; }
 

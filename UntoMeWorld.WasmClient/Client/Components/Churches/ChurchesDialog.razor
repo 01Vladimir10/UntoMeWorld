@@ -1,4 +1,5 @@
 ﻿@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.Components.UI.Models
 @using UntoMeWorld.WasmClient.Client.ViewModels
 
 <Dialog @ref="_dialog">
@@ -7,49 +8,24 @@
         <div class="d-flex flex-column justify-content-start p-3">
             @if (!_isNew)
             {
-                <div class="form-control">
-                    <label for="ChurchId">
-                        Id
-                    </label>
-                    <input id="ChurchId" value="@_church.Id" disabled="disabled"/>
-                </div>
-            
+                <InputControl TValue="string" Value="@_church.Id" Label="Church Id" IsEnabled="false">
+                </InputControl>
             }
-
-            <div class="form-control">
-                <label for="ChurchName">
-                    Name
-                </label>
-                <input type="text" id="ChurchName" @bind="@_church.Name" @attributes="InputAttributes">
-            </div>
-
-            <label for="ChurchPastor">
-                Pastor
-            </label>
-            <select @bind="_church.PastorId" id="ChurchPastor" @attributes="InputAttributes">
-                @if (string.IsNullOrEmpty(_church.PastorId))
-                {
-                    <option value=""> </option>
-                }
-                @foreach (var pastor in ViewModel!.Pastors)
-                {
-                    if (_isEditing && _church.PastorId == pastor.Id)
-                    {
-                        <option value="@pastor.Id" selected="selected">@pastor.Name, @pastor.Lastname</option>
-                    }
-                    else
-                    {
-                        <option value="@pastor.Id">@pastor.Name, @pastor.Lastname</option>
-                    }
-                }
-            </select>
+            
+            <InputControl TValue="string" @bind-Value="@_church.Name" Label="Name" IsEnabled="_isEditing">
+            </InputControl>
+            
+            <SelectControl 
+                Label="Pastor"
+                TValue="string" @bind-Value="@_church.PastorId" IsEnabled="_isEditing" Options="@PastorOptions()">
+            </SelectControl>
 
         </div>
 
         <div class="d-flex mt-auto gap-2 m-2">
             @if (!_isNew)
             {
-                <button class="btn" @onclick="StartEditing">
+                <button class="btn btn-secondary me-2" @onclick="StartEditing">
                     Edit
                 </button>
             }
@@ -66,9 +42,7 @@
 
 
 @code {
-    private Dictionary<string, object> InputAttributes => 
-        _isEditing ? new Dictionary<string, object>() : new Dictionary<string, object> { { "disabled", "disabled" } };
-    
+
     [CascadingParameter]
     public ChurchesViewModel ViewModel { get; set; }
     private Church _church = new() { Name = "" };
@@ -86,7 +60,9 @@
         _isNew = false;
         _isEditing = false;
         _church = church;
+        _dialog.Title = "Edit Church";
         _dialog?.Show();
+        StateHasChanged();
     }
 
     public void NewChurch()
@@ -94,6 +70,7 @@
         _church = new Church();
         _isNew = true;
         _isEditing = true;
+        _dialog.Title = "New Church";
         _dialog?.Show();
     }
 
@@ -113,5 +90,18 @@
         }
         _dialog?.Hide();
     }
-    
+
+    private IEnumerable<SelectOption<string>> PastorOptions()
+    {
+        var options = ViewModel.Pastors.Select(p => new SelectOption<string>
+        {
+            DisplayValue = p.Name,
+            Value = p.Id,
+            Selected = _isEditing && p.Id == _church.Id
+        }).ToList();
+        if (string.IsNullOrEmpty(_church.PastorId) || _isNew)
+            options.Add(new SelectOption<string>{ Value = null, Selected = true, DisplayValue = "Select a pastor"});
+        return options;
+    }
+
 }

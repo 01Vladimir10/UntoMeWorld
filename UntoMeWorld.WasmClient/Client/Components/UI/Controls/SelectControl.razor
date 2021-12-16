@@ -1,0 +1,74 @@
+﻿@using UntoMeWorld.WasmClient.Client.Components.UI.Models
+@typeparam TValue
+
+
+<div class="select-control @CssClass">
+    <label>
+        @Label
+        <select @onchange="OnSelectChanged" disabled="@(!IsEnabled)">
+            @foreach (var option in Options)
+            {
+                var displayValue = string.IsNullOrEmpty(option.DisplayValue) ? option.Value?.ToString() : option.DisplayValue;
+
+                <option value="@option.Value" selected="@option.Selected">
+                    @displayValue
+                </option>
+            }
+
+            @if (Value == null && !string.IsNullOrEmpty(DefaultOptionDisplayValue))
+            {
+                <option selected="selected">@DefaultOptionDisplayValue</option>
+            }
+
+        </select>
+    </label>
+</div>
+
+@code {
+    private bool _isEnabled = true;
+    private string _label = "";
+
+    [Parameter]
+    public string CssClass { get; set; } = "";
+
+    [Parameter]
+    public bool IsEnabled
+    {
+        get => _isEnabled;
+        set
+        {
+            _isEnabled = value;
+            StateHasChanged();
+        }
+    }
+
+    [Parameter]
+    public string Label
+    {
+        get => _label;
+        set
+        {
+            _label = value;
+            StateHasChanged();
+        }
+    }
+
+    [Parameter]
+    public string DefaultOptionDisplayValue { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter]
+    public TValue Value { get; set; }
+
+    [Parameter]
+    public IEnumerable<SelectOption<TValue>> Options { get; set; } = Array.Empty<SelectOption<TValue>>();
+
+    private async Task OnSelectChanged(ChangeEventArgs obj)
+    {
+        Value = (TValue)obj.Value ?? default;
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+}

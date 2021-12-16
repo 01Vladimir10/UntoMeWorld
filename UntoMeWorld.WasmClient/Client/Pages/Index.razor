@@ -1,13 +1,11 @@
 ﻿@page "/"
+@using UntoMeWorld.WasmClient.Client.Components.UI.Models
 <h3>Testing</h3>
 
-<div class="d-flex">
-    <InputControl
-        Placeholder="Testing" Type="string" OnValueChanged="value => _query = value ?? string.Empty"
-        Value="_query" Label="Test label" IsEnabled="true" @ref="_input">
-    </InputControl>
-</div>
-<button @onclick="() => _input.IsEnabled = !_input.IsEnabled">
+
+<SelectControl @ref="_select" TValue="string" @bind-Value="@_query" Options="_options" Label="Select Option"></SelectControl>
+
+<button @onclick="() => _select.IsEnabled = !_select.IsEnabled">
     toggle
 </button>
 <button @onclick="StateHasChanged">
@@ -18,7 +16,12 @@
 </h3>
 
 @code {
-    private InputControl<string> _input;
-    private string _query = "";
+    private SelectControl<string> _select;
+    private string _query;
+
+    private IEnumerable<SelectOption<string>> _options = new[]
+    {
+        "one", "two", "three"
+    }.ToSelectOptions(x => x).ToList();
 
 }
