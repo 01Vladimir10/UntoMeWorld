@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Client.Utils;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Repositories;
@@ -12,7 +13,7 @@ namespace UntoMeWorld.WasmClient.Client.Data.Repositories;
 ///     - Update elements on a PUT request.
 /// </summary>
 /// <typeparam name="TModel">T</typeparam>
-public abstract class GenericServerRepository<TModel> : IRepository<TModel>
+public abstract class GenericServerRepository<TModel> : IRepository<TModel> where TModel : IModel
 {
     private readonly string _endPoint;
     private readonly HttpClient _client;
@@ -43,7 +44,7 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel>
     {
         if (item == null)
             throw new NoNullAllowedException();
-        await _client.DeleteJsonAsync<TModel>(_endPoint, item);
+        await _client.DeleteJsonAsync<TModel>(_endPoint + "?itemId=" + item.Id);
     }
 
     public async Task<IEnumerable<TModel>> All()
@@ -62,4 +63,4 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel>
     {
         throw new NotImplementedException();
     }
-}
+} 

@@ -1,27 +1,21 @@
 ﻿@page "/"
-@using UntoMeWorld.WasmClient.Client.Components.UI.Models
+@using UntoMeWorld.WasmClient.Client.ViewModels
+
 <h3>Testing</h3>
 
 
-<SelectControl @ref="_select" TValue="string" @bind-Value="@_query" Options="_options" Label="Select Option"></SelectControl>
-
-<button @onclick="() => _select.IsEnabled = !_select.IsEnabled">
-    toggle
-</button>
-<button @onclick="StateHasChanged">
-    Update
-</button>
-<h3 class="pt-2">
-    @_query
-</h3>
+<h3>Hello world</h3>
 
 @code {
-    private SelectControl<string> _select;
-    private string _query;
+    [CascadingParameter] public MainViewModel MainViewModel { get; set; }
 
-    private IEnumerable<SelectOption<string>> _options = new[]
+    protected override void OnInitialized()
     {
-        "one", "two", "three"
-    }.ToSelectOptions(x => x).ToList();
+        base.OnInitialized();
+        MainViewModel.RegisterFabClickListener("/", () =>
+        {
+            Console.WriteLine("Home fab clicked!");
+        });
+    }
 
 }

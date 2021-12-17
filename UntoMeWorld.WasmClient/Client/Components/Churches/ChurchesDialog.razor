@@ -5,7 +5,7 @@
 <Dialog @ref="_dialog">
     
     <Content>
-        <div class="d-flex flex-column justify-content-start p-3">
+        <div class="d-flex flex-column justify-content-start">
             @if (!_isNew)
             {
                 <InputControl TValue="string" Value="@_church.Id" Label="Church Id" IsEnabled="false">
@@ -22,17 +22,25 @@
 
         </div>
 
-        <div class="d-flex mt-auto gap-2 m-2">
+        <br>
+        <br>
+        <div class="d-flex mt-auto gap-3 m-2">
             @if (!_isNew)
             {
-                <button class="btn btn-secondary me-2" @onclick="StartEditing">
+                <button class="btn btn-secondary me-2 d-block" @onclick="StartEditing">
                     Edit
                 </button>
             }
             @if (_isNew || _isEditing)
             {
-                <button class="btn btn-primary" @onclick="Save">
+                <button class="btn btn-primary d-block" @onclick="Save">
                     Save
+                </button>
+            }
+            @if (!_isNew)
+            {
+                <button class="btn btn-danger d-block" @onclick="Delete">
+                    Delete
                 </button>
             }
         </div>
@@ -91,6 +99,13 @@
         _dialog?.Hide();
     }
 
+    private async Task Delete()
+    {
+        await ViewModel.Delete(_church);
+        _dialog.Hide();
+    }
+
+    
     private IEnumerable<SelectOption<string>> PastorOptions()
     {
         var options = ViewModel.Pastors.Select(p => new SelectOption<string>

@@ -1,11 +1,12 @@
 ﻿/* fallback */
 :root {
     --card-color--source: 250, 250, 251;
+    --shadow-color--source: 0, 0, 0;
     --primary-color--source: 70, 70, 186;
     --primary-text-color: rgb(37, 37, 45);
     --secondary-text-color: rgb(108, 109, 130);
     --divider-color: #eeee;
-    --primary-color: rgb(var(--primary-color--source));
+    --primary-color: rgba(var(--primary-color--source));
     --primary-color-background: rgba(70, 70, 186, 0.1);
     --on-primary-color: #fff;
     --accent-color: #f9ca5b;
@@ -13,7 +14,7 @@
     --background-color: #ececec;
     
     --surface-color: white;
-    --shadow-color: rgba(0, 0, 0, 0.15);
+    --shadow-color: rgba(var(--shadow-color--source), 0.15);
 }
 
 * {

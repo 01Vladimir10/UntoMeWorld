@@ -19,10 +19,9 @@ public static class HttpExtensions
         return await response.Content.ReadFromJsonAsync<ResponseDto<T>>();
     }
 
-    public static async Task DeleteJsonAsync<T>(this HttpClient client, string url, object content)
+    public static async Task DeleteJsonAsync<T>(this HttpClient client, string url)
     {
-        var body = JsonContent.Create(content);
-        var response = await client.PutAsync(url, body);
+        var response = await client.DeleteAsync(url);
         await response.Content.ReadFromJsonAsync<ResponseDto<T>>();
     }
 

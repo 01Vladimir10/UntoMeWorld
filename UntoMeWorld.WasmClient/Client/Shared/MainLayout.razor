@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @using UntoMeWorld.WasmClient.Client.Models
+@inject NavigationManager _navigation;
+@using UntoMeWorld.WasmClient.Client.ViewModels
 
 <NavigationDrawer>
     <Header>
@@ -17,16 +19,30 @@
             src="/content/images/logo.png" alt="">
     </Logo>
     <Sidebar>
-        <NavMenu MenuItems="_menuItems"/>
+        <NavMenu MenuItems="MenuItems"/>
     </Sidebar>
     <Body>
-    @Body
+        <CascadingValue Value="_mainViewModel">
+            @Body
+        </CascadingValue>
+
+        <FloatingActionButton OnClick="_mainViewModel.OnFabClicked">
+
+        </FloatingActionButton>
     </Body>
 </NavigationDrawer>
 
 @code {
+    private MainViewModel _mainViewModel;
 
-    private readonly List<MenuItem> _menuItems = new()
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _mainViewModel = new MainViewModel(_navigation);
+    }
+
+
+    private static readonly List<MenuItem> MenuItems = new()
     {
         new MenuItem
         {
@@ -44,4 +60,5 @@
             Url = "churches"
         }
     };
+
 }

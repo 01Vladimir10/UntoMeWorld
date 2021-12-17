@@ -1,0 +1,11 @@
+﻿
+<button class="button fab" @onclick="OnClick">
+</button>
+
+@code {
+
+    [Parameter]
+    public Action OnClick { get; set; } = () => { };
+
+
+}

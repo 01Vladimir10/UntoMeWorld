@@ -1,8 +1,9 @@
-﻿using UntoMeWorld.WasmClient.Client.Data.Repositories;
+﻿using UntoMeWorld.Domain.Model;
+using UntoMeWorld.WasmClient.Client.Data.Repositories;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
-public abstract class GenericViewModel<TModel> : BaseViewModel
+public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
 {
     private readonly IRepository<TModel> _repository;
     private List<TModel> _items = new();
@@ -20,6 +21,7 @@ public abstract class GenericViewModel<TModel> : BaseViewModel
             var newChurch = await _repository.Add(church);
             if (newChurch == null)
                 throw new Exception("The church could not be added");
+            Items.Add(church);
             OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
@@ -27,12 +29,12 @@ public abstract class GenericViewModel<TModel> : BaseViewModel
             OnError(e);
         }
     }
-    public async Task Update(TModel church)
+    public async Task Update(TModel item)
     {
         try
         {
-            Console.WriteLine("Updating church = " + church!);
-            var newChurch = await _repository.Update(church);
+            Console.WriteLine("Updating church = " + item!);
+            var newChurch = await _repository.Update(item);
             if (newChurch == null)
                 throw new Exception("The church could not be added");
             OnPropertyChanged(nameof(Items));
@@ -42,11 +44,15 @@ public abstract class GenericViewModel<TModel> : BaseViewModel
             OnError(e);
         }
     }
-    public async Task Delete(TModel church)
+    public async Task Delete(TModel item)
     {
         try
         {
-            await _repository.Delete(church);
+            await _repository.Delete(item);
+            var index = Items.FindIndex(i => i.Id == item.Id);
+            if (index < 0)
+                return;
+            Items.RemoveAt(index);
             OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
