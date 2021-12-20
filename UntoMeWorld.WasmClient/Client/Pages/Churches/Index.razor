@@ -40,7 +40,6 @@
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         await _viewModel.UpdateList();
         await _viewModel.UpdatePastors();
-        
         MainViewModel.RegisterFabClickListener("churches", OnFabClicked);
     }
 
@@ -49,11 +48,10 @@
         StateHasChanged();
     }
 
-    private Task OnChurchClick(Church church)
+    private void OnChurchClick(Church church)
     {
         _dialog.Hide();
         _dialog.Show(church);
-        return Task.CompletedTask;
     }
 
     private void OnFabClicked()
