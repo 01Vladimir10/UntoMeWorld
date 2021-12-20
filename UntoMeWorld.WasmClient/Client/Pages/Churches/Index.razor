@@ -3,8 +3,10 @@
 @using UntoMeWorld.WasmClient.Client.Data.Repositories
 @using UntoMeWorld.Domain.Model
 @using System.ComponentModel
+@using Microsoft.AspNetCore.Authorization
 @inject IRepository<Church> _repository
 @inject IRepository<Pastor> _pastorsRepository
+@attribute [Authorize]
 
 
 <div class="main-container">

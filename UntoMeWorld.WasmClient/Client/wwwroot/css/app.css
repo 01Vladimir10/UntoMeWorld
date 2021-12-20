@@ -12,9 +12,9 @@
     --accent-color: #f9ca5b;
     --card-color: rgb(var(--card-color--source));
     --background-color: #ececec;
-    
     --surface-color: white;
     --shadow-color: rgba(var(--shadow-color--source), 0.15);
+    --max-width: 1400px;
 }
 
 * {
@@ -59,4 +59,13 @@
 
 .blazor-error-boundary::after {
     content: "An error has occurred."
+}
+.main-container {
+    margin: 0 auto;
+    max-width: var(--max-width);
+    width: 100%;
+}
+.root-container {
+    display: flex;
+    width: 100%;
 }

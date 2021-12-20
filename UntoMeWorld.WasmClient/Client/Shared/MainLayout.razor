@@ -3,35 +3,38 @@
 @inject NavigationManager _navigation;
 @using UntoMeWorld.WasmClient.Client.ViewModels
 
-<NavigationDrawer>
-    <Header>
-        <div class="d-flex pt-2">
-            <div class="ml-auto">
-                <LoginDisplay>
-                </LoginDisplay>
-
-            </div>
-        </div>
-    </Header>
-    <Logo>
-        <img
-            class="logo"
-            src="/content/images/logo.png" alt="">
-    </Logo>
-    <Sidebar>
-        <NavMenu MenuItems="MenuItems"/>
-    </Sidebar>
-    <Body>
-        <CascadingValue Value="_mainViewModel">
-            @Body
-        </CascadingValue>
-
-        <FloatingActionButton OnClick="_mainViewModel.OnFabClicked">
-
-        </FloatingActionButton>
-    </Body>
-</NavigationDrawer>
-
+<div class="root-container">
+    <div class="main-container">
+        <NavigationDrawer>
+            <Header>
+                <div class="d-flex pt-2">
+                    <div class="ml-auto">
+                        <LoginDisplay>
+                        </LoginDisplay>
+        
+                    </div>
+                </div>
+            </Header>
+            <Logo>
+                <img
+                    class="logo"
+                    src="/content/images/logo.png" alt="">
+            </Logo>
+            <Sidebar>
+                <NavMenu MenuItems="MenuItems"/>
+            </Sidebar>
+            <Body>
+                <CascadingValue Value="_mainViewModel">
+                    @Body
+                </CascadingValue>
+        
+                <FloatingActionButton OnClick="_mainViewModel.OnFabClicked">
+        
+                </FloatingActionButton>
+            </Body>
+        </NavigationDrawer>
+    </div>
+</div>
 @code {
     private MainViewModel _mainViewModel;
 

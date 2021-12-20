@@ -5,11 +5,11 @@
   right: 0;
   top: 0;
   width: 100%;
-  transform: translate(0, 100%);
   background-color: var(--surface-color);
-  z-index: 100;
   padding: 1em;
-  transition: transform 200ms ease-in-out;
+  opacity: 0;
+  transition: all 200ms ease-in-out;
+  z-index: -1;
   
   h3 {
     font-weight: 600;
@@ -22,7 +22,9 @@
   }
 
   &.show {
+    opacity: 1;
     transform: translate(0, 0);
+    z-index: 100;
   }
 
   .header {
@@ -47,6 +49,8 @@
   @media only screen and (min-width: 560px) {
     width: min(50%, 25rem);
     transform: translateX(100%);
+    right: max((100vw - var(--max-width)) / 2, 1px);
+
 
     &.show {
       box-shadow: -2px 0 8px 1px var(--shadow-color);

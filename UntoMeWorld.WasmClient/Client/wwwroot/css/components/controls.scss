@@ -40,7 +40,7 @@ button.button.fab {
   color: var(--on-primary-color);
   background-color: var(--primary-color);
   position: fixed;
-  right: 3rem;
+  right: max(calc(calc(100% - var(--max-width)) / 2 + 3rem), 3rem);
   bottom: 3rem;
   min-height: 3rem;
   min-width: 3rem;
