@@ -4,7 +4,7 @@
   border-radius: .25em;
   margin: 0 .5em;
   overflow: hidden;
-  
+
   input {
     flex-grow: 1;
   }
@@ -15,7 +15,7 @@
       background-color: rgba(0, 0, 0, .05);
     }
   }
-  
+
   input, button {
     border: none;
     outline: none;
@@ -24,5 +24,5 @@
     color: var(--primary-text-color);
     background-color: transparent;
   }
-  
+
 }

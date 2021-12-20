@@ -5,7 +5,7 @@
 <Dialog @ref="_dialog">
     
     <Content>
-        <div class="d-flex flex-column justify-content-start">
+        <div class="churches-dialog__form-container">
             @if (!_isNew)
             {
                 <InputControl TValue="string" Value="@_church.Id" Label="Church Id" IsEnabled="false">
@@ -24,22 +24,22 @@
 
         <br>
         <br>
-        <div class="d-flex mt-auto gap-3 m-2">
+        <div class="churches-dialog__buttons-container">
             @if (!_isNew)
             {
-                <button class="btn btn-secondary me-2 d-block" @onclick="StartEditing">
+                <button class="button" @onclick="StartEditing">
                     Edit
                 </button>
             }
             @if (_isNew || _isEditing)
             {
-                <button class="btn btn-primary d-block" @onclick="Save">
+                <button class="button primary" @onclick="Save">
                     Save
                 </button>
             }
             @if (!_isNew)
             {
-                <button class="btn btn-danger d-block" @onclick="Delete">
+                <button class="button delete" @onclick="Delete">
                     Delete
                 </button>
             }

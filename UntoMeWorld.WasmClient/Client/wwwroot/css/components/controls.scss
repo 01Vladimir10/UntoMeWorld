@@ -1,5 +1,9 @@
-﻿.control {
-  display: inline-flex;
+﻿@import "dialog";
+@import "searchBox";
+@import "buttons";
+
+.control {
+  display: flex;
   flex-direction: column;
   margin-top: 1em;
 
@@ -63,3 +67,4 @@ button.button.fab {
     box-shadow: 3px 3px 12px $shadowColor;
   }
 }
+/// Dialog

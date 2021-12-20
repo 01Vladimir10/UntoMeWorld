@@ -1,16 +1,15 @@
-﻿
-.dialog {
+﻿.dialog {
   position: fixed;
   bottom: 0;
   right: 0;
   top: 0;
   width: 100%;
+  transform: translate(100%,100%);
   background-color: var(--surface-color);
   padding: 1em;
-  opacity: 0;
   transition: all 200ms ease-in-out;
   z-index: -1;
-  
+
   h3 {
     font-weight: 600;
     color: var(--primary-color);
@@ -49,6 +48,7 @@
   @media only screen and (min-width: 560px) {
     width: min(50%, 25rem);
     transform: translateX(100%);
+    opacity: 0;
     right: max((100vw - var(--max-width)) / 2, 1px);
 
 

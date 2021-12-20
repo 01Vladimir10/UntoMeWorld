@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using static System.Console;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
@@ -23,7 +22,6 @@ public class MainViewModel
         if (string.IsNullOrEmpty(page))
             return;
         var key = page.ToLower().Trim();
-        WriteLine("Registering fab listener for page => " + key);
         _fabClickListenersByPage[key] = listener;
     }
 
@@ -32,7 +30,6 @@ public class MainViewModel
         if (string.IsNullOrEmpty(CurrentPage))
             return;
         var currentPage = CurrentPage.ToLower();
-        WriteLine("Dispatching fab listener for page => " + currentPage);
         var listenerKey = _fabClickListenersByPage.Keys.FirstOrDefault(page => currentPage.EndsWith(page));
         if (!string.IsNullOrEmpty(listenerKey))
             _fabClickListenersByPage[listenerKey]();
