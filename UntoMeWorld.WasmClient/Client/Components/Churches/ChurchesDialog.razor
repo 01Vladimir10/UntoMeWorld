@@ -3,38 +3,34 @@
 @using UntoMeWorld.WasmClient.Client.ViewModels
 
 <Dialog @ref="_dialog">
-    
+
     <Content>
-        <div class="churches-dialog__form-container">
-            @if (!_isNew)
-            {
-                <InputControl TValue="string" Value="@_church.Id" Label="Church Id" IsEnabled="false">
-                </InputControl>
-            }
+        <div class="flex-column h-100">
             
-            <InputControl TValue="string" @bind-Value="@_church.Name" Label="Name" IsEnabled="_isEditing">
-            </InputControl>
-            
-            <SelectControl 
-                Label="Pastor"
-                TValue="string" @bind-Value="@_church.PastorId" IsEnabled="_isEditing" Options="@PastorOptions()">
-            </SelectControl>
+            <div class="form">
+                @if (!_isNew)
+                {
+                    <div class="form-row">
+                        <InputControl TValue="string" Value="@_church.Id" Label="Church Id" IsEnabled="false">
+                        </InputControl>
 
-        </div>
-
-        <br>
-        <br>
-        <div class="churches-dialog__buttons-container">
+                    </div>
+                }
+                <div class="form-row">
+                    <InputControl TValue="string" @bind-Value="@_church.Name" Label="Name" IsEnabled="_isEditing">
+                    </InputControl>
+                </div>
+                <SelectControl
+                    Label="Pastor"
+                    TValue="string" @bind-Value="@_church.PastorId" IsEnabled="_isEditing" Options="@PastorOptions()">
+                </SelectControl>
+            </div>
+            <br>
+            <div class="d-flex mt-auto">
             @if (!_isNew)
             {
                 <button class="button" @onclick="StartEditing">
                     Edit
-                </button>
-            }
-            @if (_isNew || _isEditing)
-            {
-                <button class="button primary" @onclick="Save">
-                    Save
                 </button>
             }
             @if (!_isNew)
@@ -43,26 +39,33 @@
                     Delete
                 </button>
             }
+            @if (_isNew || _isEditing)
+            {
+                <button class="button primary ms-auto" @onclick="Save">
+                    Save
+                </button>
+            }
+        </div>
         </div>
     </Content>
 </Dialog>
-
 
 
 @code {
 
     [CascadingParameter]
     public ChurchesViewModel ViewModel { get; set; }
+
     private Church _church = new() { Name = "" };
     private bool _isNew = true;
     private bool _isEditing;
     private Dialog _dialog;
-    
+
     public void Hide()
     {
         _dialog?.Hide();
     }
-    
+
     public void Show(Church church)
     {
         _isNew = false;
@@ -94,7 +97,7 @@
             if (_isNew)
                 await ViewModel.Add(_church);
             else
-                await ViewModel.Update(_church);   
+                await ViewModel.Update(_church);
         }
         _dialog?.Hide();
     }
@@ -105,7 +108,7 @@
         _dialog.Hide();
     }
 
-    
+
     private IEnumerable<SelectOption<string>> PastorOptions()
     {
         var options = ViewModel.Pastors.Select(p => new SelectOption<string>
@@ -115,7 +118,7 @@
             Selected = _isEditing && p.Id == _church.Id
         }).ToList();
         if (string.IsNullOrEmpty(_church.PastorId) || _isNew)
-            options.Add(new SelectOption<string>{ Value = null, Selected = true, DisplayValue = "Select a pastor"});
+            options.Add(new SelectOption<string> { Value = null, Selected = true, DisplayValue = "Select a pastor" });
         return options;
     }
 

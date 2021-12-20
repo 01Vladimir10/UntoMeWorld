@@ -6,22 +6,23 @@ namespace UntoMeWorld.WasmClient.Client.ViewModels;
 public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
 {
     private readonly IRepository<TModel> _repository;
+    private IDictionary<string, TModel> _itemsDictionary = new Dictionary<string, TModel>();
     private List<TModel> _items = new();
     public Action<Exception> OnError { get; set; } = _ => { };
 
-    public GenericViewModel(IRepository<TModel> repository)
+    protected GenericViewModel(IRepository<TModel> repository)
     {
         _repository = repository;
     }
     
-    public async Task Add(TModel church)
+    public async Task Add(TModel item)
     {
         try
         {
-            var newChurch = await _repository.Add(church);
+            var newChurch = await _repository.Add(item);
             if (newChurch == null)
                 throw new Exception("The church could not be added");
-            Items.Add(church);
+            Items.Add(item);
             OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
@@ -81,6 +82,12 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
             _items = value;
             OnPropertyChanged(nameof(Items));
         }
+    }
+
+    private static string GenerateRandomId()
+    {
+        var id = new Guid();
+        return id.ToString();
     }
     #endregion
 

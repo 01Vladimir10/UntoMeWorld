@@ -1,8 +1,7 @@
 ﻿@using UntoMeWorld.WasmClient.Client.Components.UI.Models
 @typeparam TValue
 
-
-<div class="control select @CssClass">
+<div class="form-input @CssClass">
     <label>
         @Label
         <select @onchange="OnSelectChanged" disabled="@(!IsEnabled)">
