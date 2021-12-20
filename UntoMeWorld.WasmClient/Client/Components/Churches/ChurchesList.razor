@@ -1,24 +1,30 @@
 ﻿@using UntoMeWorld.WasmClient.Client.ViewModels
 @using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
 
 @if (ViewModel!.Items.Any())
 {
     <table class="base-table">
         <thead>
-        <tr>
-            <th>Name</th>
-            <th>Pastor</th>
-            <th>Address</th>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Pastor</th>
+                <th>Address</th>
+            </tr>
         </thead>
         <tbody>
             @foreach (var church in ViewModel.Items)
             {
-                <tr @onclick="async () => await OnChurchClick(church)">
+                <ListRow
+                    IsInMultiSelect="ViewModel.IsMultiSelecting"
+                    OnClick="() => OnChurchClick(church)"
+                    IsSelected="@(MultiSelectController.IsItemSelected(church))"
+                    OnMultiselectChanged="state => OnItemSelectionChanged(church, state)">
+                    
                     <td>@church.Name</td>
                     <td>@GetPastorName(church)</td>
                     <td>@church.Address?.ToString()</td>
-                </tr>
+                </ListRow>
             }
         </tbody>
     </table>
@@ -27,14 +33,22 @@
 @code {
     [CascadingParameter]
     public ChurchesViewModel ViewModel { get; set; }
-    
+
+    private MultiSelectController<Church> MultiSelectController => ViewModel.MultiSelectController;
+
     [Parameter]
-    public Func<Church, Task> OnChurchClick { get; set; } = _ => Task.CompletedTask;
+    public Action<Church> OnChurchClick { get; set; } = _ => { };
 
     private string GetPastorName(Church church)
     {
         if (string.IsNullOrEmpty(church.PastorId)) return "";
         var pastor = ViewModel.PastorsDictionary != null && ViewModel.PastorsDictionary.ContainsKey(church.PastorId) ? ViewModel.PastorsDictionary[church.PastorId] : null;
         return pastor == null ? "" : $"{pastor.Name} {pastor.Lastname}";
+    }
+
+    private void OnItemSelectionChanged(Church item, bool selection)
+    {
+        MultiSelectController.ToggleItem(item);
+        Console.WriteLine("Item {0} is {1} | {2}", item.Name, selection ? "selected" : "Not selected", MultiSelectController.SelectedItemsCount);
     }
 }

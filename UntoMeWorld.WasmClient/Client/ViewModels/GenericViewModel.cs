@@ -1,28 +1,29 @@
 ﻿using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Client.Data.Repositories;
+using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
-
 public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
 {
     private readonly IRepository<TModel> _repository;
     private IDictionary<string, TModel> _itemsDictionary = new Dictionary<string, TModel>();
-    private List<TModel> _items = new();
-    public Action<Exception> OnError { get; set; } = _ => { };
+
 
     protected GenericViewModel(IRepository<TModel> repository)
     {
         _repository = repository;
+        InitMultiSelection();
     }
-    
+
+
     public async Task Add(TModel item)
     {
         try
         {
-            var newChurch = await _repository.Add(item);
-            if (newChurch == null)
-                throw new Exception("The church could not be added");
-            Items.Add(item);
+            var newItem = await _repository.Add(item);
+            if (newItem == null || string.IsNullOrEmpty(newItem.Id))
+                throw new Exception($"The item of type {typeof(TModel).Name} could not be updated");
+            _itemsDictionary.Add(newItem.Id, newItem);
             OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
@@ -34,10 +35,11 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         try
         {
-            Console.WriteLine("Updating church = " + item!);
-            var newChurch = await _repository.Update(item);
-            if (newChurch == null)
-                throw new Exception("The church could not be added");
+            item = await _repository.Update(item);
+            if (item == null)
+                throw new Exception($"The item of type {typeof(TModel).Name} could not be updated");
+            
+            _itemsDictionary[item.Id] = item;
             OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
@@ -50,10 +52,8 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
         try
         {
             await _repository.Delete(item);
-            var index = Items.FindIndex(i => i.Id == item.Id);
-            if (index < 0)
-                return;
-            Items.RemoveAt(index);
+            if(!_itemsDictionary.Remove(item.Id))
+                throw new Exception($"The item of type {typeof(TModel).Name} could not be deleted");
             OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
@@ -65,30 +65,46 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         if (string.IsNullOrWhiteSpace(query))
             await UpdateList();
-        var result = await _repository.All(query);
-        Items = result.ToList();
+        Items = await _repository.All(query);
     }
     public async Task UpdateList()
     {
-        var result = await  _repository.All();
-        Items = result.ToList();
+        Items =  await _repository.All();
     }
     #region Properties
-    public List<TModel> Items
+    public IEnumerable<TModel> Items
     {
-        get => _items;
+        get => _itemsDictionary.Values;
         set
         {
-            _items = value;
+            _itemsDictionary = value.ToDictionary(i => i.Id, i => i);
             OnPropertyChanged(nameof(Items));
         }
     }
-
-    private static string GenerateRandomId()
-    {
-        var id = new Guid();
-        return id.ToString();
-    }
+    
+    public Action<Exception> OnError { get; set; } = _ => { };
+    
     #endregion
 
+    #region MultiSelection
+    public MultiSelectController<Church> MultiSelectController { get; } = new();
+    public bool IsMultiSelecting
+    {
+        get => MultiSelectController.IsMultiSelecting;
+        set
+        {
+            MultiSelectController.IsMultiSelecting = value;
+            OnPropertyChanged(nameof(IsMultiSelecting));
+        }
+    }
+    private void InitMultiSelection()
+    {
+        MultiSelectController.OnMultiSelectStop = () =>
+        {
+            IsMultiSelecting = false;
+            OnPropertyChanged(nameof(IsMultiSelecting));
+        };
+    }
+
+    #endregion
 }

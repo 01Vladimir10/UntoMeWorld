@@ -5,6 +5,7 @@
     --primary-color--source: 70, 70, 186;
     --primary-text-color: rgb(37, 37, 45);
     --secondary-text-color: rgb(108, 109, 130);
+    --selected-color: #0048ff1c;
     --divider-color: #eeee;
     --primary-color: rgba(var(--primary-color--source));
     --primary-color-background: rgba(70, 70, 186, 0.1);
