@@ -1,4 +1,5 @@
 ﻿using UntoMeWorld.Domain.Model;
+using UntoMeWorld.WasmClient.Client.Data.Model;
 using UntoMeWorld.WasmClient.Client.Data.Repositories;
 using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 
@@ -7,7 +8,7 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
 {
     private readonly IRepository<TModel> _repository;
     private IDictionary<string, TModel> _itemsDictionary = new Dictionary<string, TModel>();
-
+    public SortField SortField { get; private set; } = new();
 
     protected GenericViewModel(IRepository<TModel> repository)
     {
@@ -69,7 +70,17 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     }
     public async Task UpdateList()
     {
-        Items =  await _repository.All();
+        Items =  await _repository.All(null, SortField.FieldName, SortField.Descendent);
+    }
+    public async Task SortElementsBy(string fieldName, bool desc = false)
+    {
+        SortField = new SortField
+        {
+            FieldName = fieldName,
+            Descendent = desc
+        };
+        await UpdateList();
+        OnPropertyChanged(nameof(SortField));
     }
     #region Properties
     public IEnumerable<TModel> Items

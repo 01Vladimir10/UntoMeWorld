@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using UntoMeWorld.WasmClient.Shared.Errors;
 using UntoMeWorld.WasmClient.Shared.Model;
 
 namespace UntoMeWorld.WasmClient.Server.Controllers;
@@ -17,7 +19,7 @@ public abstract class BaseController<T, TKey> : ControllerBase
     public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
         
     [HttpGet]
-    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> All(string query = null);
+    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> All(string query = null, string sortBy = "", bool sortDesc = false);
 
     [HttpPost("bulk")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);
@@ -33,12 +35,16 @@ public abstract class BaseController<T, TKey> : ControllerBase
         try
         {
             var result = await func();
-            response =  ResponseDto<TResponse>.Successful(result);
+            response = ResponseDto<TResponse>.Successful(result);
+        }
+        catch (InvalidApiRequestRequestException exception)
+        {
+            return ResponseDto<TResponse>.Error(exception.Message);
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error: " + e.Message);
-            response = ResponseDto<TResponse>.Error(e.Message);
+            Console.WriteLine("Error occured while executing request: {0}", e);
+            return new StatusCodeResult(500);
         }
         return new JsonResult(response);
     }

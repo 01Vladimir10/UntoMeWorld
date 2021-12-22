@@ -47,15 +47,24 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
         await _client.DeleteJsonAsync<TModel>(_endPoint + "?itemId=" + item.Id);
     }
 
-    public async Task<IEnumerable<TModel>> All()
+    public async Task<IEnumerable<TModel>> All(string query = null, string sortBy = null, bool sortDesc = false)
     {
-        var response = await _client.GetJsonAsync<IEnumerable<TModel>>(_endPoint);
-        return response is { IsSuccessful: true, Data: { } } ? response.Data : new List<TModel>();
-    }
+        var endpoint = _endPoint;
+        var parameters = System.Web.HttpUtility.ParseQueryString(string.Empty);
+        
+        if (!string.IsNullOrEmpty(query))
+            parameters.Add("query", query);
+        
+        if (!string.IsNullOrEmpty(sortBy))
+            parameters.Add("sortBy", sortBy);
+        
+        if (sortDesc)
+            parameters.Add("sortDesc", "true");
 
-    public async Task<IEnumerable<TModel>> All(string query)
-    {
-        var response = await _client.GetJsonAsync<IEnumerable<TModel>>(_endPoint + $"?query={query}");
+        if (parameters.Count > 0)
+            endpoint += $"?{parameters}";
+        
+        var response = await _client.GetJsonAsync<IEnumerable<TModel>>(endpoint);
         return response is { IsSuccessful: true, Data: { } } ? response.Data : new List<TModel>();
     }
 

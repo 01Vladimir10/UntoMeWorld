@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace UntoMeWorld.Domain.Model
@@ -7,6 +8,12 @@ namespace UntoMeWorld.Domain.Model
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime DeletedOn { get; set; }
+        public DateTime LastUpdatedOn { get; set; }
         public string Name { get; set; }
         public Address Address { get; set; }
         public string PastorId { get; set; }
