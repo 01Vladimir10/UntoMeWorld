@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Shared.Errors;
 using UntoMeWorld.WasmClient.Shared.Model;
 
@@ -19,7 +20,7 @@ public abstract class BaseController<T, TKey> : ControllerBase
     public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
         
     [HttpGet]
-    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> All(string query = null, string sortBy = "", bool sortDesc = false);
+    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> All(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
 
     [HttpPost("bulk")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);

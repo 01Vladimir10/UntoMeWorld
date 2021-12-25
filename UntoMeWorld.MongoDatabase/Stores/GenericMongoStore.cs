@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.MongoDatabase.Helpers;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
@@ -43,6 +44,17 @@ namespace UntoMeWorld.MongoDatabase.Stores
             return await result.ToListAsync();
         }
 
+        public async Task<PaginationResult<TModel>> Query(string query = null, string orderBy = null, bool orderDesc = false, int page = 1, int pageSize = 100)
+        {
+            var (totalPages, result) = await Collection.QueryByPageAndSort(query, orderBy, orderDesc, page, pageSize);
+            return new PaginationResult<TModel>
+            {
+                Result = result.ToList(),
+                TotalPages = totalPages,
+                Page = page
+            };
+        }
+
         public async Task<TModel> Add(TModel church)
         {
             await Collection.InsertOneAsync(church);
@@ -59,6 +71,14 @@ namespace UntoMeWorld.MongoDatabase.Stores
         public async Task Delete(TModel data)
         {
             await Collection.DeleteOneAsync(c => c.Id.Equals(data.Id));
+        }
+
+        public async Task Delete(params string[] ids)
+        {
+            var tasks = from item in ids
+                let filter = Builders<TModel>.Filter.Eq(c => c.Id, item)
+                select new DeleteOneModel<TModel>(filter);
+            await Collection.BulkWriteAsync(tasks);
         }
 
         public async Task<IEnumerable<TModel>> Add(List<TModel> data)
