@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Client.Utils;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Repositories;
@@ -47,7 +48,7 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
         await _client.DeleteJsonAsync<TModel>(_endPoint + "?itemId=" + item.Id);
     }
 
-    public async Task<IEnumerable<TModel>> All(string query = null, string sortBy = null, bool sortDesc = false)
+    public async Task<PaginationResult<TModel>> All(string query = null, string sortBy = null, bool sortDesc = false)
     {
         var endpoint = _endPoint;
         var parameters = System.Web.HttpUtility.ParseQueryString(string.Empty);
@@ -64,8 +65,8 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
         if (parameters.Count > 0)
             endpoint += $"?{parameters}";
         
-        var response = await _client.GetJsonAsync<IEnumerable<TModel>>(endpoint);
-        return response is { IsSuccessful: true, Data: { } } ? response.Data : new List<TModel>();
+        var response = await _client.GetJsonAsync<PaginationResult<TModel>>(endpoint);
+        return response is { IsSuccessful: true, Data: not null } ? response.Data : new PaginationResult<TModel>();
     }
 
     public Task<IEnumerable<TModel>> All(Predicate<TModel> query)

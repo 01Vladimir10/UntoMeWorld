@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Helpers;
@@ -13,7 +14,6 @@ namespace UntoMeWorld.MongoDatabase.Stores
     public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel
     {
         protected readonly IMongoCollection<TModel> Collection;
-
         protected GenericMongoStore(MongoDbService service, string collection)
         {
             Collection = service.GetCollection<TModel>(collection);
@@ -43,8 +43,8 @@ namespace UntoMeWorld.MongoDatabase.Stores
             var result = await Collection.FindAsync(_ => query(_));
             return await result.ToListAsync();
         }
-
-        public async Task<PaginationResult<TModel>> Query(string query = null, string orderBy = null, bool orderDesc = false, int page = 1, int pageSize = 100)
+        public async Task<PaginationResult<TModel>> Query(IEnumerable<DatabaseQueryParameter> query, string orderBy = null,
+            bool orderDesc = false, int page = 1, int pageSize = 100)
         {
             var (totalPages, result) = await Collection.QueryByPageAndSort(query, orderBy, orderDesc, page, pageSize);
             return new PaginationResult<TModel>
@@ -63,7 +63,6 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task<TModel> Update(TModel data)
         {
-            Console.WriteLine("Store: Updating element with id: " + data.Id);
             await Collection.ReplaceOneAsync(Builders<TModel>.Filter.Eq(c => c.Id, data.Id), data);
             return data;
         }
@@ -103,6 +102,31 @@ namespace UntoMeWorld.MongoDatabase.Stores
                 let filter = Builders<TModel>.Filter.Eq(c => c.Id, item.Id)
                 select new DeleteOneModel<TModel>(filter);
             await Collection.BulkWriteAsync(tasks);
+        }
+
+        public Task SoftDelete(params string[] ids)
+        {
+            var updateAction = Builders<TModel>.Update.Set(x => x.IsDeleted, true);
+            var updateTasks = from id in ids
+                let filter = Builders<TModel>.Filter.Eq(m => m.Id, id)
+                select new UpdateOneModel<TModel>(filter, updateAction);
+            return Collection.BulkWriteAsync(updateTasks);
+        }
+
+        public Task PermanentlyDelete(params string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Restore(params string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TModel> Get(string id)
+        {
+            var result = await Collection.FindAsync(Builders<TModel>.Filter.Eq(m => m.Id, id));
+            return await result.FirstOrDefaultAsync();
         }
     }
 }

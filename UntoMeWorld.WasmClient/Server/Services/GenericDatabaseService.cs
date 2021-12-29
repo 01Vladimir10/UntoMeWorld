@@ -1,4 +1,5 @@
-﻿using UntoMeWorld.Domain.Model;
+﻿using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Shared.Errors;
 
@@ -7,7 +8,6 @@ namespace UntoMeWorld.WasmClient.Server.Services;
 public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, string> where TModel : IModel
 {
     protected readonly IStore<TModel> Store;
-
     public GenericDatabaseService(IStore<TModel> store)
     {
         Store = store;
@@ -15,24 +15,24 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
 
     public Task<TModel> Add(TModel item)
     {
+        item.CreatedOn = DateTime.Now;
         return Store.Add(item);
     }
-
     public Task<TModel> Get(string id)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(id))
+            throw new MissingParametersException();
+        return Store.Get(id);
     }
-
     public Task<TModel> Update(TModel item)
     {
+        item.LastUpdatedOn = DateTime.Now;
         return Store.Update(item);
     }
-
-    public Task Delete(string id)
+    public Task Delete(string id, bool softDelete = true)
     {
-        return Store.Delete(id);
+        return softDelete ? Store.Delete(id) : Store.SoftDelete(id);
     }
-
     public Task<IEnumerable<TModel>> GetAll(string query = null)
     {
         return Store.All(query);
@@ -43,7 +43,7 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         return Store.Add(item.ToList());
     }
 
-    public Task<PaginationResult<TModel>> Query(string query = null, string orderBy = null, bool orderDesc = false, int page = 1, int pageSize = 100)
+    public Task<PaginationResult<TModel>> Query(string query = null, string orderBy = null, bool orderDesc = false, bool deleted = false, int page = 1, int pageSize = 100)
     {
         // Validate if the property exists
         if (!string.IsNullOrEmpty(orderBy) &&
@@ -53,8 +53,24 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         // validate if the query has more than 3 characters
         if (!string.IsNullOrEmpty(query) && query.Trim().Length < 3)
             throw new InvalidQueryLengthException();
+
+        var parameters = new List<DatabaseQueryParameter>
+        {
+            new()
+            {
+                PropertyName = nameof(IModel.IsDeleted),
+                Operator = DatabaseQueryOperator.Equal,
+                Value = deleted
+            }
+        };
+        if (!string.IsNullOrEmpty(query))
+            parameters.Add(new DatabaseQueryParameter
+            {
+                Operator = DatabaseQueryOperator.TextQuery,
+                Value = query
+            });
         
-        return Store.Query(query, orderBy, orderDesc, page, pageSize);
+        return Store.Query(parameters, orderBy, orderDesc, page, pageSize);
     }
 
     public Task<IEnumerable<TModel>> Update(IEnumerable<TModel> item)
@@ -62,8 +78,8 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         return Store.Update(item.ToList());
     }
 
-    public Task Delete(IEnumerable<string> id)
+    public Task Delete(IEnumerable<string> id, bool softDelete = true)
     {
-        return Store.Delete(id.ToArray());
+        return softDelete ? Store.SoftDelete(id.ToArray()) : Store.Delete(id.ToArray());
     }
 }

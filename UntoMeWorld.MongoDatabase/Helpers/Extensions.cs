@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
 
 namespace UntoMeWorld.MongoDatabase.Helpers
@@ -9,7 +11,7 @@ namespace UntoMeWorld.MongoDatabase.Helpers
     public static class Extensions
     {
         public static async Task<(int totalPages, IReadOnlyList<T> readOnlyList)> 
-            QueryByPageAndSort<T>(this IMongoCollection<T> collection, string query, string sortBy, bool sortAsc, int page, int pageSize)
+            QueryByPageAndSort<T>(this IMongoCollection<T> collection, IEnumerable<DatabaseQueryParameter> query, string sortBy, bool sortAsc, int page, int pageSize)
             where T : IModel
         
         {
@@ -30,7 +32,8 @@ namespace UntoMeWorld.MongoDatabase.Helpers
                     PipelineStageDefinitionBuilder.Limit<T>(pageSize),
                 }));
 
-            var filter = string.IsNullOrEmpty(query) ? Builders<T>.Filter.Empty : Builders<T>.Filter.Text(query);
+            var filter = query.ToFilter<T>();
+            
             var aggregation = await collection.Aggregate()
                 .Match(filter)
                 .Facet(countFacet, dataFacet)
@@ -41,7 +44,7 @@ namespace UntoMeWorld.MongoDatabase.Helpers
 
             var first = aggregation.First()
                 .Facets.First(x => x.Name == "count")
-                .Output<AggregateCountResult>()[0];
+                .Output<AggregateCountResult>().FirstOrDefault();
 
             var count = first
                 ?.Count ?? 0;
@@ -55,5 +58,35 @@ namespace UntoMeWorld.MongoDatabase.Helpers
             return (totalPages, data);
         }
 
+        private static FilterDefinition<T> ToFilter<T>(this IEnumerable<DatabaseQueryParameter> query)
+        { 
+            if (query == null)
+                return Builders<T>.Filter.Empty;
+            
+            var parameters = query.ToList();
+            
+            if (!parameters.Any())
+                return Builders<T>.Filter.Empty;
+
+            var filters = parameters.Select(p => p.ToFilter<T>());
+            return Builders<T>.Filter.And(filters);
+        }
+
+        private static FilterDefinition<T> ToFilter<T>(this DatabaseQueryParameter parameter)
+        {
+            return parameter.Operator switch
+            {
+                DatabaseQueryOperator.Equal => Builders<T>.Filter.Eq(parameter.PropertyName, parameter.Value),
+                DatabaseQueryOperator.NotEqual => Builders<T>.Filter.Ne(parameter.PropertyName, parameter.Value),
+                DatabaseQueryOperator.SmallerThan => Builders<T>.Filter.Lt(parameter.PropertyName, parameter.Value),
+                DatabaseQueryOperator.GreaterThan => Builders<T>.Filter.Gt(parameter.PropertyName, parameter.Value),
+                DatabaseQueryOperator.GreaterOrEqualThan => Builders<T>.Filter.Gte(parameter.PropertyName,
+                    parameter.Value),
+                DatabaseQueryOperator.SmallerOrEqualThan => Builders<T>.Filter.Lte(parameter.PropertyName,
+                    parameter.Value),
+                DatabaseQueryOperator.TextQuery => Builders<T>.Filter.Text(parameter.Value.ToString()),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
     }
 }

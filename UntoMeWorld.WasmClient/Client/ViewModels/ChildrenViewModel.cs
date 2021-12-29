@@ -16,7 +16,7 @@ public class ChildrenViewModel : GenericViewModel<Child>
     public async Task UpdateChurches()
     {
         var churches = await _churchesRepository.All();
-        ChurchesDictionary = churches.ToDictionary(c => c.Id, c => c);
+        ChurchesDictionary = churches.Result.ToDictionary(c => c.Id, c => c);
     }
     public IDictionary<string, Church> ChurchesDictionary { get; set; } = new ConcurrentDictionary<string, Church>();
 }

@@ -18,6 +18,6 @@ public class ChurchesViewModel : GenericViewModel<Church>
     public async Task UpdatePastors()
     {
         var pastors = await _pastorsRepository.All();
-        Pastors = pastors.ToList();
+        Pastors = pastors.Result.ToList();
     }
 }

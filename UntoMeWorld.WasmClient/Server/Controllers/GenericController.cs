@@ -37,7 +37,7 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
 
     public override Task<ActionResult<ResponseDto<PaginationResult<TModel>>>> All(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = PageSize)
     {
-        return ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc, page, pageSize));
+        return ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc,  false,page, pageSize));
     }
 
     public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> BulkInsert(List<TModel> items)
@@ -50,6 +50,25 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
         return ServiceCallResult(() => DatabaseService.Update(items));
     }
 
+
+    public override Task<ActionResult<ResponseDto<bool>>> Restore(TKey id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public override Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids)
+    {
+        throw new NotImplementedException();
+    }
+    public override Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(IEnumerable<TKey> ids)
+    {
+        throw new NotImplementedException();
+    }
     public override Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId)
     {
         return ServiceCallResult(async () =>
@@ -57,6 +76,12 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
             await DatabaseService.Delete(itemId);
             return true;
         });
+    }
+    
+    public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> GetDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1,
+        int pageSize = 100)
+    {
+        throw new NotImplementedException();
     }
 
 }

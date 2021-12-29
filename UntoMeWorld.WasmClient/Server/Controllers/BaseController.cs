@@ -29,7 +29,24 @@ public abstract class BaseController<T, TKey> : ControllerBase
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkUpdate(List<T> items);
     [HttpDelete("bulk")]
     public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
-        
+
+    [HttpGet("bin")]
+    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> GetDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
+
+
+    [HttpPut("bin")]
+    public abstract Task<ActionResult<ResponseDto<bool>>> Restore(TKey id);
+    
+    [HttpDelete("bin")]
+    public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id);
+    
+    
+    [HttpPut("bin/bulk")]
+    public abstract Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids);
+    
+    [HttpDelete("bin/bulk")]
+    public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(IEnumerable<TKey> ids);
+
     protected static async Task<ActionResult<ResponseDto<TResponse>>> ServiceCallResult<TResponse>(Func<Task<TResponse>> func)
     {
         ResponseDto<TResponse> response;
