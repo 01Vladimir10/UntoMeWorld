@@ -36,7 +36,7 @@ Content-Type: application/json
 ]
 
 ###
-POST https://localhost:5001/api/churches/bulk
+POST https://localhost:5001/api/churches/bulk/insert
 Content-Type: application/json
 
 [

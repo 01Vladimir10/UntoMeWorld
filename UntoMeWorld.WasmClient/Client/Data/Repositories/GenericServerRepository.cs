@@ -24,7 +24,7 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
         _client = client;
         _endPoint = endPoint;
     }
-        
+
     public async Task<TModel> Add(TModel item)
     {
         if (item == null)
@@ -48,14 +48,17 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
         await _client.DeleteJsonAsync<TModel>(_endPoint + "?itemId=" + item.Id);
     }
 
-    public async Task<PaginationResult<TModel>> All(string query = null, string sortBy = null, bool sortDesc = false)
+    public async Task<PaginationResult<TModel>> Query(string query = null, string sortBy = null, bool sortDesc = false,
+        int page = 1, int pageSize = 50)
     {
         var endpoint = _endPoint;
         var parameters = System.Web.HttpUtility.ParseQueryString(string.Empty);
+        parameters.Add("page", page.ToString());
+        parameters.Add("pageSize", pageSize.ToString());
         
         if (!string.IsNullOrEmpty(query))
             parameters.Add("query", query);
-        
+
         if (!string.IsNullOrEmpty(sortBy))
             parameters.Add("sortBy", sortBy);
         
@@ -66,11 +69,18 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
             endpoint += $"?{parameters}";
         
         var response = await _client.GetJsonAsync<PaginationResult<TModel>>(endpoint);
-        return response is { IsSuccessful: true, Data: not null } ? response.Data : new PaginationResult<TModel>();
+        return response is { IsSuccessful: true, Data: not null } 
+            ? response.Data 
+            : new PaginationResult<TModel>();
     }
 
-    public Task<IEnumerable<TModel>> All(Predicate<TModel> query)
+    public Task<IEnumerable<TModel>> Find(Predicate<TModel> query)
     {
         throw new NotImplementedException();
     }
-} 
+    public async Task<IEnumerable<TModel>> All()
+    {
+        var result = await Query(pageSize: 1000);
+        return result.Result;
+    }
+}

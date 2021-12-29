@@ -29,9 +29,15 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         item.LastUpdatedOn = DateTime.Now;
         return Store.Update(item);
     }
+
+    public Task Restore(string item)
+    {
+        return Store.Restore(item);
+    }
+
     public Task Delete(string id, bool softDelete = true)
     {
-        return softDelete ? Store.Delete(id) : Store.SoftDelete(id);
+        return softDelete ? Store.SoftDelete(id) : Store.Delete(id);
     }
     public Task<IEnumerable<TModel>> GetAll(string query = null)
     {
@@ -76,6 +82,11 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
     public Task<IEnumerable<TModel>> Update(IEnumerable<TModel> item)
     {
         return Store.Update(item.ToList());
+    }
+
+    public Task Restore(IEnumerable<string> item)
+    {
+        return Store.Restore(item.ToArray());
     }
 
     public Task Delete(IEnumerable<string> id, bool softDelete = true)

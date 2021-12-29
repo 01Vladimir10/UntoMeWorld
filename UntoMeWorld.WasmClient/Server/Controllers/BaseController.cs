@@ -22,17 +22,16 @@ public abstract class BaseController<T, TKey> : ControllerBase
     [HttpGet]
     public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> All(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
 
-    [HttpPost("bulk")]
+    [HttpPost("bulk/insert")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);
         
-    [HttpPut("bulk")]
+    [HttpPost("bulk/update")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkUpdate(List<T> items);
-    [HttpDelete("bulk")]
+    [HttpPost("bulk/delete")]
     public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
 
     [HttpGet("bin")]
-    public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> GetDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
-
+    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> QueryDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
 
     [HttpPut("bin")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(TKey id);
@@ -41,10 +40,10 @@ public abstract class BaseController<T, TKey> : ControllerBase
     public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id);
     
     
-    [HttpPut("bin/bulk")]
+    [HttpPost("bin/bulk/restore")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids);
     
-    [HttpDelete("bin/bulk")]
+    [HttpPost("bin/bulk/delete")]
     public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(IEnumerable<TKey> ids);
 
     protected static async Task<ActionResult<ResponseDto<TResponse>>> ServiceCallResult<TResponse>(Func<Task<TResponse>> func)

@@ -66,11 +66,11 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         if (string.IsNullOrWhiteSpace(query))
             await UpdateList();
-        Items = (await _repository.All(query)).Result;
+        Items = (await _repository.Query(query)).Result;
     }
     public async Task UpdateList()
     {
-        Items =  (await _repository.All(null, SortField.FieldName, SortField.Descendent)).Result;
+        Items =  (await _repository.Query(null, SortField.FieldName, SortField.Descendent)).Result;
     }
     public async Task SortElementsBy(string fieldName, bool desc = false)
     {

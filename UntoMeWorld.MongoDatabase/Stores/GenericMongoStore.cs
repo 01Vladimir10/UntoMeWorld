@@ -72,12 +72,9 @@ namespace UntoMeWorld.MongoDatabase.Stores
             await Collection.DeleteOneAsync(c => c.Id.Equals(data.Id));
         }
 
-        public async Task Delete(params string[] ids)
+        public Task Delete(params string[] ids)
         {
-            var tasks = from item in ids
-                let filter = Builders<TModel>.Filter.Eq(c => c.Id, item)
-                select new DeleteOneModel<TModel>(filter);
-            await Collection.BulkWriteAsync(tasks);
+            return Collection.DeleteManyAsync(Builders<TModel>.Filter.In(_ => _.Id, ids));
         }
 
         public async Task<IEnumerable<TModel>> Add(List<TModel> data)
@@ -106,21 +103,31 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public Task SoftDelete(params string[] ids)
         {
-            var updateAction = Builders<TModel>.Update.Set(x => x.IsDeleted, true);
-            var updateTasks = from id in ids
-                let filter = Builders<TModel>.Filter.Eq(m => m.Id, id)
-                select new UpdateOneModel<TModel>(filter, updateAction);
-            return Collection.BulkWriteAsync(updateTasks);
+            var filter = Builders<TModel>.Filter.In(_ => _.Id, ids);
+            
+            var updateAction = Builders<TModel>.Update
+                .Set(_ => _.IsDeleted, true)
+                .Set(_ => _.DeletedOn, DateTime.Now);
+
+            return Collection.UpdateManyAsync(filter, updateAction);
         }
 
         public Task PermanentlyDelete(params string[] ids)
         {
-            throw new NotImplementedException();
+            return Collection.DeleteManyAsync(Builders<TModel>.Filter.In(_ => _.Id, ids));
         }
 
         public Task Restore(params string[] ids)
         {
-            throw new NotImplementedException();
+            var updateAction = Builders<TModel>.Update
+                .Set(_ => _.IsDeleted, false)
+                .Set(_ => _.LastUpdatedOn, DateTime.Now);
+
+            var updateActions = from id in ids
+                let filter = Builders<TModel>.Filter.Eq(m => m.Id, id)
+                select new UpdateOneModel<TModel>(filter, updateAction);
+            
+            return Collection.BulkWriteAsync(updateActions);
         }
 
         public async Task<TModel> Get(string id)

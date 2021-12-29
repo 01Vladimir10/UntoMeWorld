@@ -20,12 +20,12 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
         return ServiceCallResult(() => DatabaseService.Add(item));
     }
 
-    public override Task<ActionResult<ResponseDto<bool>>> Delete(TKey itemId)
+    public override Task<ActionResult<ResponseDto<bool>>> Delete(TKey id)
     {
         
         return ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(itemId);
+            await DatabaseService.Delete(id);
             return true;
         });
     }
@@ -36,9 +36,7 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
     }
 
     public override Task<ActionResult<ResponseDto<PaginationResult<TModel>>>> All(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = PageSize)
-    {
-        return ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc,  false,page, pageSize));
-    }
+        => ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc,  false,page, pageSize));
 
     public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> BulkInsert(List<TModel> items)
     {
@@ -52,36 +50,39 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
 
 
     public override Task<ActionResult<ResponseDto<bool>>> Restore(TKey id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id)
-    {
-        throw new NotImplementedException();
-    }
-    
-    public override Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids)
-    {
-        throw new NotImplementedException();
-    }
-    public override Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(IEnumerable<TKey> ids)
-    {
-        throw new NotImplementedException();
-    }
-    public override Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId)
-    {
-        return ServiceCallResult(async () =>
+        => ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(itemId);
+            await DatabaseService.Restore(id);
             return true;
         });
-    }
-    
-    public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> GetDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1,
-        int pageSize = 100)
-    {
-        throw new NotImplementedException();
-    }
+    public override Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids)
+        => ServiceCallResult(async () =>
+        {
+            await DatabaseService.Restore(ids);
+            return true;
+        });
 
+    public override Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id)
+        => ServiceCallResult(async () =>
+        {
+            await DatabaseService.Delete(id, false);
+            return true;
+        });
+    public override Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(IEnumerable<TKey> ids)
+        => ServiceCallResult(async () =>
+        {
+            await DatabaseService.Delete(ids, false);
+            return true;
+        });
+    
+    public override Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> ids)
+        => ServiceCallResult(async () =>
+        {
+            await DatabaseService.Delete(ids);
+            return true;
+        });
+    
+    public override Task<ActionResult<ResponseDto<PaginationResult<TModel>>>> QueryDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1,
+        int pageSize = 100)
+        => ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc,  true,page, pageSize));
 }
