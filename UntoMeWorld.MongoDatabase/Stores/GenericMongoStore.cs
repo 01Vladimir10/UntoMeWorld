@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Helpers;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel
+    public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel, IRecyclableModel
     {
         protected readonly IMongoCollection<TModel> Collection;
         protected GenericMongoStore(MongoDbService service, string collection)
@@ -132,8 +134,8 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task<TModel> Get(string id)
         {
-            var result = await Collection.FindAsync(Builders<TModel>.Filter.Eq(m => m.Id, id));
-            return await result.FirstOrDefaultAsync();
+            var item = await Collection.AsQueryable().FirstOrDefaultAsync(i => i.Id == id);
+            return item;
         }
     }
 }

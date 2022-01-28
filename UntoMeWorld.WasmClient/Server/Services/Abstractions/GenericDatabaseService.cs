@@ -1,11 +1,13 @@
 ﻿using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.Errors;
 
-namespace UntoMeWorld.WasmClient.Server.Services;
+namespace UntoMeWorld.WasmClient.Server.Services.Abstractions;
 
-public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, string> where TModel : IModel
+public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, string> where TModel : IModel, IRecyclableModel
 {
     protected readonly IStore<TModel> Store;
     public GenericDatabaseService(IStore<TModel> store)
@@ -64,7 +66,7 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         {
             new()
             {
-                PropertyName = nameof(IModel.IsDeleted),
+                PropertyName = nameof(IRecyclableModel.IsDeleted),
                 Operator = DatabaseQueryOperator.Equal,
                 Value = deleted
             }

@@ -1,8 +1,9 @@
 ﻿using System;
+using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model
 {
-    public class Child : IModel, IPerson
+    public class Child : IModel, IPerson, IRecyclableModel
     {
         public string Id { get; set; }
         public bool IsActive { get; set; }

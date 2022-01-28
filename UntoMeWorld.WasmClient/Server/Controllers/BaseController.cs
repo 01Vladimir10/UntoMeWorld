@@ -1,6 +1,5 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using UntoMeWorld.Domain.Stores;
+﻿using Microsoft.AspNetCore.Mvc;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.WasmClient.Shared.Errors;
 using UntoMeWorld.WasmClient.Shared.Model;
 
@@ -12,41 +11,45 @@ public abstract class BaseController<T, TKey> : ControllerBase
 {
     [HttpPost]
     public abstract Task<ActionResult<ResponseDto<T>>> Add(T item);
-        
+
     [HttpDelete]
     public abstract Task<ActionResult<ResponseDto<bool>>> Delete(TKey itemId);
-        
+
     [HttpPut]
     public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
-        
+
     [HttpGet]
-    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> All(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
+    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> All(string query = null, string sortBy = "",
+        bool sortDesc = false, int page = 1, int pageSize = 100);
 
     [HttpPost("bulk/insert")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);
-        
+
     [HttpPost("bulk/update")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkUpdate(List<T> items);
+
     [HttpPost("bulk/delete")]
     public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
 
     [HttpGet("bin")]
-    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> QueryDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
+    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> QueryDeletedElements(string query = null,
+        string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
 
     [HttpPut("bin")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(TKey id);
-    
+
     [HttpDelete("bin")]
     public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id);
-    
-    
+
+
     [HttpPost("bin/bulk/restore")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids);
-    
+
     [HttpPost("bin/bulk/delete")]
     public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(IEnumerable<TKey> ids);
 
-    protected static async Task<ActionResult<ResponseDto<TResponse>>> ServiceCallResult<TResponse>(Func<Task<TResponse>> func)
+    protected static async Task<ActionResult<ResponseDto<TResponse>>> ServiceCallResult<TResponse>(
+        Func<Task<TResponse>> func)
     {
         ResponseDto<TResponse> response;
         try
@@ -63,6 +66,7 @@ public abstract class BaseController<T, TKey> : ControllerBase
             Console.WriteLine("Error occured while executing request: {0}", e);
             return new StatusCodeResult(500);
         }
+
         return new JsonResult(response);
     }
 }

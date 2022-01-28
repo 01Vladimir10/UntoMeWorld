@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.MongoDatabase.Helpers
 {
@@ -85,7 +86,7 @@ namespace UntoMeWorld.MongoDatabase.Helpers
                 DatabaseQueryOperator.SmallerOrEqualThan => Builders<T>.Filter.Lte(parameter.PropertyName,
                     parameter.Value),
                 DatabaseQueryOperator.TextQuery => Builders<T>.Filter.Text(parameter.Value.ToString()),
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(parameter))
             };
         }
     }

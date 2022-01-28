@@ -1,6 +1,6 @@
-﻿using UntoMeWorld.Domain.Stores;
+﻿using UntoMeWorld.Domain.Common;
 
-namespace UntoMeWorld.WasmClient.Server.Services;
+namespace UntoMeWorld.WasmClient.Server.Services.Base;
 
 public interface IDatabaseService <T, in TKey>
 {

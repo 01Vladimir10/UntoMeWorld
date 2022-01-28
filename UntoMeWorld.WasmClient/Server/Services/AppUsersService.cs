@@ -5,9 +5,10 @@ using UntoMeWorld.WasmClient.Server.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Server.Services;
 
-public class ChurchesService : GenericDatabaseService<Church>, IChurchesService
+public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
 {
-    public ChurchesService(IChurchesStore store) : base(store)
+    public AppUsersService(IUserStore store) : base(store)
     {
+        
     }
 }

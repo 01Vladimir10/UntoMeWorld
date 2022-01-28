@@ -1,5 +1,7 @@
 ﻿using System.Data;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Client.Utils;
 
@@ -45,30 +47,23 @@ public abstract class GenericServerRepository<TModel> : IRepository<TModel> wher
     {
         if (item == null)
             throw new NoNullAllowedException();
-        await _client.DeleteJsonAsync<TModel>(_endPoint + "?itemId=" + item.Id);
+        await _client.DeleteJsonAsync<TModel>(HttpUtils.BuildQuery(_endPoint, "id", item.Id));
     }
 
-    public async Task<PaginationResult<TModel>> Query(string query = null, string sortBy = null, bool sortDesc = false,
+    public async Task<PaginationResult<TModel>> Query(
+        string query = null, string sortBy = null,
+        bool sortDesc = false,
         int page = 1, int pageSize = 50)
     {
-        var endpoint = _endPoint;
-        var parameters = System.Web.HttpUtility.ParseQueryString(string.Empty);
-        parameters.Add("page", page.ToString());
-        parameters.Add("pageSize", pageSize.ToString());
+        var url = HttpUtils.BuildUrl(
+            _endPoint,
+            "page", page,
+            "pageSize", pageSize,
+            "query", query,
+            "sortBy", sortBy,
+            "sortDesc", sortDesc);
         
-        if (!string.IsNullOrEmpty(query))
-            parameters.Add("query", query);
-
-        if (!string.IsNullOrEmpty(sortBy))
-            parameters.Add("sortBy", sortBy);
-        
-        if (sortDesc)
-            parameters.Add("sortDesc", "true");
-
-        if (parameters.Count > 0)
-            endpoint += $"?{parameters}";
-        
-        var response = await _client.GetJsonAsync<PaginationResult<TModel>>(endpoint);
+        var response = await _client.GetJsonAsync<PaginationResult<TModel>>(url);
         return response is { IsSuccessful: true, Data: not null } 
             ? response.Data 
             : new PaginationResult<TModel>();

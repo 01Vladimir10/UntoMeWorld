@@ -6,12 +6,13 @@
   right: 0;
   display: flex;
   flex-direction: column;
-  transform: translate(100%,100%);
+  transform: translateY(100%);
   background: var(--dialog-background);
   padding: 1em;
+  opacity: 0;
   transition: all 200ms ease-in-out;
   z-index: -1;
-
+  
   h3.dialog__title {
     font-weight: 600;
     color: var(--primary-color);

@@ -15,7 +15,7 @@ public class InvalidQueryLengthException : InvalidApiRequestRequestException
 }
 public class InvalidPageNumberException : InvalidApiRequestRequestException
 {
-    public override string Message => "The page number cannot be smaller than 0";
+    public override string Message => "The page number cannot be smaller than 1";
 }
 public class MissingParametersException : InvalidApiRequestRequestException
 {

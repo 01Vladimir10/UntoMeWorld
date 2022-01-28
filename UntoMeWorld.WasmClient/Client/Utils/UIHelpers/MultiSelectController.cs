@@ -1,4 +1,5 @@
 ﻿using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 

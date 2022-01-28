@@ -1,10 +1,11 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model
 {
-    public class Church : IModel
+    public class Church : IModel, IRecyclableModel
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
