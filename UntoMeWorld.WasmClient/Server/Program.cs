@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Web;
 using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Services;
@@ -17,13 +18,14 @@ builder.Services.AddSingleton<ICacheService, InMemoryCache>();
 builder.ConfigureMongoDb();
 
 // Add services that consume the datastore services and are used by the controllers.
-builder.Services.AddSingleton<IChurchesService, ChurchesService>();
-builder.Services.AddSingleton<IChildrenService, ChildrenService>();
-builder.Services.AddSingleton<IPastorsService, PastorsService>();
-builder.Services.AddSingleton<IUserService, AppUsersService>();
-builder.Services.AddSingleton<IRolesService, RolesService>();
-builder.Services.AddSingleton<IApiAuthorizationService, ApiAuthorizationService>();
-builder.Services.AddSingleton<ITokensService, TokensService>();
+builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
+builder.Services.AddTransient<IChurchesService, ChurchesService>();
+builder.Services.AddTransient<IChildrenService, ChildrenService>();
+builder.Services.AddTransient<IPastorsService, PastorsService>();
+builder.Services.AddTransient<IUserService, AppUsersService>();
+builder.Services.AddTransient<IRolesService, RolesService>();
+builder.Services.AddTransient<IApiAuthorizationService, ApiAuthorizationService>();
+builder.Services.AddTransient<ITokensService, TokensService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

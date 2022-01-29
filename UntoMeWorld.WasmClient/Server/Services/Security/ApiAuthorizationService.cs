@@ -1,27 +1,20 @@
-﻿using System.Diagnostics;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Server.Common.Model;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Server.Services.Security;
 
 public class ApiAuthorizationService : IApiAuthorizationService
 {
-    private readonly ICacheService _cache;
     private readonly IUserService _users;
     private readonly IRolesService _roles;
     private readonly ITokensService _tokens;
-    private const string RolesPrefix = "Roles__";
-    private const string UsersPrefix = "Users__";
-    private const string TokensPrefix = "Tokens__";
 
-    public ApiAuthorizationService(ITokensService tokens, IRolesService roles, ICacheService cache, IUserService users)
+    public ApiAuthorizationService(ITokensService tokens, IRolesService roles, IUserService users)
     {
         _tokens = tokens;
         _roles = roles;
-        _cache = cache;
         _users = users;
     }
     
@@ -44,15 +37,14 @@ public class ApiAuthorizationService : IApiAuthorizationService
     }
 
     #region Caching
-    private Task<Dictionary<string, Permission>> GetRoleApiPermissions(string roleId)
-        => _cache.GetEntry(RolesPrefix + roleId, async () =>
-        {
-            var role = await _roles.Get(roleId);
-            // Get only the permissions where the resource type is the Api
-            return role.Permissions
-                .Where(p => p.ResourceType == ResourceTypes.ApiEndPoint)
-                .ToDictionary(p => p.Resource.ToUpper(), p => p);
-        });
+
+    private async Task<Dictionary<string, Permission>> GetRoleApiPermissions(string roleId)
+    {
+        var role = await _roles.Get(roleId);
+        return role.Permissions
+            .Where(p => p.ResourceType == ResourceTypes.ApiEndPoint)
+            .ToDictionary(p => p.Resource.ToUpper(), p => p);
+    }
 
     private async Task<IDictionary<string, IDictionary<string, Permission>>> GetUserApiPermissions(IEnumerable<string> roleIds)
     {
@@ -66,28 +58,11 @@ public class ApiAuthorizationService : IApiAuthorizationService
     }
 
     private Task<AppUser> GetUser(string userId)
-        => _cache.GetEntry(UsersPrefix + userId, () => _users.Get(userId));
-    
+        => _users.Get(userId);
+
     private Task<Token> GetToken(string hash)
-        => _cache.GetEntry(TokensPrefix + hash, async () =>
-        {
-            var token = await _tokens.GetTokenByHash(hash);
-            if (token == null)
-                return new CacheEntry<Token> {LifeSpan = TimeSpan.Zero};
-            if (token.ExpiresOn == default)
-                return new CacheEntry<Token>
-                {
-                    Data = token,
-                    LifeSpan = TimeSpan.FromMinutes(15)
-                };
-            var lifeSpan = TimeSpan.FromSeconds(Math.Min(TimeSpan.FromMinutes(15).Seconds,
-                (DateTime.Now - token.ExpiresOn).Seconds));
-            return new CacheEntry<Token>
-            {
-                Data = token,
-                LifeSpan = lifeSpan
-            };
-        });
+        => _tokens.GetTokenByHash(hash);
+    
     #endregion
     #region PermissionsEvaluators
     // Apply the permissions of the most permissive roles.

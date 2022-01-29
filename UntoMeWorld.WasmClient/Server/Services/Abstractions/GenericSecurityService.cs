@@ -1,7 +1,6 @@
-﻿using UntoMeWorld.Domain.Model;
-using UntoMeWorld.Domain.Model.Abstractions;
+﻿using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
-using UntoMeWorld.WasmClient.Server.Common.Model;
+using UntoMeWorld.WasmClient.Server.Common.Helpers;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Server.Services.Abstractions;
@@ -9,17 +8,12 @@ namespace UntoMeWorld.WasmClient.Server.Services.Abstractions;
 public abstract class GenericSecurityService<T> : ISecurityService<T> where T : IModel
 {
     private readonly ISecurityStore<T> _store;
-    protected readonly string CachePrefix;
-    protected readonly TimeSpan CacheLifespan;
+    protected readonly CacheHelper<T, string> Cache;
     protected readonly bool EnableCache;
-    protected readonly ICacheService Cache;
 
-    protected GenericSecurityService(ISecurityStore<T> store, ICacheService cache, bool enableCache, string cachePrefix,
-        TimeSpan cacheLifespan)
+    protected GenericSecurityService(ISecurityStore<T> store, CacheHelper<T, string> cache, bool enableCache = true)
     {
         _store = store;
-        CachePrefix = cachePrefix;
-        CacheLifespan = cacheLifespan;
         Cache = cache;
         EnableCache = enableCache;
     }
@@ -27,58 +21,39 @@ public abstract class GenericSecurityService<T> : ISecurityService<T> where T : 
     public async Task<T> Add(T item)
     {
         var createdItem = await _store.Add(item);
-        if (EnableCache) 
-            Cache.SetEntry(createdItem.Id, BuildCacheEntry(createdItem));
+        if (EnableCache)
+            Cache.Set(createdItem.Id, createdItem);
         return createdItem;
     }
 
-    public Task<T> Get(string id) => ExecuteDatabaseQuery(id, () => _store.Get(id));
+    public Task<T> Get(string id) => EnableCache ? Cache.Get(id, () => _store.Get(id)) : _store.Get(id);
     public Task<List<T>> GetAll() => _store.All();
 
     public async Task<T> Update(T item)
-        => (await UpdateItems(item)).FirstOrDefault();
-    public Task<IEnumerable<T>> Update(IEnumerable<T> items)
-        => UpdateItems(items.ToArray());
-
-    protected CacheEntry<T> BuildCacheEntry(T item)
-        => new()
-        {
-            Data = item,
-            LifeSpan = CacheLifespan
-        };
-    private async Task<IEnumerable<T>> UpdateItems(params T[] items)
     {
-        await _store.Update(items);
+        await _store.Update(item);
+        if (EnableCache)
+            Cache.Set(item.Id, item);
+        return item;
+    }
+
+    public async Task<IEnumerable<T>> Update(IEnumerable<T> items)
+    {
+        var itemsArr = items as T[] ?? Array.Empty<T>();
+        await _store.Update(itemsArr);
         if (!EnableCache) return items;
         
-        foreach (var item in items)
-            Cache.SetEntry(CachePrefix + item.Id, new CacheEntry<T>
-            {
-                LifeSpan = CacheLifespan,
-                Data = item
-            });
+        foreach (var item in itemsArr)
+            Cache.Set(item.Id, item);
         return items;
     }
-    private Task<T> ExecuteDatabaseQuery(string key, Func<Task<T>> func)
-        => EnableCache
-            ? Cache.GetEntry(CachePrefix + key, async () => BuildCacheEntry(await func()))
-            : func();
+
 
     public async Task Delete(params string[] ids)
     {
-        if (EnableCache)
-        {
-            foreach (var id in ids)
-            {
-                var item = await Cache.Get<Token>(CachePrefix + id);
-                if (item == null)
-                    continue;
-                // Invalidate the cache entries.
-                // If we were to remove them from the cache, there would be
-                // innecessary calls to the database when receiving an invalid token.
-                Cache.SetEntry(CachePrefix + id, BuildCacheEntry(default));
-            }
-        }
         await _store.Delete(ids);
+        if (EnableCache)
+            foreach (var id in ids)
+                Cache.InvalidateItem(id);
     }
 }  

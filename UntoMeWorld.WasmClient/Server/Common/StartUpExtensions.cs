@@ -28,13 +28,13 @@ public static class StartUpExtensions
                 builder.Services.AddSingleton(new MongoDbService(mongoUsername, mongoPassword, mongoServer, mongoDb));
             }
 
-            builder.Services.AddSingleton<IChurchesStore, MongoChurchesStore>();
-            builder.Services.AddSingleton<IChildrenStore, MongoChildrenStore>();
-            builder.Services.AddSingleton<IPastorsStore, MongoPastorsStore>();
+            builder.Services.AddTransient<IChurchesStore, MongoChurchesStore>();
+            builder.Services.AddTransient<IChildrenStore, MongoChildrenStore>();
+            builder.Services.AddTransient<IPastorsStore, MongoPastorsStore>();
             
-            builder.Services.AddSingleton<ITokenStore, MongoTokensStore>();
-            builder.Services.AddSingleton<IRoleStore, MongoRolesStore>();
-            builder.Services.AddSingleton<IUserStore, MongoUsersStore>();
+            builder.Services.AddTransient<ITokenStore, MongoTokensStore>();
+            builder.Services.AddTransient<IRoleStore, MongoRolesStore>();
+            builder.Services.AddTransient<IUserStore, MongoUsersStore>();
             Debug.WriteLine("Mongodb set up was successful!");
         }
         catch (Exception ex)
