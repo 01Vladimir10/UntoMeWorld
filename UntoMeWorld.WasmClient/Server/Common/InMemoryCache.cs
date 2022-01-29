@@ -70,6 +70,14 @@ public class InMemoryCache : ICacheService
         };
     }
 
+    public Task<T> Get<T>(string key)
+    {
+        if (_cachedValues.ContainsKey(key))
+            return Task.FromResult(default(T));
+        var data = _cachedValues[key].Data is T cachedData ? cachedData : default;
+        return Task.FromResult(data);
+    }
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);

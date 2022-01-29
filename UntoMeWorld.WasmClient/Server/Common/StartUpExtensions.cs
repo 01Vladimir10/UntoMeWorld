@@ -50,6 +50,15 @@ public static class StartUpExtensions
             var policyBuilder = new AuthorizationPolicyBuilder();
             policyBuilder.AddRequirements(new ApiAuthorizationRequirement());
             options.DefaultPolicy = policyBuilder.Build();
+            
+            options.AddPolicy("UserAuthenticationOnly", builder =>
+            {
+                builder.AddRequirements(new ApiAuthorizationRequirement
+                {
+                    AllowTokenAuthentication = false,
+                    AllowUsersAuthentication = true
+                });
+            });
         });
         services.AddSingleton<IAuthorizationHandler, ApiAuthorizationHandler>();
     }

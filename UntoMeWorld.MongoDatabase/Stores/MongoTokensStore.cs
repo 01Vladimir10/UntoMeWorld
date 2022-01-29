@@ -42,7 +42,7 @@ namespace UntoMeWorld.MongoDatabase.Stores
             return Collection.BulkWriteAsync(tasks);
         }
 
-        public Task<Token> GetIfValid(string hash)
+        public Task<Token> GetTokenByHash(string hash)
             => Collection.AsQueryable()
                 .FirstOrDefaultAsync(t => t.Hash == hash);
     }

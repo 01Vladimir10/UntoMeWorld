@@ -1,4 +1,4 @@
-﻿namespace UntoMeWorld.Domain.Model
+﻿namespace UntoMeWorld.Domain.Model.Abstractions
 {
     public interface IPerson
     {

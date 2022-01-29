@@ -8,8 +8,8 @@ namespace UntoMeWorld.Domain.Stores
     {
         public Task<List<Token>> GetByUser(string userId);
         public Task<Token> GetByHash(string hash);
-        public Task EnableToken(params string[] tokens);
-        public Task DisableToken(params string[] tokens);
-        public Task<Token> GetIfValid(string hash);
+        public Task EnableToken(params string[] tokenIds);
+        public Task DisableToken(params string[] tokenIds);
+        public Task<Token> GetTokenByHash(string hash);
     }
 }

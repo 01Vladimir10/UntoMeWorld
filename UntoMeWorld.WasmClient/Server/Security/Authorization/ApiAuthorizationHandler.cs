@@ -23,7 +23,7 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
         var isHeaderAuthentication = (HttpContext?.Request.Headers.ContainsKey(Constants.HeaderToken) ?? false) && !string.IsNullOrEmpty(HttpContext.Request.Headers[Constants.HeaderToken].ToString());
         var isUserAuthentication = context.User.Identity?.IsAuthenticated ?? false;
 
-        if (!isHeaderAuthentication && !isUserAuthentication)
+        if ((!isHeaderAuthentication || !requirement.AllowTokenAuthentication) && (!isUserAuthentication || !requirement.AllowUsersAuthentication))
         {
             context.Fail(new AuthorizationFailureReason(this, "User not authenticated and token is not present"));
             return;
@@ -32,7 +32,7 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
         var controller = HttpContext?.Request.RouteValues["controller"]?.ToString() ?? "";
         var action = HttpContext?.Request.RouteValues["action"]?.ToString() ?? "";
 
-        if (isUserAuthentication)
+        if (isUserAuthentication && requirement.AllowTokenAuthentication)
         {
             var userId = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -49,12 +49,18 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
             return;
         }
 
-        var token = HttpContext?.Request.Headers[Constants.HeaderToken].ToString();
-        if (!await _authorization.ValidateTokenAuthenticatedRequest(token, controller, action))
+        if (!requirement.AllowTokenAuthentication)
         {
-            context.Fail(new AuthorizationFailureReason(this, "User does not have permissions to access this resource"));
+            context.Fail(new AuthorizationFailureReason(this, "Token authentication is not allowed"));
             return;
         }
-        context.Succeed(requirement);
+
+        var token = HttpContext?.Request.Headers[Constants.HeaderToken].ToString();
+        if (await _authorization.ValidateTokenAuthenticatedRequest(token, controller, action))
+        {
+            context.Succeed(requirement);
+            return;
+        }
+        context.Fail(new AuthorizationFailureReason(this, "User does not have permissions to access this resource"));
     }
 }

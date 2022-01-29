@@ -71,7 +71,7 @@ public class ApiAuthorizationService : IApiAuthorizationService
     private Task<Token> GetToken(string hash)
         => _cache.GetEntry(TokensPrefix + hash, async () =>
         {
-            var token = await _tokens.GetIfValid(hash);
+            var token = await _tokens.GetTokenByHash(hash);
             if (token == null)
                 return new CacheEntry<Token> {LifeSpan = TimeSpan.Zero};
             if (token.ExpiresOn == default)

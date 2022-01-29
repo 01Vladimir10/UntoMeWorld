@@ -7,5 +7,5 @@ public interface ITokensService : ISecurityService<Token>
     public Task EnableToken(params string[] hashes);
     public Task DisableToken(params string[] hashes);
     public Task<List<Token>> GetByUser(string userId);
-    public Task<Token> GetIfValid(string hash);
+    public Task<Token> GetTokenByHash(string hash);
 }
