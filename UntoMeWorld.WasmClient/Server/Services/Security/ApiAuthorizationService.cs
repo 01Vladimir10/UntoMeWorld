@@ -80,7 +80,7 @@ public class ApiAuthorizationService : IApiAuthorizationService
         return false;
     }
 
-    // Apply the permissions of the most specific resource.
+    // Apply the permissions with the most specific resource type
     private static bool ValidateActionOnController(IDictionary<string, Permission> permissions, string controller, string action)
     {
         var controllerKey = controller.ToUpper();

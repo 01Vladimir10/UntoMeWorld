@@ -7,20 +7,26 @@ public class CacheHelper<T, TKey> : IDisposable
     private readonly IMemoryCache _memoryCache;
     private readonly TimeSpan _lifeSpan;
     private readonly string _prefix;
-    private readonly IDictionary<string, Func<T, object>> _indicesSelectors;
+
+    private IDictionary<string, Func<T, object>> IndicesSelectors =>
+        _memoryCache.GetOrCreate(_prefix + "indices_selector", entry =>
+        {
+            entry.Priority = CacheItemPriority.High;
+            entry.Size = 1;
+            return new Dictionary<string, Func<T, object>>();
+        });
 
     public CacheHelper(IMemoryCache memoryCache, string prefix = null, TimeSpan lifeSpan = default)
     {
         _memoryCache = memoryCache;
         _lifeSpan = lifeSpan;
         _prefix = prefix ?? $"{typeof(T).Name}__";
-        _indicesSelectors = new Dictionary<string, Func<T, object>>();
     }
 
     private string BuildKey(TKey key) => _prefix + key;
 
     private string BuildIndexKey(string propertyName, object propertyKey) =>
-        _prefix + "__index__" + propertyName + "." + propertyKey;
+        _prefix + "index__" + propertyName + "." + propertyKey;
 
     public Task<T> Get(TKey key, Func<Task<T>> callback)
         => _memoryCache.GetOrCreateAsync(BuildKey(key), async entry =>
@@ -44,16 +50,16 @@ public class CacheHelper<T, TKey> : IDisposable
     }
     private void UpdateIndices(TKey key, T item)
     {
-        foreach (var (propertyName, propertySelector) in _indicesSelectors)
+        foreach (var (propertyName, propertySelector) in IndicesSelectors)
         {
             var propertyValue = propertySelector(item);
-            _memoryCache.Set(BuildIndexKey(propertyName, propertyValue), key, new MemoryCacheEntryOptions {Size = 1});
+            _memoryCache.Set(BuildIndexKey(propertyName, propertyValue), key, new MemoryCacheEntryOptions {Size = 1, Priority = CacheItemPriority.High});
         }
     }
 
     public void CreateIndex(string propertyName, Func<T, object> propertySelector)
     {
-        _indicesSelectors[propertyName] = propertySelector;
+        IndicesSelectors[propertyName] = propertySelector;
     }
 
     public T GetOrDefault(TKey key)
@@ -61,7 +67,7 @@ public class CacheHelper<T, TKey> : IDisposable
 
     public async Task<T> GetByIndexedProperty(string indexPropertyName, object value, Func<Task<(TKey, T)>> callback)
     {
-        if (!_indicesSelectors.ContainsKey(indexPropertyName))
+        if (!IndicesSelectors.ContainsKey(indexPropertyName))
             return default;
         if (_memoryCache.TryGetValue<TKey>(BuildIndexKey(indexPropertyName, value), out var itemKey))
         {
@@ -78,7 +84,7 @@ public class CacheHelper<T, TKey> : IDisposable
     }
     public T GetByIndexedPropertyOrDefault(string indexPropertyName, object value)
     {
-        if (!_indicesSelectors.ContainsKey(indexPropertyName))
+        if (!IndicesSelectors.ContainsKey(indexPropertyName))
             return default;
         return _memoryCache.TryGetValue<TKey>(BuildIndexKey(indexPropertyName, value), out var itemKey) ? GetOrDefault(itemKey) : default;
     }
@@ -109,7 +115,7 @@ public class CacheHelper<T, TKey> : IDisposable
 
     public void Dispose()
     {
-        _indicesSelectors.Clear();
+        IndicesSelectors.Clear();
         _memoryCache?.Dispose();
     }
 }
