@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
@@ -28,5 +29,10 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public Task Enable(params string[] userIds)
             => ChangeUserStatus(false, userIds);
+
+        public Task<AppUser> GetByThirdPartyUserId(string provider, string providerUserId)
+            => Collection
+                .AsQueryable()
+                .FirstOrDefaultAsync(user => user.AuthProvider == provider && user.AuthProviderUserId == providerUserId);
     }
 }

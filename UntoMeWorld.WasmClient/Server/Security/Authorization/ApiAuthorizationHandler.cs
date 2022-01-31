@@ -20,14 +20,14 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
     private string RequestController => Request?.RouteValues["controller"]?.ToString() ?? string.Empty;
     private string RequestAction => Request?.RouteValues["action"]?.ToString() ?? string.Empty;
     private bool IsUserAuthenticated => HttpContext?.User.Identity?.IsAuthenticated ?? false;
-    private bool IsTokenAuthenticated => (Request?.Headers.ContainsKey(Constants.HeaderToken) ?? false) && !string.IsNullOrEmpty(Request?.Headers[Constants.HeaderToken].ToString());
+    private bool IsTokenAuthenticated => (Request?.Headers.ContainsKey(ServerConstants.HeaderToken) ?? false) && !string.IsNullOrEmpty(Request?.Headers[ServerConstants.HeaderToken].ToString());
 
     private string CurrentUserId =>
         HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ??
         string.Empty;
 
     private string CurrentAuthToken =>
-        Request.Headers[Constants.HeaderToken].ToString();
+        Request.Headers[ServerConstants.HeaderToken].ToString();
     
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ApiAuthorizationRequirement requirement)
     {

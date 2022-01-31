@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using UntoMeWorld.WasmClient.Server.Common;
+using UntoMeWorld.WasmClient.Server.Security.Authentication;
 using UntoMeWorld.WasmClient.Server.Services;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Server.Services.Security;
@@ -12,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
+builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtOptionsHandler>();
 builder.Services.ConfigureAuthorization();
 
 builder.Services.AddSingleton<ICacheService, InMemoryCache>();

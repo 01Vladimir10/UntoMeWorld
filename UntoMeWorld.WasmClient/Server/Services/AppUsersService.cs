@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Security.Claims;
+using Microsoft.Extensions.Caching.Memory;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Common.Helpers;
@@ -12,11 +13,15 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
     private const string CachePrefix = "Users__";
     private readonly CacheHelper<AppUser, string> _cache;
     private readonly bool _enableCache;
+    private readonly IUserStore _userStore;
+
     public AppUsersService(IUserStore store, IMemoryCache cache) : base(store)
     {
+        _userStore = store;
         _enableCache = true;
         _cache = new CacheHelper<AppUser, string>(cache, CachePrefix, TimeSpan.FromMinutes(10));
     }
+
     public new async Task<AppUser> Add(AppUser item)
     {
         var createdItem = await base.Add(item);
@@ -28,7 +33,7 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
         => _enableCache
             ? _cache.Get(id, () => base.Get(id))
             : base.Get(id);
-        
+
 
     public new async Task<AppUser> Update(AppUser item)
     {
@@ -70,10 +75,10 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
     {
         var appUsers = items as AppUser[] ?? items.ToArray();
         await base.Add(appUsers);
-        
+
         if (_enableCache)
             _cache.Set(user => user.Id, appUsers);
-        
+
         return appUsers;
     }
 
@@ -81,7 +86,7 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
     {
         var updatedItems = await base.Update(item);
         var appUsers = updatedItems as AppUser[] ?? updatedItems.ToArray();
-        
+
         if (_enableCache)
             _cache.Set(user => user.Id, appUsers);
         return appUsers;
@@ -114,5 +119,26 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
                 user.IsDeleted = true;
                 return user;
             }, userIds);
+    }
+
+    private static string BuildThirdPartyAuthenticatedUserId(string authenticationProvider, string thirdPartyUserId)
+        => authenticationProvider + "__" + thirdPartyUserId;
+
+    public async Task<AppUser> GetOrCreateUserByThirdPartyAccountInfo(string provider, string thirdPartyUserId, Func<AppUser> onCreateCallback)
+    {
+        var user =
+            await _userStore.GetByThirdPartyUserId(provider, thirdPartyUserId);
+        if (user != null)
+            return user;
+        var userInfo = onCreateCallback();
+        userInfo.AuthProviderUserId = thirdPartyUserId;
+        userInfo.AuthProvider = provider;
+        return await Store.Add(userInfo);
+    }
+
+
+    public Task<AppUser> GetOrCreateUserByThirdPartyAccountInfo(IEnumerable<Claim> claims)
+    {
+        throw new NotImplementedException();
     }
 }

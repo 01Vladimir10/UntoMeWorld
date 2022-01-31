@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
@@ -41,6 +42,14 @@ public static class StartUpExtensions
         {
             Console.WriteLine(ex.Message);
         }
+    }
+
+    public static void AddJwtAuthenticationListener(this IServiceCollection collection, Func<TokenValidatedContext, Task> listener)
+    {
+        collection.Configure<JwtBearerOptions>(options =>
+        {
+            options.Events.OnTokenValidated = listener;
+        });
     }
 
     public static void ConfigureAuthorization(this IServiceCollection services)

@@ -7,5 +7,6 @@ namespace UntoMeWorld.Domain.Stores
     {
         public Task Disable(params string[] userIds);
         public Task Enable(params string[] userIds);
+        public Task<AppUser> GetByThirdPartyUserId(string provider, string providerUserId);
     }
 }
