@@ -1,23 +1,20 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+using MongoDB.Bson.IO;
 using UntoMeWorld.WasmClient.Server.Common;
-using UntoMeWorld.WasmClient.Server.Security.Authentication;
 using UntoMeWorld.WasmClient.Server.Services;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Server.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
-builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtOptionsHandler>();
 builder.Services.ConfigureAuthorization();
 
-builder.Services.AddSingleton<ICacheService, InMemoryCache>();
 builder.ConfigureMongoDb();
 
 // Add services that consume the datastore services and are used by the controllers.
@@ -29,6 +26,7 @@ builder.Services.AddTransient<IUserService, AppUsersService>();
 builder.Services.AddTransient<IRolesService, RolesService>();
 builder.Services.AddTransient<IApiAuthorizationService, ApiAuthorizationService>();
 builder.Services.AddTransient<ITokensService, TokensService>();
+builder.Services.AddTransient<IJwtTokenFactory, JwtTokenFactory>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

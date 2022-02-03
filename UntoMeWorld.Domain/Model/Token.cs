@@ -9,7 +9,6 @@ namespace UntoMeWorld.Domain.Model
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public string Hash { get; set; }
         public string UserId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime LastUpdatedOn { get; set; }

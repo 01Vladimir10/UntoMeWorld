@@ -15,7 +15,11 @@ public class RolesService : GenericSecurityService<Role>, IRolesService
     {
         _store = store;
     }
-
     public Task<List<Role>> GetRoleByUser(string userId)
         => _store.GetByUser(userId);
+
+    public Task<Role> GetByRoleName(string roleName)
+        => _store.GetByRoleName(roleName);
+    public Task<IDictionary<string, Role>> GetByRoleName(params string[] roleNames)
+        => _store.GetByRoleName(roleNames);
 }

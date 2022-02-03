@@ -13,7 +13,6 @@ public class TokensService : GenericSecurityService<Token>, ITokensService
     public TokensService(ITokenStore store, IMemoryCache cache) 
         : base(store, new CacheHelper<Token, string>(cache, "Tokens__", TimeSpan.FromMinutes(15)))
     {
-        Cache.CreateIndex(nameof(Token.Hash), t => t.Hash);
         _tokenStore = store;
     }
 
@@ -44,12 +43,11 @@ public class TokensService : GenericSecurityService<Token>, ITokensService
     public Task<List<Token>> GetByUser(string userId)
         => _tokenStore.GetByUser(userId);
 
-    public Task<Token> GetTokenByHash(string hash)
-        => EnableCache
-            ? Cache.GetByIndexedProperty(nameof(Token.Hash), hash, async () =>
-            {
-                var token = await _tokenStore.GetByHash(hash);
-                return (token.Id, token);
-            })
-            : _tokenStore.GetByHash(hash);
+    public async Task<bool> IsDisabled(string tokenId)
+    {
+        var token = EnableCache ?
+            await Cache.Get(tokenId, () => _tokenStore.Get(tokenId)) :
+            await _tokenStore.Get(tokenId);
+        return token?.IsDisabled ?? true;
+    }
 }

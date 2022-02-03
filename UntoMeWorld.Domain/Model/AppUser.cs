@@ -19,7 +19,7 @@ namespace UntoMeWorld.Domain.Model
         public string AuthProviderUserId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime LastUpdatedOn { get; set; }
-        public List<string> RoleIds { get; set; }
+        public List<string> Roles { get; set; }
         public bool IsDisabled { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime DeletedOn { get; set; }

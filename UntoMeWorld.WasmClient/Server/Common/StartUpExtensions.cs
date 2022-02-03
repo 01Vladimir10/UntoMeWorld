@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Services;
 using UntoMeWorld.MongoDatabase.Stores;
+using UntoMeWorld.WasmClient.Server.Security.Authentication;
 using UntoMeWorld.WasmClient.Server.Security.Authorization;
 
 namespace UntoMeWorld.WasmClient.Server.Common;
@@ -43,7 +45,7 @@ public static class StartUpExtensions
             Console.WriteLine(ex.Message);
         }
     }
-
+    
     public static void AddJwtAuthenticationListener(this IServiceCollection collection, Func<TokenValidatedContext, Task> listener)
     {
         collection.Configure<JwtBearerOptions>(options =>
@@ -70,5 +72,6 @@ public static class StartUpExtensions
             });
         });
         services.AddSingleton<IAuthorizationHandler, ApiAuthorizationHandler>();
+        services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, JwtOptionsHandler>();
     }
 }

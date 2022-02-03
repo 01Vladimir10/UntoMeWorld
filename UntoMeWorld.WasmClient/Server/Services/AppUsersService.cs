@@ -124,7 +124,8 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
     private static string BuildThirdPartyAuthenticatedUserId(string authenticationProvider, string thirdPartyUserId)
         => authenticationProvider + "__" + thirdPartyUserId;
 
-    public async Task<AppUser> GetOrCreateUserByThirdPartyAccountInfo(string provider, string thirdPartyUserId, Func<AppUser> onCreateCallback)
+    public async Task<AppUser> GetOrCreateUserByThirdPartyAccountInfo(string provider, string thirdPartyUserId,
+        Func<AppUser> onCreateCallback)
     {
         var user =
             await _userStore.GetByThirdPartyUserId(provider, thirdPartyUserId);
@@ -133,7 +134,16 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
         var userInfo = onCreateCallback();
         userInfo.AuthProviderUserId = thirdPartyUserId;
         userInfo.AuthProvider = provider;
+        userInfo.Roles = new List<string> { "default" };
         return await Store.Add(userInfo);
+    }
+
+    public async Task<bool> IsDisabled(string userId)
+    {
+        var user = _enableCache ? 
+            await _cache.Get(userId, () => _userStore.Get(userId)) :
+            await _userStore.Get(userId);
+        return (user?.IsDisabled ?? true) || user.IsDeleted;
     }
 
 

@@ -1,0 +1,37 @@
+﻿@page "/Counter"
+@using UntoMeWorld.WasmClient.Shared.Model
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject HttpClient _client
+
+
+<button @onclick="GenerateToken">Generate token</button>
+<br>
+@if (_loading)
+{
+    <p>loading...</p>
+}
+else
+{
+    if (string.IsNullOrEmpty(_token))
+    {
+        <p>Something went wrong</p>
+    }
+    else
+    {
+        <p>@_token</p>
+    }
+}
+
+@code {
+    private bool _loading;
+    private string _token;
+
+    private async Task GenerateToken()
+    {
+        _loading = true;
+        var result = await _client.GetFromJsonAsync<ResponseDto<string>>("api/tokens/add");
+        _loading = false;
+        _token = result?.IsSuccessful ?? false ? result.Data : string.Empty;
+    }
+}

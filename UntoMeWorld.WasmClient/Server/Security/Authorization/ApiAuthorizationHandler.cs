@@ -1,6 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Server.Common;
+using UntoMeWorld.WasmClient.Server.Security.Constants;
+using UntoMeWorld.WasmClient.Server.Security.Utils;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Server.Security.Authorization;
@@ -22,8 +25,10 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
     private bool IsUserAuthenticated => HttpContext?.User.Identity?.IsAuthenticated ?? false;
     private bool IsTokenAuthenticated => (Request?.Headers.ContainsKey(ServerConstants.HeaderToken) ?? false) && !string.IsNullOrEmpty(Request?.Headers[ServerConstants.HeaderToken].ToString());
 
+
+    private AppUser CurrentUser => HttpContext?.User.Claims.ToAppUser();
     private string CurrentUserId =>
-        HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ??
+        HttpContext?.User.Claims.FirstOrDefault(c => c.Type == CustomClaims.UserId)?.Value ??
         string.Empty;
 
     private string CurrentAuthToken =>
@@ -42,9 +47,9 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
 
     private async Task<bool> ValidateUserAuthenticatedRequest()
     {
-        if (!IsUserAuthenticated || string.IsNullOrEmpty(CurrentUserId))
+        if (!IsUserAuthenticated || CurrentUser == null)
             return false;
-        return await _authorization.ValidateUserAuthenticatedRequest(CurrentUserId, RequestController, RequestAction);
+        return await _authorization.ValidateUserAuthenticatedRequest(CurrentUser, RequestController, RequestAction);
     }
     private async Task<bool> ValidateTokenAuthenticatedRequest()
     {

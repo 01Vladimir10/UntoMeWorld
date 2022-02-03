@@ -6,4 +6,5 @@ public static class CustomClaims
     public const string Roles = "UntomeWorld/Roles";
     public const string IsDisabled = "UntomeWorld/IsDisabled";
     public const string IsDeleted = "UntomeWorld/IsDeleted";
+    public const string TokenId = "UntomeWorld/TokenId";
 }

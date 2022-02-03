@@ -21,14 +21,12 @@ namespace UntoMeWorld.MongoDatabase.Stores
         public Task<List<Token>> GetByUser(string userId)
             => Collection.AsQueryable().Where(t => t.UserId == userId).ToListAsync();
 
-        public Task<Token> GetByHash(string hash)
-            => Collection.AsQueryable().FirstOrDefaultAsync(t => t.Hash == hash);
 
         public Task EnableToken(params string[] tokens)
         {
             var updateAction = Builders<Token>.Update.Set(t => t.IsDisabled, false);
             var tasks = from token in tokens
-                let filter = Builders<Token>.Filter.Eq(t => t.Hash, token)
+                let filter = Builders<Token>.Filter.Eq(t => t.Id, token)
                 select new UpdateOneModel<Token>(filter, updateAction);
             return Collection.BulkWriteAsync(tasks);
         }
@@ -37,13 +35,9 @@ namespace UntoMeWorld.MongoDatabase.Stores
         {
             var updateAction = Builders<Token>.Update.Set(t => t.IsDisabled, true);
             var tasks = from token in tokens
-                let filter = Builders<Token>.Filter.Eq(t => t.Hash, token)
+                let filter = Builders<Token>.Filter.Eq(t => t.Id, token)
                 select new UpdateOneModel<Token>(filter, updateAction);
             return Collection.BulkWriteAsync(tasks);
         }
-
-        public Task<Token> GetTokenByHash(string hash)
-            => Collection.AsQueryable()
-                .FirstOrDefaultAsync(t => t.Hash == hash);
     }
 }
