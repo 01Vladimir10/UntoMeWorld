@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.WasmClient.Server.Security.Crypto;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 

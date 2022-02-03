@@ -6,7 +6,7 @@ using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Server.Security.Constants;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 
-namespace UntoMeWorld.WasmClient.Server.Services.Security;
+namespace UntoMeWorld.WasmClient.Server.Security.Crypto;
 
 public class JwtTokenFactory : IJwtTokenFactory
 {
@@ -23,6 +23,7 @@ public class JwtTokenFactory : IJwtTokenFactory
         _tokens = tokens;
     }
 
+    // TODO: relay creation of the token to the controller/service.
     public async Task<string> GenerateToken(AppUser user, string description = "", DateTime expiresOn = default)
     {
         var secret = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Secret));

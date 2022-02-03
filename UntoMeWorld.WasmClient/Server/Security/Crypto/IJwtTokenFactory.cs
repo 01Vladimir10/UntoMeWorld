@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using UntoMeWorld.Domain.Model;
 
-namespace UntoMeWorld.WasmClient.Server.Services.Base;
+namespace UntoMeWorld.WasmClient.Server.Security.Crypto;
 
 public interface IJwtTokenFactory
 {
