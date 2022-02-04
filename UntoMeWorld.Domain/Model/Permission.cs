@@ -10,6 +10,7 @@
         public bool Delete { get; set; }
         public bool Restore { get; set; }
         public bool Purge { get; set; }
+        public bool Special { get; set; }
     }
 
     public static class ResourceTypes

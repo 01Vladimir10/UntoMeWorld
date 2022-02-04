@@ -1,10 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
-using System.Text;
+﻿using Microsoft.Extensions.Options;
 using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Server.Security.Crypto;
-using UntoMeWorld.WasmClient.Server.Security.Utils;
+using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Services.Base;
+using UntoMeWorld.WasmClient.Server.Services.Options;
+using UntoMeWorld.WasmClient.Shared.Errors;
 
 namespace UntoMeWorld.WasmClient.Server.Services.Security;
 
@@ -13,41 +12,46 @@ public class ApiAuthorizationService : IApiAuthorizationService
     private readonly IUserService _users;
     private readonly IRolesService _roles;
     private readonly ITokensService _tokens;
-    private readonly IJwtTokenFactory _jwtTokens;
-
-    public ApiAuthorizationService(ITokensService tokens, IRolesService roles, IUserService users, IJwtTokenFactory jwtTokens)
+    private readonly AuthorizationServiceOptions _options;
+    private IDictionary<string, PermissionType> _permissionsDictionary;
+    private string RoleSelectionMode => string.IsNullOrEmpty(_options.RoleSelectionMode) ? RoleSelectionModes.MostPermissive : _options.RoleSelectionMode;
+    private string PermissionSelectionMode => string.IsNullOrEmpty(_options.PermissionSelectionMode) ? PermissionSelectionModes.MostSpecific : _options.PermissionSelectionMode;
+    public ApiAuthorizationService(ITokensService tokens, IRolesService roles, IUserService users, IOptions<AuthorizationServiceOptions> options)
     {
         _tokens = tokens;
         _roles = roles;
         _users = users;
-        _jwtTokens = jwtTokens;
+        _options = options?.Value;
+        if (options == null)
+            throw new InvalidServiceConfigurationError("the AuthorizationServiceOptions cannot be null");
+        BindProperties();
+    }
+
+    private void BindProperties()
+    {
+        _permissionsDictionary = new Dictionary<string, PermissionType>();
+        _options.SpecialActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Special);
+        _options.DeleteActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Delete);
+        _options.PurgeActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Purge);
+        _options.UpdateActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Update);
+        _options.AddActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Add);
+        _options.ReadActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Read);
     }
     
     public async Task<bool> ValidateUserAuthenticatedRequest(AppUser user, string controller, string action)
     {
         if (user == null || user.IsDisabled || user.IsDeleted || await _users.IsDisabled(user.Id))
             return false;
-        var permissions = await GetUserApiPermissions(user.Roles);
+        var permissions = await GetRolesPermissions(user.Roles);
         return ValidateActionOnController(permissions, controller, action);
     }
 
-    public async Task<bool> ValidateTokenAuthenticatedRequest(string token, string controller, string action)
+    public async Task<bool> ValidateTokenAuthenticatedRequest(string jwtToken, string controller, string action)
     {
-        var isValid = _jwtTokens.ValidateToken(token);
-        if (!isValid)
+        if (string.IsNullOrEmpty(jwtToken) || await _tokens.Validate(jwtToken))
             return false;
-
-        var jwtToken = _jwtTokens.ReadToken(token);
-        if (jwtToken == null)
-            return false;
-        
-        var tokenId = jwtToken.GetTokenId();
-        if (string.IsNullOrEmpty(tokenId) || await _tokens.IsDisabled(tokenId))
-            return false;
-        
-        var roles = jwtToken.GetRoles();
-
-        var permissions = await GetUserApiPermissions(roles);
+        var token = _tokens.Read(jwtToken);
+        var permissions = await GetRolesPermissions(token.Roles);
         return ValidateActionOnController(permissions, controller, action);
     }
 
@@ -61,13 +65,12 @@ public class ApiAuthorizationService : IApiAuthorizationService
             .ToDictionary(p => p.Resource.ToUpper(), p => p);
     }
 
-    private async Task<IDictionary<string, IDictionary<string, Permission>>> GetUserApiPermissions(IEnumerable<string> roleIds)
+    private async Task<IEnumerable<IDictionary<string, Permission>>> GetRolesPermissions(IEnumerable<string> roleIds)
     {
-        var permissions = new Dictionary<string, IDictionary<string, Permission>>();
+        var permissions = new List<IDictionary<string, Permission>>();
         foreach (var roleId in roleIds)
         {
-            var permission = await GetRoleApiPermissions(roleId);
-            permissions[roleId] = permission;
+            permissions.Add(await GetRoleApiPermissions(roleId));
         }
         return permissions;
     }
@@ -75,62 +78,77 @@ public class ApiAuthorizationService : IApiAuthorizationService
     #endregion
     #region PermissionsEvaluators
     // Apply the permissions of the most permissive roles.
-    private static bool ValidateActionOnController(IDictionary<string, IDictionary<string, Permission>> rolesPermissions,
-        string controller, string action)
+    private  bool ValidateActionOnController(IEnumerable<IDictionary<string, Permission>> rolesPermissions, string controller, string action)
     {
-        foreach (var (key, value) in rolesPermissions)
-        {
-            if (!ValidateActionOnController(value, controller, action)) continue;
-#if DEBUG
-            Console.WriteLine($"Request {controller}/{action} authorized by role: {key}");       
-#endif
-            return true;
-        }
-        return false;
+        return RoleSelectionMode == RoleSelectionModes.LeastPermissive
+            ? rolesPermissions.All(p => ValidateEffectivePermission(p, controller, action))
+            : rolesPermissions.Any(p => ValidateEffectivePermission(p, controller, action));
     }
-
-    // Apply the permissions with the most specific resource type
-    private static bool ValidateActionOnController(IDictionary<string, Permission> permissions, string controller, string action)
+    private bool ValidateEffectivePermission(IDictionary<string, Permission> permissions, string controller,
+        string action)
     {
-        var controllerKey = controller.ToUpper();
-        if (!permissions.ContainsKey(controllerKey) && !permissions.ContainsKey("*"))
+        var effectivePermissions = permissions.Where(p =>
+                string.Equals(p.Key, controller, StringComparison.InvariantCultureIgnoreCase) || p.Key == "*")
+            .Select(p => p.Value);
+
+        return PermissionSelectionMode switch
+        {
+            PermissionSelectionModes.LeastPermissive => ValidateByLeastPermissivePermission(effectivePermissions,
+                action),
+            PermissionSelectionModes.MostPermissive => ValidateByMostPermissivePermission(effectivePermissions, action),
+            _ => ValidateByMostSpecificPermission(effectivePermissions, action)
+        };
+    }
+    
+    private bool ValidateByMostPermissivePermission(IEnumerable<Permission> permissions, string action)
+    {
+        return permissions.Any(permission => ValidatePermission(permission, action));
+    }
+    private bool ValidateByLeastPermissivePermission(IEnumerable<Permission> permissions, string action)
+    {
+        return permissions.All(permission => ValidatePermission(permission, action));
+    }
+    private bool ValidateByMostSpecificPermission(IEnumerable<Permission> permissions, string action)
+    {
+        var permissionsList = permissions.ToList();
+        if (!permissionsList.Any())
             return false;
-        return permissions.ContainsKey(controllerKey)
-            ? ValidatePermission(permissions[controllerKey], action)
-            : ValidatePermission(permissions["*"], action);
+        return ValidatePermission(permissionsList.Count == 1 ? permissionsList.First() : 
+            permissionsList.FirstOrDefault(p => p.Resource != "*"), action);
     }
-    private static string GetTokenHash(string token)
+    
+    
+    private bool ValidatePermission(Permission permission, string action)
     {
-        var data = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(token));
-
-        var sBuilder = new StringBuilder();
-        foreach (var t in data)
-            sBuilder.Append(t.ToString("x2"));
-        return sBuilder.ToString();
-    }
-    private static bool ValidatePermission(Permission permission, string action)
-    {
-        switch (action)
+        if (!_permissionsDictionary.ContainsKey(action))
+            return false;
+        switch (_permissionsDictionary[action])
         {
-            case "Add":
-            case "BulkInsert":
-                return permission.Add;
-            case "All":
-            case "QueryDeletedElements":
-                return permission.Read;
-            case "Delete":
-            case "BulkDelete":
+            case PermissionType.Add: return permission.Add;
+            case PermissionType.Delete:
                 return permission.Delete;
-            case "Update":
-            case "BulkUpdate":
+            case PermissionType.Update:
                 return permission.Update;
-            case "Restore":
-                return permission.Restore;
-            case "PermanentlyDelete":
-                return permission.Delete;
+            case PermissionType.Read:return permission.Read;
+            case PermissionType.Restore:return permission.Restore;
+            case PermissionType.Purge: return permission.Purge;
+            case PermissionType.Special: return permission.Special;
+            case PermissionType.Unknown:
             default:
                 return false;
         }
     }
     #endregion
+}
+
+internal enum PermissionType
+{
+    Add,
+    Delete,
+    Update,
+    Read,
+    Restore,
+    Purge,
+    Special,
+    Unknown
 }

@@ -2,6 +2,15 @@
 
 public abstract class InvalidApiRequestRequestException : Exception
 {
+    protected InvalidApiRequestRequestException()
+    {
+
+    }
+
+    protected InvalidApiRequestRequestException(string message):base(message)
+    {
+        
+    }
     
 }
 
@@ -20,4 +29,12 @@ public class InvalidPageNumberException : InvalidApiRequestRequestException
 public class MissingParametersException : InvalidApiRequestRequestException
 {
     public override string Message => "The page number cannot be smaller than 0";
+}
+
+public class InvalidParameterError : InvalidApiRequestRequestException
+{
+    public InvalidParameterError(string parameter): base("Invalid parameter => " + parameter)
+    {
+        
+    }
 }

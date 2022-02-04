@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Collections;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Server.Security.Constants;
@@ -38,6 +39,22 @@ public static class AuthExtensions
             AuthProviderUserId = thirdPartyId
         };
     }
+
+    public static IEnumerable<Claim> ToClaims(this Token token)
+    => token == null ? Array.Empty<Claim>() :
+        new Claim[]
+        {
+            new(CustomClaims.TokenId, token.Id),
+            new(CustomClaims.Roles, string.Join(",", token.Roles))
+        };
+
+    public static Token ToToken(this JwtSecurityToken token)
+        => token == null ? null : new Token
+        {
+            Id = token.Claims.FirstOrDefault(c => c.Type == CustomClaims.TokenId)?.Value,
+            CreatedOn = token.IssuedAt,
+            Roles = token.Claims.FirstOrDefault(c => c.Type == CustomClaims.Roles)?.Value.Split(",").ToList() ?? new List<string>(),
+        };
 
     public static AppUser ToAppUser(this ClaimsPrincipal claimsArr)
         => claimsArr.Claims.ToAppUser();
