@@ -6,13 +6,17 @@ using UntoMeWorld.WasmClient.Server.Security.Crypto;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
 using UntoMeWorld.WasmClient.Server.Services;
 using UntoMeWorld.WasmClient.Server.Services.Base;
+using UntoMeWorld.WasmClient.Server.Services.Options;
 using UntoMeWorld.WasmClient.Server.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ServerConstants.Environment =
+    builder.Environment.IsDevelopment() ? ServerEnvironment.Development : ServerEnvironment.Production;
+builder.Services.AddOptions();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-builder.Services.ConfigureAuthorization();
+builder.Services.ConfigureAuthorization(builder.Configuration);
 
 builder.ConfigureMongoDb();
 
@@ -23,9 +27,9 @@ builder.Services.AddTransient<IChildrenService, ChildrenService>();
 builder.Services.AddTransient<IPastorsService, PastorsService>();
 builder.Services.AddTransient<IUserService, AppUsersService>();
 builder.Services.AddTransient<IRolesService, RolesService>();
-builder.Services.AddTransient<IApiAuthorizationService, ApiAuthorizationService>();
-builder.Services.AddTransient<ITokensService, TokensService>();
-builder.Services.AddTransient<IJwtTokenFactory, JwtTokenFactory>();
+
+builder.Services.Configure<RolesServiceOptions>(builder.Configuration.GetSection("Services").GetSection("RolesService"));
+builder.Services.Configure<UserServiceOptions>(builder.Configuration.GetSection("Services").GetSection("UsersService"));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

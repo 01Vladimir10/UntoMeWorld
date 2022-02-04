@@ -1,24 +1,22 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Server.Security.Constants;
-using UntoMeWorld.WasmClient.Server.Services.Base;
+using UntoMeWorld.WasmClient.Server.Services.Options;
 
 namespace UntoMeWorld.WasmClient.Server.Security.Crypto;
 
 public class JwtTokenFactory : IJwtTokenFactory
-{
-    private readonly IConfiguration _configuration;
+{private string Issuer => _options.Issuer;
+    private string Audience => _options.Audience;
+    private string Secret => _options.Secret;
 
-    private string Issuer => _configuration.GetSection("Jwt")["Issuer"];
-    private string Audience => _configuration.GetSection("Jwt")["Audience"];
-    private string Secret => _configuration.GetSection("Jwt")["Secret"];
+    private readonly JwtTokenFactoryOptions _options;
 
-    public JwtTokenFactory(IConfiguration configuration)
+    public JwtTokenFactory(IOptions<JwtTokenFactoryOptions> options)
     {
-        _configuration = configuration;
+        _options = options.Value;
     }
 
     // TODO: relay creation of the token to the controller/service.
@@ -30,7 +28,7 @@ public class JwtTokenFactory : IJwtTokenFactory
         var descriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = expiresOn == default ? DateTime.Now.AddMonths(1) : expiresOn,
+            Expires = expiresOn == default ? DateTime.UtcNow.AddMinutes(_options.DefaultTokenDurationInMinutes) : expiresOn,
             Issuer = Issuer,
             Audience = Audience,
             SigningCredentials = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256Signature),

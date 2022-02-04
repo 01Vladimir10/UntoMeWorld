@@ -1,10 +1,12 @@
 ﻿using System.Security.Claims;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Common.Helpers;
 using UntoMeWorld.WasmClient.Server.Services.Abstractions;
 using UntoMeWorld.WasmClient.Server.Services.Base;
+using UntoMeWorld.WasmClient.Server.Services.Options;
 
 namespace UntoMeWorld.WasmClient.Server.Services;
 
@@ -15,11 +17,11 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
     private readonly bool _enableCache;
     private readonly IUserStore _userStore;
 
-    public AppUsersService(IUserStore store, IMemoryCache cache) : base(store)
+    public AppUsersService(IUserStore store, IMemoryCache cache, IOptions<UserServiceOptions> options) : base(store)
     {
         _userStore = store;
-        _enableCache = true;
-        _cache = new CacheHelper<AppUser, string>(cache, CachePrefix, TimeSpan.FromMinutes(10));
+        _enableCache = options.Value?.EnableCaching ?? false;
+        _cache = new CacheHelper<AppUser, string>(cache, CachePrefix, TimeSpan.FromSeconds(options.Value?.CacheLifetimeInSeconds ?? 0));
     }
 
     public new async Task<AppUser> Add(AppUser item)

@@ -24,11 +24,11 @@ public class TokensService :  ITokensService
         _tokenStore = tokenStore;
         _options = options.Value;
         
-        if (_options == null || _options.EnableCaching && _options.CacheLifeTimeInSeconds == 0)
+        if (_options == null || _options.EnableCaching && _options.CacheLifetimeInSeconds == 0)
             throw new InvalidServiceConfigurationError("please check the configuration provided, make sure that the cache lifetime is different from 0 when enabling cache");
         
         if (_options.EnableCaching)
-            _cache = new CacheHelper<Token, string>(cache, "Tokens__", TimeSpan.FromSeconds(_options.CacheLifeTimeInSeconds));
+            _cache = new CacheHelper<Token, string>(cache, "Tokens__", TimeSpan.FromSeconds(_options.CacheLifetimeInSeconds));
     }
     public async Task<string> Add(AppUser user, Token token)
     {

@@ -14,9 +14,17 @@ public class ApiAuthorizationService : IApiAuthorizationService
     private readonly ITokensService _tokens;
     private readonly AuthorizationServiceOptions _options;
     private IDictionary<string, PermissionType> _permissionsDictionary;
-    private string RoleSelectionMode => string.IsNullOrEmpty(_options.RoleSelectionMode) ? RoleSelectionModes.MostPermissive : _options.RoleSelectionMode;
-    private string PermissionSelectionMode => string.IsNullOrEmpty(_options.PermissionSelectionMode) ? PermissionSelectionModes.MostSpecific : _options.PermissionSelectionMode;
-    public ApiAuthorizationService(ITokensService tokens, IRolesService roles, IUserService users, IOptions<AuthorizationServiceOptions> options)
+
+    private string RoleSelectionMode => string.IsNullOrEmpty(_options.RoleSelectionMode)
+        ? RoleSelectionModes.MostPermissive
+        : _options.RoleSelectionMode;
+
+    private string PermissionSelectionMode => string.IsNullOrEmpty(_options.PermissionSelectionMode)
+        ? PermissionSelectionModes.MostSpecific
+        : _options.PermissionSelectionMode;
+
+    public ApiAuthorizationService(ITokensService tokens, IRolesService roles, IUserService users,
+        IOptions<AuthorizationServiceOptions> options)
     {
         _tokens = tokens;
         _roles = roles;
@@ -37,22 +45,22 @@ public class ApiAuthorizationService : IApiAuthorizationService
         _options.AddActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Add);
         _options.ReadActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Read);
     }
-    
+
     public async Task<bool> ValidateUserAuthenticatedRequest(AppUser user, string controller, string action)
     {
         if (user == null || user.IsDisabled || user.IsDeleted || await _users.IsDisabled(user.Id))
             return false;
-        var permissions = await GetRolesPermissions(user.Roles);
-        return ValidateActionOnController(permissions, controller, action);
+        var permissions = (await GetRolesPermissions(user.Roles))?.ToList() ?? new List<IDictionary<string, Permission>>();
+        return permissions.Any() && ValidateActionOnController(permissions, controller, action);
     }
 
     public async Task<bool> ValidateTokenAuthenticatedRequest(string jwtToken, string controller, string action)
     {
-        if (string.IsNullOrEmpty(jwtToken) || await _tokens.Validate(jwtToken))
+        if (string.IsNullOrEmpty(jwtToken) || !await _tokens.Validate(jwtToken))
             return false;
         var token = _tokens.Read(jwtToken);
-        var permissions = await GetRolesPermissions(token.Roles);
-        return ValidateActionOnController(permissions, controller, action);
+        var permissions = (await GetRolesPermissions(token.Roles))?.ToList() ?? new List<IDictionary<string, Permission>>();
+        return permissions.Any() && ValidateActionOnController(permissions, controller, action);
     }
 
     #region Caching
@@ -60,9 +68,12 @@ public class ApiAuthorizationService : IApiAuthorizationService
     private async Task<Dictionary<string, Permission>> GetRoleApiPermissions(string roleName)
     {
         var role = await _roles.GetByRoleName(roleName);
-        return role.Permissions
-            .Where(p => p.ResourceType == ResourceTypes.ApiEndPoint)
-            .ToDictionary(p => p.Resource.ToUpper(), p => p);
+        return
+            role == null
+                ? new Dictionary<string, Permission>()
+                : role.Permissions
+                    .Where(p => p.ResourceType == ResourceTypes.ApiEndPoint)
+                    .ToDictionary(p => p.Resource.ToUpper(), p => p);
     }
 
     private async Task<IEnumerable<IDictionary<string, Permission>>> GetRolesPermissions(IEnumerable<string> roleIds)
@@ -72,18 +83,23 @@ public class ApiAuthorizationService : IApiAuthorizationService
         {
             permissions.Add(await GetRoleApiPermissions(roleId));
         }
+
         return permissions;
     }
 
     #endregion
+
     #region PermissionsEvaluators
+
     // Apply the permissions of the most permissive roles.
-    private  bool ValidateActionOnController(IEnumerable<IDictionary<string, Permission>> rolesPermissions, string controller, string action)
+    private bool ValidateActionOnController(IEnumerable<IDictionary<string, Permission>> rolesPermissions,
+        string controller, string action)
     {
         return RoleSelectionMode == RoleSelectionModes.LeastPermissive
             ? rolesPermissions.All(p => ValidateEffectivePermission(p, controller, action))
             : rolesPermissions.Any(p => ValidateEffectivePermission(p, controller, action));
     }
+
     private bool ValidateEffectivePermission(IDictionary<string, Permission> permissions, string controller,
         string action)
     {
@@ -99,25 +115,29 @@ public class ApiAuthorizationService : IApiAuthorizationService
             _ => ValidateByMostSpecificPermission(effectivePermissions, action)
         };
     }
-    
+
     private bool ValidateByMostPermissivePermission(IEnumerable<Permission> permissions, string action)
     {
         return permissions.Any(permission => ValidatePermission(permission, action));
     }
+
     private bool ValidateByLeastPermissivePermission(IEnumerable<Permission> permissions, string action)
     {
         return permissions.All(permission => ValidatePermission(permission, action));
     }
+
     private bool ValidateByMostSpecificPermission(IEnumerable<Permission> permissions, string action)
     {
         var permissionsList = permissions.ToList();
         if (!permissionsList.Any())
             return false;
-        return ValidatePermission(permissionsList.Count == 1 ? permissionsList.First() : 
-            permissionsList.FirstOrDefault(p => p.Resource != "*"), action);
+        return ValidatePermission(
+            permissionsList.Count == 1
+                ? permissionsList.First()
+                : permissionsList.FirstOrDefault(p => p.Resource != "*"), action);
     }
-    
-    
+
+
     private bool ValidatePermission(Permission permission, string action)
     {
         if (!_permissionsDictionary.ContainsKey(action))
@@ -129,8 +149,8 @@ public class ApiAuthorizationService : IApiAuthorizationService
                 return permission.Delete;
             case PermissionType.Update:
                 return permission.Update;
-            case PermissionType.Read:return permission.Read;
-            case PermissionType.Restore:return permission.Restore;
+            case PermissionType.Read: return permission.Read;
+            case PermissionType.Restore: return permission.Restore;
             case PermissionType.Purge: return permission.Purge;
             case PermissionType.Special: return permission.Special;
             case PermissionType.Unknown:
@@ -138,6 +158,7 @@ public class ApiAuthorizationService : IApiAuthorizationService
                 return false;
         }
     }
+
     #endregion
 }
 
