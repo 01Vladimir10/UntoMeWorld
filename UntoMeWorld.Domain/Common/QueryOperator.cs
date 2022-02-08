@@ -1,15 +1,16 @@
 ﻿namespace UntoMeWorld.Domain.Common
 {
-    public enum QueryOperator
+    public static class QueryOperator
     {
-        And,
-        Or,
-        Eq,
-        Lt,
-        Gt,
-        Lte,
-        Gte,
-        In,
-        TextSearch,
+        public const string And = "And";
+        public const string Or = "Or";
+        public const string Eq = "Eq";
+        public const string Lt = "Lt";
+        public const string Ne = "Ne";
+        public const string Gt = "Gt";
+        public const string Lte = "Lte";
+        public const string Gte = "Gte";
+        public const string In = "In";
+        public const string TextSearch = "TextSearch";
     }
 }

@@ -24,7 +24,8 @@ namespace UntoMeWorld.Domain.Common
 
         public static QueryFilter Eq(string property, IComparable value)
             => ComparableFilter(property, value, QueryOperator.Eq);
-
+        public static QueryFilter Ne(string property, IComparable value)
+            => ComparableFilter(property, value, QueryOperator.Ne);
         public static QueryFilter Lt(string property, IComparable value)
             => ComparableFilter(property, value, QueryOperator.Lt);
 
@@ -52,7 +53,7 @@ namespace UntoMeWorld.Domain.Common
                 Value = items
             };
 
-        private static QueryFilter ComparableFilter(string property, IComparable value, QueryOperator op) 
+        private static QueryFilter ComparableFilter(string property, IComparable value, string op) 
             => new()
         {
             PropertyName = property,

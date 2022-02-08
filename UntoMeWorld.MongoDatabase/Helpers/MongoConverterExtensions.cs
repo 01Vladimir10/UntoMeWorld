@@ -7,7 +7,7 @@ using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.MongoDatabase.Helpers
 {
-    public static class Extensions
+    public static class MongoConverterExtensions
     {
         public static async Task<(int totalPages, IReadOnlyList<T> readOnlyList)> 
             QueryByPageAndSort<T>(this IMongoCollection<T> collection, QueryFilter queryFilter, string sortBy, bool sortAsc, int page, int pageSize)

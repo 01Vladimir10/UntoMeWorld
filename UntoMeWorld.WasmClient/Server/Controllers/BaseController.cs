@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Errors;
 using UntoMeWorld.WasmClient.Shared.Errors;
 using UntoMeWorld.WasmClient.Shared.Model;
 
@@ -52,6 +53,10 @@ public abstract class BaseController<T, TKey> : ControllerBase
             response = ResponseDto<TResponse>.Successful(result);
         }
         catch (InvalidApiRequestRequestException exception)
+        {
+            return ResponseDto<TResponse>.Error(exception.Message);
+        }
+        catch (InvalidQueryFilterException exception)
         {
             return ResponseDto<TResponse>.Error(exception.Message);
         }

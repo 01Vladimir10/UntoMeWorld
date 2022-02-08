@@ -14,6 +14,19 @@ public abstract class InvalidApiRequestRequestException : Exception
     
 }
 
+public class InvalidRequestException : InvalidApiRequestRequestException
+{
+    public InvalidRequestException() : base()
+    {
+        
+    }
+
+    public InvalidRequestException(string message): base(message)
+    {
+        
+    }
+}
+
 public class InvalidSortByProperty : InvalidApiRequestRequestException
 {
     public override string Message => "The name of the property to order by is invalid";

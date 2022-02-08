@@ -6,7 +6,7 @@ namespace UntoMeWorld.Domain.Common
     {
         public string PropertyName { get; set; }
         public object Value { get; set; }
-        public QueryOperator Operator { get; set; }
+        public string Operator { get; set; } = QueryOperator.Eq;
         public List<QueryFilter> Children { get; set; } = new();
     }
 }

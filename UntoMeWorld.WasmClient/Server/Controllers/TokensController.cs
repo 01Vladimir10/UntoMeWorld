@@ -27,7 +27,7 @@ public class TokensController : ControllerBase
         {
             Description = "Test",
             Roles = currentUser.Roles,
-            ExpiresOn = DateTime.UtcNow.AddMinutes(1)
+            ExpiresOn = DateTime.UtcNow.AddDays(15)
         });
         return new JsonResult(ResponseDto<string>.Successful(token));
     }
