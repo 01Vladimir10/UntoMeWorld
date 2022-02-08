@@ -51,34 +51,23 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         return Store.Add(item.ToList());
     }
 
-    public Task<PaginationResult<TModel>> Query(string query = null, string orderBy = null, bool orderDesc = false, bool deleted = false, int page = 1, int pageSize = 100)
+    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null, bool orderDesc = false, int page = 1, int pageSize = 100)
     {
         // Validate if the property exists
         if (!string.IsNullOrEmpty(orderBy) &&
             typeof(TModel).GetProperties().ToList().FindIndex(p => p.Name.ToLower().Equals(orderBy.ToLower())) < 0)
             throw new InvalidSortByProperty();
-        
-        // validate if the query has more than 3 characters
-        if (!string.IsNullOrEmpty(query) && query.Trim().Length < 3)
-            throw new InvalidQueryLengthException();
+        return Store.Query(filter, orderBy, orderDesc, page, pageSize);
+    }
 
-        var parameters = new List<DatabaseQueryParameter>
-        {
-            new()
-            {
-                PropertyName = nameof(IRecyclableModel.IsDeleted),
-                Operator = DatabaseQueryOperator.Equal,
-                Value = deleted
-            }
-        };
-        if (!string.IsNullOrEmpty(query))
-            parameters.Add(new DatabaseQueryParameter
-            {
-                Operator = DatabaseQueryOperator.TextQuery,
-                Value = query
-            });
-        
-        return Store.Query(parameters, orderBy, orderDesc, page, pageSize);
+    private bool ValidateSearchByTextRequirement(QueryFilter filter)
+    {
+        if (filter == null)
+            return true;
+        if (filter.Operator is QueryOperator.TextSearch && string.IsNullOrEmpty(filter.Value as string) ||
+            filter.Value.ToString()!.Length < 3)
+            return false;
+        return filter.Children.Any() && filter.Children.Any(ValidateSearchByTextRequirement);
     }
 
     public Task<IEnumerable<TModel>> Update(IEnumerable<TModel> item)

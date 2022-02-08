@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.Model;
@@ -14,6 +15,10 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
     {
         DatabaseService = databaseService;
     }
+
+    public override Task<ActionResult<ResponseDto<PaginationResult<TModel>>>> Query(QueryRequestDto query)
+        => ServiceCallResult(() =>
+            DatabaseService.Query(query.Filter, query.OrderBy, query.OrderDesc, query.Page, query.PageSize));
 
     public override Task<ActionResult<ResponseDto<TModel>>> Add(TModel item)
     {
@@ -34,9 +39,6 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
     {
         return ServiceCallResult(() => DatabaseService.Update(item));
     }
-
-    public override Task<ActionResult<ResponseDto<PaginationResult<TModel>>>> All(string query = null, string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = PageSize)
-        => ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc,  false,page, pageSize));
 
     public override Task<ActionResult<ResponseDto<IEnumerable<TModel>>>> BulkInsert(List<TModel> items)
     {
@@ -81,8 +83,4 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
             await DatabaseService.Delete(ids);
             return true;
         });
-    
-    public override Task<ActionResult<ResponseDto<PaginationResult<TModel>>>> QueryDeletedElements(string query = null, string sortBy = "", bool sortDesc = false, int page = 1,
-        int pageSize = 100)
-        => ServiceCallResult(() => DatabaseService.Query(query, sortBy, sortDesc,  true,page, pageSize));
 }

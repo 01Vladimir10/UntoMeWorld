@@ -18,9 +18,8 @@ public abstract class BaseController<T, TKey> : ControllerBase
     [HttpPut]
     public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
 
-    [HttpGet]
-    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> All(string query = null, string sortBy = "",
-        bool sortDesc = false, int page = 1, int pageSize = 100);
+    [HttpPost("query")]
+    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> Query(QueryRequestDto query);
 
     [HttpPost("bulk/insert")]
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkInsert(List<T> items);
@@ -30,11 +29,6 @@ public abstract class BaseController<T, TKey> : ControllerBase
 
     [HttpPost("bulk/delete")]
     public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
-
-    [HttpGet("bin")]
-    public abstract Task<ActionResult<ResponseDto<PaginationResult<T>>>> QueryDeletedElements(string query = null,
-        string sortBy = "", bool sortDesc = false, int page = 1, int pageSize = 100);
-
     [HttpPut("bin")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(TKey id);
 

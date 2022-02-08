@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using UntoMeWorld.Domain.Common;
-using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.MongoDatabase.Helpers
@@ -12,7 +10,7 @@ namespace UntoMeWorld.MongoDatabase.Helpers
     public static class Extensions
     {
         public static async Task<(int totalPages, IReadOnlyList<T> readOnlyList)> 
-            QueryByPageAndSort<T>(this IMongoCollection<T> collection, IEnumerable<DatabaseQueryParameter> query, string sortBy, bool sortAsc, int page, int pageSize)
+            QueryByPageAndSort<T>(this IMongoCollection<T> collection, QueryFilter queryFilter, string sortBy, bool sortAsc, int page, int pageSize)
             where T : IModel
         
         {
@@ -33,8 +31,8 @@ namespace UntoMeWorld.MongoDatabase.Helpers
                     PipelineStageDefinitionBuilder.Limit<T>(pageSize),
                 }));
 
-            var filter = query.ToFilter<T>();
-            
+            var filter = queryFilter == null ? Builders<T>.Filter.Empty : QueryFilterConverter.Convert<T>(queryFilter);
+
             var aggregation = await collection.Aggregate()
                 .Match(filter)
                 .Facet(countFacet, dataFacet)
@@ -57,37 +55,6 @@ namespace UntoMeWorld.MongoDatabase.Helpers
                 .Output<T>();
 
             return (totalPages, data);
-        }
-
-        private static FilterDefinition<T> ToFilter<T>(this IEnumerable<DatabaseQueryParameter> query)
-        { 
-            if (query == null)
-                return Builders<T>.Filter.Empty;
-            
-            var parameters = query.ToList();
-            
-            if (!parameters.Any())
-                return Builders<T>.Filter.Empty;
-
-            var filters = parameters.Select(p => p.ToFilter<T>());
-            return Builders<T>.Filter.And(filters);
-        }
-
-        private static FilterDefinition<T> ToFilter<T>(this DatabaseQueryParameter parameter)
-        {
-            return parameter.Operator switch
-            {
-                DatabaseQueryOperator.Equal => Builders<T>.Filter.Eq(parameter.PropertyName, parameter.Value),
-                DatabaseQueryOperator.NotEqual => Builders<T>.Filter.Ne(parameter.PropertyName, parameter.Value),
-                DatabaseQueryOperator.SmallerThan => Builders<T>.Filter.Lt(parameter.PropertyName, parameter.Value),
-                DatabaseQueryOperator.GreaterThan => Builders<T>.Filter.Gt(parameter.PropertyName, parameter.Value),
-                DatabaseQueryOperator.GreaterOrEqualThan => Builders<T>.Filter.Gte(parameter.PropertyName,
-                    parameter.Value),
-                DatabaseQueryOperator.SmallerOrEqualThan => Builders<T>.Filter.Lte(parameter.PropertyName,
-                    parameter.Value),
-                DatabaseQueryOperator.TextQuery => Builders<T>.Filter.Text(parameter.Value.ToString()),
-                _ => throw new ArgumentOutOfRangeException(nameof(parameter))
-            };
         }
     }
 }

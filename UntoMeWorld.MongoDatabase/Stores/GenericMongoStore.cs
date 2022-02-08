@@ -45,10 +45,10 @@ namespace UntoMeWorld.MongoDatabase.Stores
             var result = await Collection.FindAsync(_ => query(_));
             return await result.ToListAsync();
         }
-        public async Task<PaginationResult<TModel>> Query(IEnumerable<DatabaseQueryParameter> query, string orderBy = null,
+        public async Task<PaginationResult<TModel>> Query(QueryFilter filter, string orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
-            var (totalPages, result) = await Collection.QueryByPageAndSort(query, orderBy, orderDesc, page, pageSize);
+            var (totalPages, result) = await Collection.QueryByPageAndSort(filter, orderBy, orderDesc, page, pageSize);
             return new PaginationResult<TModel>
             {
                 Result = result.ToList(),
