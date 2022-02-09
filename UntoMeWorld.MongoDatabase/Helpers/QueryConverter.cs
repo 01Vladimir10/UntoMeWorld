@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Json;
 using System.Text.Json;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Errors;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace UntoMeWorld.MongoDatabase.Helpers
 {

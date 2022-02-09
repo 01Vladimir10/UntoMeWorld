@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Stores

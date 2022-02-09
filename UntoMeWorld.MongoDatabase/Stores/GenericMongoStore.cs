@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using UntoMeWorld.Domain.Common;
-using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.MongoDatabase.Helpers;

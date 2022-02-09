@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Server.Security.Constants;

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace UntoMeWorld.WasmClient.Client.Utils;
+﻿namespace UntoMeWorld.WasmClient.Client.Utils;
 
 public static class HttpUtils
 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UntoMeWorld.Domain.Common;
-using UntoMeWorld.Domain.Model;
 
 namespace UntoMeWorld.Domain.Stores
 {

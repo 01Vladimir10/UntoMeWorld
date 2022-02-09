@@ -40,9 +40,7 @@ public static class SecurityExtensions
         services.Configure<JwtTokenFactoryOptions>(options =>
         {
             configuration.Bind("Jwt", options);
-            if (ServerConstants.Environment == ServerEnvironment.Production || 
-                string.IsNullOrEmpty(options.Secret))
-                options.Secret = Environment.GetEnvironmentVariable(EnvironmentVariables.JwtSecret);
+            options.Secret = Environment.GetEnvironmentVariable(EnvironmentVariables.JwtSecret);
         });
         var servicesConfiguration = configuration.GetSection("Services");
         services.Configure<AuthorizationServiceOptions>(servicesConfiguration.GetSection("AuthorizationService"));

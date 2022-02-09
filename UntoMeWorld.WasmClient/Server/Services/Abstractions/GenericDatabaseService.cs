@@ -1,5 +1,4 @@
 ﻿using UntoMeWorld.Domain.Common;
-using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Services.Base;

@@ -1,8 +1,6 @@
 ﻿using System.Data;
 using UntoMeWorld.Domain.Common;
-using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
-using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Client.Utils;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Repositories;

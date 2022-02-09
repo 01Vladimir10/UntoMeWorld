@@ -8,13 +8,9 @@ namespace UntoMeWorld.MongoDatabase.Services
         private MongoClient _client;
         private IMongoDatabase _database;
 
-        public MongoDbService(string connectionString)
+        public MongoDbService(string connectionString, string database = default)
         {
-            InitializeDatabase(connectionString);
-        }
-        public MongoDbService(string username, string password, string server, string database = "default")
-        {
-            InitializeDatabase($"mongodb+srv://{username}:{password}@{server}/{database}?retryWrites=true&w=majority", database);
+            InitializeDatabase(connectionString, database);
         }
         private void InitializeDatabase(string connection, string database = "default")
         {
