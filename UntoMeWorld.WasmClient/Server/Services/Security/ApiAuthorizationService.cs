@@ -43,6 +43,7 @@ public class ApiAuthorizationService : IApiAuthorizationService
         _options.PurgeActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Purge);
         _options.UpdateActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Update);
         _options.AddActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Add);
+        _options.RestoreActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Restore);
         _options.ReadActions?.ForEach(a => _permissionsDictionary[a] = PermissionType.Read);
     }
 

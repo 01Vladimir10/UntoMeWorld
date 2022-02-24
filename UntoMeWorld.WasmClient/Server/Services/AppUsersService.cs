@@ -137,7 +137,7 @@ public class AppUsersService : GenericDatabaseService<AppUser>, IUserService
         userInfo.AuthProviderUserId = thirdPartyUserId;
         userInfo.AuthProvider = provider;
         userInfo.Roles = new List<string> { "default" };
-        return await Store.Add(userInfo);
+        return await Store.AddOne(userInfo);
     }
 
     public async Task<bool> IsDisabled(string userId)

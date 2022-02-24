@@ -15,6 +15,7 @@ namespace UntoMeWorld.MongoDatabase.Stores
     public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel, IRecyclableModel
     {
         protected readonly IMongoCollection<TModel> Collection;
+
         protected GenericMongoStore(MongoDbService service, string collection)
         {
             Collection = service.GetCollection<TModel>(collection);
@@ -44,6 +45,7 @@ namespace UntoMeWorld.MongoDatabase.Stores
             var result = await Collection.FindAsync(_ => query(_));
             return await result.ToListAsync();
         }
+
         public async Task<PaginationResult<TModel>> Query(QueryFilter filter, string orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
@@ -56,35 +58,40 @@ namespace UntoMeWorld.MongoDatabase.Stores
             };
         }
 
-        public async Task<TModel> Add(TModel church)
+        public async Task<TModel> AddOne(TModel church)
         {
             await Collection.InsertOneAsync(church);
             return church;
         }
 
-        public async Task<TModel> Update(TModel data)
+        public async Task<TModel> UpdateOne(TModel data)
         {
+            data.LastUpdatedOn = DateTime.UtcNow;
             await Collection.ReplaceOneAsync(Builders<TModel>.Filter.Eq(c => c.Id, data.Id), data);
             return data;
         }
 
-        public async Task Delete(TModel data)
-        {
-            await Collection.DeleteOneAsync(c => c.Id.Equals(data.Id));
-        }
+        public Task DeleteOne(string key)
+            => Collection.UpdateOneAsync(Builders<TModel>.Filter.Eq(m => m.Id, key),
+                Builders<TModel>.Update.Set(m => m.IsDeleted, true)
+                    .Set(m => m.DeletedOn, DateTime.UtcNow));
 
-        public Task Delete(params string[] ids)
-        {
-            return Collection.DeleteManyAsync(Builders<TModel>.Filter.In(_ => _.Id, ids));
-        }
+        public Task PurgeOne(string key)
+            => Collection.DeleteOneAsync(Builders<TModel>.Filter.Eq(m => m.Id, key));
 
-        public async Task<IEnumerable<TModel>> Add(List<TModel> data)
+        public Task RestoreOne(string key)
+            => Collection.UpdateOneAsync(Builders<TModel>.Filter.Eq(m => m.Id, key),
+                Builders<TModel>.Update.Set(m => m.IsDeleted, false)
+                    .Set(m => m.LastUpdatedOn, DateTime.UtcNow));
+
+
+        public async Task<IEnumerable<TModel>> AddMany(List<TModel> data)
         {
             await Collection.InsertManyAsync(data);
             return data;
         }
 
-        public async Task<IEnumerable<TModel>> Update(List<TModel> data)
+        public async Task<IEnumerable<TModel>> UpdateMany(List<TModel> data)
         {
             var tasks =
                 from item in data
@@ -94,42 +101,20 @@ namespace UntoMeWorld.MongoDatabase.Stores
             return data;
         }
 
-        public async Task Delete(IEnumerable<TModel> data)
-        {
-            var tasks = from item in data
-                let filter = Builders<TModel>.Filter.Eq(c => c.Id, item.Id)
-                select new DeleteOneModel<TModel>(filter);
-            await Collection.BulkWriteAsync(tasks);
-        }
+        public Task DeleteMany(IEnumerable<string> keys)
+            => Collection
+                .UpdateManyAsync(Builders<TModel>.Filter.In(m => m.Id, keys.Distinct()), Builders<TModel>
+                    .Update.Set(m => m.IsDeleted, true)
+                    .Set(m => m.DeletedOn, DateTime.UtcNow));
 
-        public Task SoftDelete(params string[] ids)
-        {
-            var filter = Builders<TModel>.Filter.In(_ => _.Id, ids);
-            
-            var updateAction = Builders<TModel>.Update
-                .Set(_ => _.IsDeleted, true)
-                .Set(_ => _.DeletedOn, DateTime.Now);
+        public Task PurgeMany(IEnumerable<string> keys)
+            => Collection.DeleteManyAsync(Builders<TModel>.Filter.In(_ => _.Id, keys));
 
-            return Collection.UpdateManyAsync(filter, updateAction);
-        }
-
-        public Task PermanentlyDelete(params string[] ids)
-        {
-            return Collection.DeleteManyAsync(Builders<TModel>.Filter.In(_ => _.Id, ids));
-        }
-
-        public Task Restore(params string[] ids)
-        {
-            var updateAction = Builders<TModel>.Update
-                .Set(_ => _.IsDeleted, false)
-                .Set(_ => _.LastUpdatedOn, DateTime.Now);
-
-            var updateActions = from id in ids
-                let filter = Builders<TModel>.Filter.Eq(m => m.Id, id)
-                select new UpdateOneModel<TModel>(filter, updateAction);
-            
-            return Collection.BulkWriteAsync(updateActions);
-        }
+        public Task RestoreMany(IEnumerable<string> keys)
+            => Collection
+                .UpdateManyAsync(Builders<TModel>.Filter.In(m => m.Id, keys.Distinct()), Builders<TModel>
+                    .Update.Set(m => m.IsDeleted, false)
+                    .Set(m => m.DeletedOn, DateTime.UtcNow));
 
         public async Task<TModel> Get(string id)
         {

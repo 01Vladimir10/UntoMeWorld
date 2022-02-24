@@ -76,10 +76,12 @@ public abstract class GenericController<TModel, TKey> : BaseController<TModel, T
             return true;
         });
     
-    public override Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> ids)
+    public override Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemIds)
         => ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(ids);
+            await DatabaseService.Delete(itemIds);
             return true;
         });
+    public override Task<ActionResult<ResponseDto<TModel>>> Get(TKey id)
+        => ServiceCallResult(() => DatabaseService.Get(id));
 }

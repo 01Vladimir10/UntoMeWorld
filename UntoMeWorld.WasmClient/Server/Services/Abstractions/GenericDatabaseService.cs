@@ -17,7 +17,7 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
     public Task<TModel> Add(TModel item)
     {
         item.CreatedOn = DateTime.Now;
-        return Store.Add(item);
+        return Store.AddOne(item);
     }
     public Task<TModel> Get(string id)
     {
@@ -28,17 +28,17 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
     public Task<TModel> Update(TModel item)
     {
         item.LastUpdatedOn = DateTime.Now;
-        return Store.Update(item);
+        return Store.UpdateOne(item);
     }
 
     public Task Restore(string item)
     {
-        return Store.Restore(item);
+        return Store.RestoreOne(item);
     }
 
     public Task Delete(string id, bool softDelete = true)
     {
-        return softDelete ? Store.SoftDelete(id) : Store.Delete(id);
+        return softDelete ? Store.DeleteOne(id) : Store.PurgeOne(id);
     }
     public Task<IEnumerable<TModel>> GetAll(string query = null)
     {
@@ -47,7 +47,7 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
 
     public Task<IEnumerable<TModel>> Add(IEnumerable<TModel> item)
     {
-        return Store.Add(item.ToList());
+        return Store.AddMany(item.ToList());
     }
 
     public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null, bool orderDesc = false, int page = 1, int pageSize = 100)
@@ -71,16 +71,16 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
 
     public Task<IEnumerable<TModel>> Update(IEnumerable<TModel> item)
     {
-        return Store.Update(item.ToList());
+        return Store.UpdateMany(item.ToList());
     }
 
     public Task Restore(IEnumerable<string> item)
     {
-        return Store.Restore(item.ToArray());
+        return Store.RestoreMany(item.ToArray());
     }
 
     public Task Delete(IEnumerable<string> id, bool softDelete = true)
     {
-        return softDelete ? Store.SoftDelete(id.ToArray()) : Store.Delete(id.ToArray());
+        return softDelete ? Store.DeleteMany(id.ToArray()) : Store.PurgeMany(id.ToArray());
     }
 }

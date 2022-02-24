@@ -10,11 +10,14 @@ namespace UntoMeWorld.WasmClient.Server.Controllers;
 [Route("api/[controller]")]
 public abstract class BaseController<T, TKey> : ControllerBase
 {
+    [HttpGet("{id}")]
+    public abstract Task<ActionResult<ResponseDto<T>>> Get(TKey id);
+
     [HttpPost]
     public abstract Task<ActionResult<ResponseDto<T>>> Add(T item);
 
-    [HttpDelete]
-    public abstract Task<ActionResult<ResponseDto<bool>>> Delete(TKey itemId);
+    [HttpDelete("{id}")]
+    public abstract Task<ActionResult<ResponseDto<bool>>> Delete(TKey id);
 
     [HttpPut]
     public abstract Task<ActionResult<ResponseDto<T>>> Update(T item);
@@ -29,14 +32,14 @@ public abstract class BaseController<T, TKey> : ControllerBase
     public abstract Task<ActionResult<ResponseDto<IEnumerable<T>>>> BulkUpdate(List<T> items);
 
     [HttpPost("bulk/delete")]
-    public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemId);
-    [HttpPut("bin")]
+    public abstract Task<ActionResult<ResponseDto<bool>>> BulkDelete(List<TKey> itemIds);
+    
+    [HttpPut("bin/{id}")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(TKey id);
 
-    [HttpDelete("bin")]
+    [HttpDelete("bin/{id}")]
     public abstract Task<ActionResult<ResponseDto<bool>>> PermanentlyDelete(TKey id);
-
-
+    
     [HttpPost("bin/bulk/restore")]
     public abstract Task<ActionResult<ResponseDto<bool>>> Restore(IEnumerable<TKey> ids);
 
