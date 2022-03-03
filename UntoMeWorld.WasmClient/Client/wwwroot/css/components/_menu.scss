@@ -9,9 +9,12 @@
   background-color: var(--menu-bg-color);
   padding: .25em 0;
   box-shadow: 1px -1px 5px var(--shadow-color);
+  z-index: 10;
 
   .navigation-menu__toggle {
     display: none;
+    justify-self: flex-start;
+    align-self: flex-start;
   }
   
   .navigation-menu__items-container {
@@ -70,11 +73,10 @@
     right: unset;
     left: 0;
     box-shadow: -1px 1px 6px var(--shadow-color);
-    z-index: 10;
-    padding: 0 .25em;
+    padding: 0 .25rem;
     
     &.expanded {
-      width: min(40%, 14rem);
+      width: 14rem;
       
       .navigation-menu__items-container {
         align-items: stretch;
@@ -86,8 +88,7 @@
         }
       }
       
-      .navigation-menu__toggle {
-        transition: background-color .2s linear;
+      .navigation-menu__toggle-icon {
         background-color: transparent;
         &:after {
           animation: topBarAnimation .5s forwards;
@@ -97,13 +98,11 @@
         }
       }
     }
-
     .navigation-menu-item {
       padding: .5em 0;
       justify-content: flex-start;
     }
-
-    
+        
     .navigation-menu__items-container {
       flex-direction: column;
       margin: .5em 0;
@@ -115,12 +114,25 @@
       }
     }
 
-
+    
     .navigation-menu__toggle {
+      display: flex;
+      border: none;
+      background-color: transparent;
+      margin: .75rem 0 2rem 0;
+      min-height: 2rem;
+      align-self: flex-start;
+      justify-self: flex-start;
+      justify-content: center;
+      align-items: center;
+      max-width: 4rem;
+      width: 100%;
+    }
+    
+    .navigation-menu__toggle-icon {
       $bars-thickness: 2px;
       content: "";
       width: 1.5rem;
-      margin: 1rem 1.25rem 2rem 1.25rem;
       min-height: $bars-thickness;
       display: block;
       border: none !important;
@@ -128,7 +140,15 @@
       pointer-events: painted;
       background-color: var(--primary-text-color);
       position: relative;
+      transition: background-color .2s linear;
 
+      &:after {
+        animation: topBarAnimationClose .5s forwards;
+      }
+      &:before {
+        animation: bottomBarAnimationClose .5s forwards;
+      }
+      
       &:after, &:before {
         content: "";
         position: absolute;
@@ -173,6 +193,31 @@
       100% {
         transform-origin: 50% 50%;
         transform: rotate(-45deg);
+      }
+    }    
+    @keyframes topBarAnimationClose {
+      0% {
+        transform: rotate(45deg);
+        transform-origin: 50% 50%;
+      }
+      40% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: translateY(-.6rem);
+      }
+    }
+
+    @keyframes bottomBarAnimationClose {
+      0% {
+        transform: rotate(-45deg);
+        transform-origin: 50% 50%;
+      }
+      40% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: translateY(.6rem);
       }
     }
 

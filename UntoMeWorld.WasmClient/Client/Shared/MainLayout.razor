@@ -1,21 +1,21 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-
-    <Menu>
-
-    </Menu>
+<div class="page-container">
+    <div class="page">
     
-    <main class="page-content">
-
-
-        <div class="top-row px-4 auth">
-            <LoginDisplay/>
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+        <Menu>
+        </Menu>
+    
+        <main class="page-body">
+            <div class="page-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6>Header</h6>
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                </div>
+            </div>
+            <article class="page-content">
+                @Body
+            </article>
+        </main>
+    </div>
 </div>

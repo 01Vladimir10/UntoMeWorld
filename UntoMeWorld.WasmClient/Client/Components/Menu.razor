@@ -2,10 +2,12 @@
 
 <div class="navigation-menu @(_isExpanded ? "expanded" : "")">
 
+    <button class="navigation-menu__toggle" @onclick="ToggleMenu">
+        <span class="navigation-menu__toggle-icon"></span>
+    </button>
+
     <div class="navigation-menu__items-container">
-        <button class="navigation-menu__toggle" @onclick="ToggleMenu">
-        </button>
-        
+
         <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/children" class="navigation-menu-item">
             <i class="navigation-menu-item__icon ph-users-three">
             </i>
@@ -44,6 +46,8 @@
     private void ToggleMenu()
     {
         _isExpanded = !_isExpanded;
+        Console.WriteLine("Menu Toggled!");
+        StateHasChanged();
     }
 
 }
