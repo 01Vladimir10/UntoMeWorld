@@ -1,0 +1,49 @@
+﻿@using Resources
+
+<div class="navigation-menu @(_isExpanded ? "expanded" : "")">
+
+    <div class="navigation-menu__items-container">
+        <button class="navigation-menu__toggle" @onclick="ToggleMenu">
+        </button>
+        
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/children" class="navigation-menu-item">
+            <i class="navigation-menu-item__icon ph-users-three">
+            </i>
+            <h6 class="navigation-menu-item__title">
+                @LangResources.NavigationMenuOptionChildren
+            </h6>
+        </NavLink>
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/churches" class="navigation-menu-item">
+            <i class="navigation-menu-item__icon ph-house-line">
+            </i>
+            <h6 class="navigation-menu-item__title">
+                @LangResources.NavigationMenuOptionChurches
+            </h6>
+        </NavLink>
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/reports" class="navigation-menu-item">
+            <i class="navigation-menu-item__icon ph-chart-pie-slice">
+            </i>
+            <h6 class="navigation-menu-item__title">
+                @LangResources.NavigationMenuOptionReports
+            </h6>
+        </NavLink>
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="name" class="navigation-menu-item">
+            <i class="navigation-menu-item__icon ph-gear-six">
+            </i>
+            <h6 class="navigation-menu-item__title">
+                @LangResources.NavigationMenuOptionSettings
+            </h6>
+        </NavLink>
+    </div>
+</div>
+
+@code {
+
+    private bool _isExpanded = false;
+
+    private void ToggleMenu()
+    {
+        _isExpanded = !_isExpanded;
+    }
+
+}

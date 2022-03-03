@@ -24,9 +24,7 @@ body {
     padding: 0;
     margin: 0;
 }
-* {
-    font-family: 'Questrial', sans-serif;
-}
+
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }

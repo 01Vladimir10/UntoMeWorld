@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -12,5 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\UntoMeWorld.Domain\UntoMeWorld.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+      <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

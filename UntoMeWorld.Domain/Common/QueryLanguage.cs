@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace UntoMeWorld.Domain.Common
 {
-    public class QueryLanguage
+    public static class QueryLanguage
     {
         public static QueryFilter And(QueryFilter item1, QueryFilter item2, params QueryFilter[] items)
             => new()

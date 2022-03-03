@@ -7,6 +7,7 @@ public static class HttpExtensions
 {
     public static async Task<ResponseDto<T>> PostJsonAsync<T>(this HttpClient client, string url, object content)
     {
+        Console.WriteLine($"sending post to {url}...");
         var body = JsonContent.Create(content);
         var response = await client.PostAsync(url, body);
         return await response.Content.ReadFromJsonAsync<ResponseDto<T>>();

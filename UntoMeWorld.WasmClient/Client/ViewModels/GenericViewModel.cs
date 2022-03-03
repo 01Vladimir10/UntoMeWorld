@@ -1,19 +1,20 @@
-﻿using UntoMeWorld.Domain.Model;
+﻿using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.WasmClient.Client.Data.Model;
-using UntoMeWorld.WasmClient.Client.Data.Repositories;
+using UntoMeWorld.WasmClient.Client.Services.Base;
 using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
 {
-    private readonly IRepository<TModel> _repository;
+    private readonly IService<TModel> _service;
     private IDictionary<string, TModel> _itemsDictionary = new Dictionary<string, TModel>();
     public SortField SortField { get; private set; } = new();
 
-    protected GenericViewModel(IRepository<TModel> repository)
+    protected GenericViewModel(IService<TModel> service)
     {
-        _repository = repository;
+        _service = service;
         InitMultiSelection();
     }
 
@@ -22,7 +23,7 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         try
         {
-            var newItem = await _repository.Add(item);
+            var newItem = await _service.Add(item);
             if (newItem == null || string.IsNullOrEmpty(newItem.Id))
                 throw new Exception($"The item of type {typeof(TModel).Name} could not be updated");
             _itemsDictionary.Add(newItem.Id, newItem);
@@ -37,7 +38,7 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         try
         {
-            item = await _repository.Update(item);
+            item = await _service.Update(item);
             if (item == null)
                 throw new Exception($"The item of type {typeof(TModel).Name} could not be updated");
             
@@ -53,7 +54,7 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         try
         {
-            await _repository.Delete(item);
+            await _service.Delete(item.Id);
             if(!_itemsDictionary.Remove(item.Id))
                 throw new Exception($"The item of type {typeof(TModel).Name} could not be deleted");
             OnPropertyChanged(nameof(Items));
@@ -67,11 +68,11 @@ public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IM
     {
         if (string.IsNullOrWhiteSpace(query))
             await UpdateList();
-        Items = (await _repository.Query(query)).Result;
+        Items = (await _service.Paginate(QueryLanguage.TextSearch(query))).Result;
     }
     public async Task UpdateList()
     {
-        Items =  (await _repository.Query(null, SortField.FieldName, SortField.Descendent)).Result;
+        Items =  (await _service.Paginate(null, SortField.FieldName, SortField.Descendent)).Result;
     }
     public async Task SortElementsBy(string fieldName, bool desc = false)
     {

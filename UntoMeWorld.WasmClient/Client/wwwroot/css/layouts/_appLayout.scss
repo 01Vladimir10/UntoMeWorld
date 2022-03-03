@@ -1,0 +1,24 @@
+﻿.page {
+  display: flex;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+
+  .page-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 3rem;
+  }
+  
+  @media screen and (min-width: 720px) {
+    .page-content {
+      top: 0;
+      padding: 0 .5em;
+      left: 4.75rem;
+      right: 0;
+      bottom: 0;
+    }
+  }
+}

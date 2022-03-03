@@ -1,21 +1,9 @@
 ﻿@page "/"
-@using UntoMeWorld.WasmClient.Client.ViewModels
 
-<h3>Testing</h3>
+<h3>Home</h3>
 
 
-<h3>Hello world</h3>
 
 @code {
-    [CascadingParameter] public MainViewModel MainViewModel { get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        MainViewModel.RegisterFabClickListener("/", () =>
-        {
-            Console.WriteLine("Home fab clicked!");
-        });
-    }
 
 }

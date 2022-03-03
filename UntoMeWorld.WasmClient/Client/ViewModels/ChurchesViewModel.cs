@@ -1,13 +1,13 @@
 ﻿using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Client.Data.Repositories;
+using UntoMeWorld.WasmClient.Client.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
 public class ChurchesViewModel : GenericViewModel<Church>
 {
-    private readonly IRepository<Pastor> _pastorsRepository;
+    private readonly IPastorService _pastorsRepository;
 
-    public ChurchesViewModel(IRepository<Church> repository, IRepository<Pastor> pastorsRepository) : base(repository)
+    public ChurchesViewModel(IChurchesService service, IPastorService pastorsRepository) : base(service)
     {
         _pastorsRepository = pastorsRepository;
     }
@@ -17,7 +17,7 @@ public class ChurchesViewModel : GenericViewModel<Church>
 
     public async Task UpdatePastors()
     {
-        var pastors = await _pastorsRepository.All();
-        Pastors = pastors.ToList();
+        var pastors = await _pastorsRepository.Paginate();
+        Pastors = pastors.Result.ToList();
     }
 }

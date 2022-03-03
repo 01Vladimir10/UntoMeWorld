@@ -1,67 +1,21 @@
 ﻿@inherits LayoutComponentBase
-@using UntoMeWorld.WasmClient.Client.Models
-@inject NavigationManager _navigation;
-@using UntoMeWorld.WasmClient.Client.ViewModels
 
-<div class="root-container">
-    <div class="main-container">
-        <NavigationDrawer>
-            <Header>
-                <div class="d-flex pt-2">
-                    <div class="ml-auto">
-                        <LoginDisplay>
-                        </LoginDisplay>
-        
-                    </div>
-                </div>
-            </Header>
-            <Logo>
-                <img
-                    class="logo"
-                    src="/content/images/logo.png" alt="">
-            </Logo>
-            <Sidebar>
-                <NavMenu MenuItems="MenuItems"/>
-            </Sidebar>
-            <Body>
-                <CascadingValue Value="_mainViewModel">
-                    @Body
-                </CascadingValue>
-        
-                <FloatingActionButton OnClick="_mainViewModel.OnFabClicked">
-        
-                </FloatingActionButton>
-            </Body>
-        </NavigationDrawer>
-    </div>
+<div class="page">
+
+    <Menu>
+
+    </Menu>
+    
+    <main class="page-content">
+
+
+        <div class="top-row px-4 auth">
+            <LoginDisplay/>
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </div>
-@code {
-    private MainViewModel _mainViewModel;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        _mainViewModel = new MainViewModel(_navigation);
-    }
-
-
-    private static readonly List<MenuItem> MenuItems = new()
-    {
-        new MenuItem
-        {
-            Title = "Home",
-            Url = "/"
-        },
-        new MenuItem
-        {
-            Title = "Counter",
-            Url = "counter"
-        },
-        new MenuItem
-        {
-            Title = "Churches",
-            Url = "churches"
-        }
-    };
-
-}

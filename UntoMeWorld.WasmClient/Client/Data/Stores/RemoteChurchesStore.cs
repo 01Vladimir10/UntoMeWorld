@@ -5,7 +5,7 @@ namespace UntoMeWorld.WasmClient.Client.Data.Stores;
 
 public class RemoteChurchesStore : GenericRemoteStore<Church>, IChurchesStore
 {
-    public RemoteChurchesStore(HttpClient client, string endPoint) : base(client, endPoint)
+    public RemoteChurchesStore(HttpClient client) : base(client, "/api/churches")
     {
         
     }

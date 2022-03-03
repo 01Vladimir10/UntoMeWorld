@@ -1,0 +1,24 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap');
+:root {
+  --primary-color: #0283FB;
+  --primary-color-light: hsla(209, 98%, 50%, 0.25);
+  --primary-text-color: #555555;
+  --secondary-text-color: rgba(102, 102, 102, 0.75);
+  --unselected-color: rgba(136, 136, 136, 0.88);
+  --on-hover-bg-color: rgba(170, 170, 170, 0.12);
+  --surface-color: #fff;
+  --menu-bg-color: #fff;
+  --shadow-color: #999;
+  
+}
+
+body, * {
+  font-family: 'Montserrat', sans-serif;
+}
+
+@import "components/menu";
+@import "layouts/appLayout";
+@import "utils";
+
+
+
