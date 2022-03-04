@@ -1,0 +1,40 @@
+﻿@using UntoMeWorld.WasmClient.Client.Main
+@using Resources
+
+<div class="appbar">
+    <h3 class="appbar-title">
+        @Title
+    </h3>
+    <div class="appbar-options-container">
+        @Options
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public RenderFragment Options { get; set; }
+    
+    
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter] public NavigationManager Manager { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Manager.LocationChanged += OnLocationChanged;
+        Title = LangResources.ApplicationName;
+        base.OnInitialized();
+    }
+    
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        var url = Manager.ToAbsoluteUri(e.Location).LocalPath;
+        Console.WriteLine(url);
+        Title = PageRoutes.Routes.ContainsKey(url) ? PageRoutes.Routes[url] : LangResources.ApplicationName;
+        StateHasChanged();
+    }
+
+}

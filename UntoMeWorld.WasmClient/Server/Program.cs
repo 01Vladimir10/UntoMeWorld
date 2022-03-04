@@ -10,7 +10,7 @@ using UntoMeWorld.WasmClient.Server.Services.Options;
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
+    
     builder.Services.AddOptions();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -33,6 +33,7 @@ try
     builder.Services.AddRazorPages();
 
     var app = builder.Build();
+    
 
 // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -47,7 +48,7 @@ try
     }
 
     app.UseHttpsRedirection();
-
+    app.Urls.Add("https://*:5001");
     app.UseBlazorFrameworkFiles();
     app.UseStaticFiles();
 
@@ -55,7 +56,7 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
-
+    
     app.MapRazorPages();
     app.MapControllers();
 

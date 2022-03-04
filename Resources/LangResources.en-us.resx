@@ -23,7 +23,7 @@
     <data name="NavigationMenuOptionSettings" xml:space="preserve">
         <value>Settings</value>
     </data>
-    <data name="Test" xml:space="preserve">
-        <value>test</value>
+    <data name="ApplicationName" xml:space="preserve">
+        <value>Untome World</value>
     </data>
 </root>

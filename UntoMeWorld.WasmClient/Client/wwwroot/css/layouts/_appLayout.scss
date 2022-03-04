@@ -4,10 +4,9 @@
   justify-content: center;
   background-color: #ddd6;
 }
-
 .page {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 50px);
   width: 100vw;
   position: relative;
   //max-width: 1220px;
@@ -58,6 +57,7 @@
   }
 
   @media screen and (min-width: 720px) {
+    height: 100vh;
     .page-body {
       top: 0;
       left: 4.75rem;

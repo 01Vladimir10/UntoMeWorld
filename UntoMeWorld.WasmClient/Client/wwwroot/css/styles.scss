@@ -14,9 +14,12 @@
 
 body, * {
   font-family: 'Montserrat', sans-serif;
+  color: var(--primary-text-color);
 }
 
 @import "components/menu";
+@import "components/appbar";
+@import "components/loginDisplay";
 @import "layouts/appLayout";
 @import "utils";
 

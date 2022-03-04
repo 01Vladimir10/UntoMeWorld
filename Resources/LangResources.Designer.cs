@@ -61,6 +61,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Untome World.
+        /// </summary>
+        public static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Children.
         /// </summary>
         public static string NavigationMenuOptionChildren {
@@ -93,15 +102,6 @@ namespace Resources {
         public static string NavigationMenuOptionSettings {
             get {
                 return ResourceManager.GetString("NavigationMenuOptionSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to test.
-        /// </summary>
-        public static string Test {
-            get {
-                return ResourceManager.GetString("Test", resourceCulture);
             }
         }
     }

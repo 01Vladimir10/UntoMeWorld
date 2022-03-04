@@ -28,6 +28,8 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Components\Layouts\Container.razor" />
     <_ContentIncludedByDefault Remove="Components\Layouts\RootLeveledComponent.razor" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\icons\phosphor-icons.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\icons\phosphor-icons.js" />
   </ItemGroup>
 
 </Project>

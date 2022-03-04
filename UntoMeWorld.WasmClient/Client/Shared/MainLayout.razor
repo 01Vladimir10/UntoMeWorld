@@ -1,17 +1,19 @@
 ﻿@inherits LayoutComponentBase
-
+@inject NavigationManager _manager;
 <div class="page-container">
     <div class="page">
     
         <Menu>
         </Menu>
-    
         <main class="page-body">
             <div class="page-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h6>Header</h6>
-                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-                </div>
+                <AppBar Manager="_manager">
+                    <Options>
+                        <LoginDisplay>
+                            
+                        </LoginDisplay>
+                    </Options>
+                </AppBar>
             </div>
             <article class="page-content">
                 @Body

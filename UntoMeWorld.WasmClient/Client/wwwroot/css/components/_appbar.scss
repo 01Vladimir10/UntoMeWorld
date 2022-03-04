@@ -1,0 +1,21 @@
+﻿.appbar {
+  display: flex;
+  width: calc(100% - 1.5rem);
+  padding: .75rem;
+  
+  .appbar-title {
+    flex: 1 1 45%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.425rem;
+    color: var(--primary-color);
+  }
+  .appbar-options-container {
+    flex: 1 1 65%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}

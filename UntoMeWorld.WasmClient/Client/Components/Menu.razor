@@ -1,4 +1,5 @@
 ﻿@using Resources
+@using UntoMeWorld.WasmClient.Client.Main
 
 <div class="navigation-menu @(_isExpanded ? "expanded" : "")">
 
@@ -8,32 +9,32 @@
 
     <div class="navigation-menu__items-container">
 
-        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/children" class="navigation-menu-item">
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.ChildrenRoute" class="navigation-menu-item">
             <i class="navigation-menu-item__icon ph-users-three">
             </i>
             <h6 class="navigation-menu-item__title">
-                @LangResources.NavigationMenuOptionChildren
+                @PageRoutes.Routes[PageRoutes.ChildrenRoute]
             </h6>
         </NavLink>
-        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/churches" class="navigation-menu-item">
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.ChurchesRoute" class="navigation-menu-item">
             <i class="navigation-menu-item__icon ph-house-line">
             </i>
             <h6 class="navigation-menu-item__title">
-                @LangResources.NavigationMenuOptionChurches
+                @PageRoutes.Routes[PageRoutes.ChurchesRoute]
             </h6>
         </NavLink>
-        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="/reports" class="navigation-menu-item">
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.ReportsRoute" class="navigation-menu-item">
             <i class="navigation-menu-item__icon ph-chart-pie-slice">
             </i>
             <h6 class="navigation-menu-item__title">
-                @LangResources.NavigationMenuOptionReports
+                @PageRoutes.Routes[PageRoutes.ReportsRoute]
             </h6>
         </NavLink>
-        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="name" class="navigation-menu-item">
+        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.SettingsRoute" class="navigation-menu-item">
             <i class="navigation-menu-item__icon ph-gear-six">
             </i>
             <h6 class="navigation-menu-item__title">
-                @LangResources.NavigationMenuOptionSettings
+                @PageRoutes.Routes[PageRoutes.SettingsRoute]
             </h6>
         </NavLink>
     </div>
@@ -46,8 +47,6 @@
     private void ToggleMenu()
     {
         _isExpanded = !_isExpanded;
-        Console.WriteLine("Menu Toggled!");
-        StateHasChanged();
     }
 
 }
