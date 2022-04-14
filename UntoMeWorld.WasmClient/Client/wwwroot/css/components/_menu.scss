@@ -226,3 +226,24 @@
 
   }
 }
+
+.navigation-menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  max-width: 0;
+  opacity: 0;
+  background: linear-gradient(to right, #ddd8, #ddd2);
+  z-index: 9;
+  display: none;
+  transition: all 200ms ease;
+  &.visible{
+    opacity: 1;
+    max-width: 200vw;
+  }
+  @media only screen and (min-width: 720px) {
+    display: block;
+  }
+}

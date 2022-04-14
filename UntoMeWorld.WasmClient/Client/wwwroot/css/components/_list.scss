@@ -1,0 +1,66 @@
+﻿.list-controls-container {
+  display: flex;
+  align-items: center;
+  padding: .25rem 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+    
+  .list-header, .list-body  {
+    display: flex;
+    flex-direction: column;
+  }
+  .list-row {
+    display: flex;
+    align-items: center;
+    padding: .75rem 1rem;
+    margin: .25rem;
+  }
+  .list-body {
+    
+    .list-row {
+      background-color: var(--surface-color);
+      box-shadow: 1px 1px 2px var(--shadow-color-2);
+      border-radius: .5rem;
+      align-items: flex-start;
+      &:hover {
+        box-shadow: 1px 1px 4px var(--shadow-color-2);
+      }
+    }
+  }
+  .list-col {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-start;
+    align-items: center;
+    padding: .125rem;
+  }
+  
+  .list-cell {
+    font-size: .875rem;
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    display: inline-flex;
+    align-items: flex-start;
+    
+    &.accent {
+      font-weight: 500;
+      color: var(--primary-text-color);
+    }
+    &.header {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+  }
+
+  @for $i from 1 through 20 {
+    .list-col-#{$i} {
+      flex: 1 1 #{$i * 5%};
+      max-width: #{$i * 5%};
+    }
+  }
+  
+}

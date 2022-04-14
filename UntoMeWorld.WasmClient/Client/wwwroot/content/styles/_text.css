@@ -1,0 +1,21 @@
+﻿.subtitle {
+    color: var(--primary-text-color);
+    font-weight: 500;
+    text-align: left;
+    font-size: .875rem;
+    margin: 0;
+}
+.caption {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    text-align: left;
+    margin: 0;
+    font-size: .75rem;
+}
+.text {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    text-align: left;
+    margin: 0;
+    font-size: .875rem;
+}

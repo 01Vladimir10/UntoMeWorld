@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -17,6 +18,8 @@ builder.Services.AddHttpClient("UntoMeWorld.WasmClient.ServerAPI", client => cli
 builder.Services.AddTransient<IChurchesStore, RemoteChurchesStore>();
 builder.Services.AddTransient<IPastorsStore, RemotePastorsStore>();
 builder.Services.AddTransient<IChildrenStore, RemoteChildrenStore>();
+
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddTransient<IChurchesService, ChurchesService>();
 builder.Services.AddTransient<IPastorService, PastorsService>();

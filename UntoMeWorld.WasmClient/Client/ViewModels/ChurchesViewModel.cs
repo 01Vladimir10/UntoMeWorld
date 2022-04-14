@@ -3,21 +3,20 @@ using UntoMeWorld.WasmClient.Client.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
-public class ChurchesViewModel : GenericViewModel<Church>
+public class ChurchesViewModel : BaseViewModel
 {
-    private readonly IPastorService _pastorsRepository;
+    public List<Church> Churches { get; private set; } = new();
 
-    public ChurchesViewModel(IChurchesService service, IPastorService pastorsRepository) : base(service)
+    private readonly IChurchesService _service;
+
+    public ChurchesViewModel(IChurchesService service)
     {
-        _pastorsRepository = pastorsRepository;
+        _service = service;
     }
 
-    public List<Pastor> Pastors { get; private set; } = new();
-    public IDictionary<string, Pastor> PastorsDictionary => Pastors.ToDictionary(p => p.Id, p => p);
-
-    public async Task UpdatePastors()
+    public async Task UpdateChurches()
     {
-        var pastors = await _pastorsRepository.Paginate();
-        Pastors = pastors.Result.ToList();
+        var churches = await _service.Paginate();
+        Churches = churches.Result;
     }
 }

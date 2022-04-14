@@ -6,7 +6,7 @@ using UntoMeWorld.WasmClient.Client.Services.Base;
 using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
-public abstract class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
+public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
 {
     private readonly IService<TModel> _service;
     private IDictionary<string, TModel> _itemsDictionary = new Dictionary<string, TModel>();

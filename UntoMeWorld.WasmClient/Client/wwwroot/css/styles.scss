@@ -9,6 +9,8 @@
   --surface-color: #fff;
   --menu-bg-color: #fff;
   --shadow-color: #999;
+  --controls-backround-color: #F5F5F5;
+  --shadow-color-2: #dddd;
   
 }
 
@@ -18,8 +20,10 @@ body, * {
 }
 
 @import "components/menu";
+@import "components/searchView";
 @import "components/appbar";
 @import "components/loginDisplay";
+@import "components/list";
 @import "layouts/appLayout";
 @import "utils";
 

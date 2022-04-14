@@ -1,5 +1,6 @@
 ﻿@using Resources
 @using UntoMeWorld.WasmClient.Client.Main
+@inject NavigationManager _manager 
 
 <div class="navigation-menu @(_isExpanded ? "expanded" : "")">
 
@@ -39,7 +40,9 @@
         </NavLink>
     </div>
 </div>
-
+<div class="navigation-menu-overlay @(_isExpanded ? "visible" : "")">
+    
+</div>
 @code {
 
     private bool _isExpanded = false;
@@ -47,6 +50,17 @@
     private void ToggleMenu()
     {
         _isExpanded = !_isExpanded;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        _manager.LocationChanged += (_, _) =>
+        {
+            _isExpanded = false;
+            StateHasChanged();
+        };
     }
 
 }

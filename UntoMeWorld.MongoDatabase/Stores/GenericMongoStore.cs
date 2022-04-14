@@ -14,10 +14,12 @@ namespace UntoMeWorld.MongoDatabase.Stores
 {
     public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel, IRecyclableModel
     {
+        protected readonly MongoDbService _service;
         protected readonly IMongoCollection<TModel> Collection;
 
         protected GenericMongoStore(MongoDbService service, string collection)
         {
+            _service = service;
             Collection = service.GetCollection<TModel>(collection);
         }
 

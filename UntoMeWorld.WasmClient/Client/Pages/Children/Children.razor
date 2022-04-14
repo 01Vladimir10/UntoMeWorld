@@ -1,5 +1,30 @@
 ﻿@page "/children"
-<h5>children</h5>
+
+<div class="list-layout">
+
+    <div class="list-controls">
+        <SearchView
+            Placeholder="Search children"
+            OnSearch="OnSearch"
+            EnableSuggestions="true"
+            MaxSuggestions="4"
+            HistoryCollectionKey="children__queries">
+        </SearchView>
+        <h5>x</h5>
+    </div>
+<h5>@_query</h5>
+</div>
+
+
 @code {
+
+    private string _query;
+
+    private Task OnSearch(string arg)
+    {
+        _query = arg;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 
 }

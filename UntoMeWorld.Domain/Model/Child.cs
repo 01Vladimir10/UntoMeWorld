@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model
@@ -25,6 +26,9 @@ namespace UntoMeWorld.Domain.Model
         public string Lastname { get; set; }
         public int Age { get; set; }
         public Gender Gender { get; set; }
+        
+        [BsonIgnore]
+        public Church Church { get; set; }
 
         public override string ToString()
         {

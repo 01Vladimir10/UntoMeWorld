@@ -1,4 +1,5 @@
 ﻿@using UntoMeWorld.WasmClient.Client.Main
+@inject NavigationManager _manager
 @using Resources
 
 <div class="appbar">
@@ -19,22 +20,24 @@
     [Parameter]
     public string Title { get; set; }
 
-    [Parameter] public NavigationManager Manager { get; set; }
 
     protected override void OnInitialized()
     {
-        Manager.LocationChanged += OnLocationChanged;
-        Title = LangResources.ApplicationName;
+        _manager.LocationChanged += OnLocationChanged;
+        UpdateTitle(_manager.Uri);
         base.OnInitialized();
     }
-    
+
+    private void UpdateTitle(string path)
+    {
+        var url = _manager.ToAbsoluteUri(path).LocalPath;
+        Title = PageRoutes.Routes.ContainsKey(url) ? PageRoutes.Routes[url] : LangResources.ApplicationName;
+        StateHasChanged();
+    }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)
     {
-        var url = Manager.ToAbsoluteUri(e.Location).LocalPath;
-        Console.WriteLine(url);
-        Title = PageRoutes.Routes.ContainsKey(url) ? PageRoutes.Routes[url] : LangResources.ApplicationName;
-        StateHasChanged();
+        UpdateTitle(e.Location);
     }
 
 }
