@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -10,12 +9,6 @@ namespace UntoMeWorld.MongoDatabase.Helpers
 {
     public static class MongoConverterExtensions
     {
-        public static Task<(int totalPages, IReadOnlyList<T> readOnlyList)>
-            QueryByPageAndSort<T>(this IMongoCollection<T> collection, QueryFilter queryFilter, string sortBy,
-                bool sortAsc, int page, int pageSize)
-            where T : IModel
-            => QueryByPageAndSort<T, T>(collection, queryFilter, sortBy, sortAsc, page, pageSize);
-
         public static async Task<(int totalPages, IReadOnlyList<TResult> readOnlyList)>
             QueryByPageAndSort<T, TResult>(this IMongoCollection<T> collection, QueryFilter queryFilter, string sortBy,
                 bool sortAsc, int page, int pageSize,
@@ -63,7 +56,7 @@ namespace UntoMeWorld.MongoDatabase.Helpers
             var first = aggregation[0]
                 .Facets.First(x => x.Name == "count")
                 .Output<AggregateCountResult>()
-                [0];
+                .FirstOrDefault();
 
             var count = first?.Count ?? 0;
 

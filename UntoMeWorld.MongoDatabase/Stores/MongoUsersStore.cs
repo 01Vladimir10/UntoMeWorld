@@ -8,7 +8,7 @@ using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public class MongoUsersStore : GenericMongoStore<AppUser>, IUserStore
+    public class MongoUsersStore : GenericMongoStore<AppUser, AppUser>, IUserStore
     {
         private const string UsersCollectionName = "users";
         public MongoUsersStore(MongoDbService service) : base(service, UsersCollectionName)

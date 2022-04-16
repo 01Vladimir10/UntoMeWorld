@@ -12,14 +12,19 @@ using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public abstract class GenericMongoStore<TModel> : IStore<TModel> where TModel : IModel, IRecyclableModel
+    public abstract class GenericMongoStore<TModel, TReadModel> : IStore<TModel>
+        where TModel : class, IModel, IRecyclableModel
+        where TReadModel : class
     {
-        protected readonly MongoDbService _service;
         protected readonly IMongoCollection<TModel> Collection;
+        private readonly List<IPipelineStageDefinition> _pipelineStages;
+        private readonly Func<TReadModel, TModel> _modelConverter;
 
-        protected GenericMongoStore(MongoDbService service, string collection)
+        protected GenericMongoStore(MongoDbService service, string collection,
+            Func<TReadModel, TModel> modelConverter = null, List<IPipelineStageDefinition> pipelineStages = null)
         {
-            _service = service;
+            _modelConverter = modelConverter ?? (x => x as TModel);
+            _pipelineStages = pipelineStages;
             Collection = service.GetCollection<TModel>(collection);
         }
 
@@ -27,7 +32,8 @@ namespace UntoMeWorld.MongoDatabase.Stores
         {
             try
             {
-                return await Collection.Find(_ => true).ToListAsync();
+                return await Collection.Find(_ => true)
+                    .ToListAsync();
             }
             catch (Exception e)
             {
@@ -51,10 +57,12 @@ namespace UntoMeWorld.MongoDatabase.Stores
         public async Task<PaginationResult<TModel>> Query(QueryFilter filter, string orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
-            var (totalPages, result) = await Collection.QueryByPageAndSort(filter, orderBy, orderDesc, page, pageSize);
+            var (totalPages, result) =
+                await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, orderBy, orderDesc, page, pageSize,
+                    _pipelineStages);
             return new PaginationResult<TModel>
             {
-                Result = result.ToList(),
+                Result = result.Select(_modelConverter).ToList(),
                 TotalPages = totalPages,
                 Page = page
             };
@@ -120,8 +128,22 @@ namespace UntoMeWorld.MongoDatabase.Stores
 
         public async Task<TModel> Get(string id)
         {
-            var item = await Collection.AsQueryable().FirstOrDefaultAsync(i => i.Id == id);
-            return item;
+            if (_pipelineStages == null)
+                return await Collection.AsQueryable().FirstOrDefaultAsync(i => i.Id == id);
+            var dataPipeline =
+                PipelineDefinition<TModel, TReadModel>.Create(_pipelineStages);
+            var facet = AggregateFacet.Create("data", dataPipeline);
+            var aggregation = await Collection
+                .Aggregate()
+                .Match(i => i.Id == id)
+                .Facet(facet)
+                .ToListAsync();
+            var facets = aggregation.FirstOrDefault()
+                ?.Facets;
+            if (facets == null || !facets.Any())
+                return null;
+            var result = facets[0].Output<TReadModel>();
+            return result == null || !result.Any() ? null : _modelConverter(result[0]);
         }
     }
 }

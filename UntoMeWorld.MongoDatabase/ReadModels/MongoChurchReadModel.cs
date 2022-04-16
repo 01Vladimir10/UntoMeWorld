@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using UntoMeWorld.Domain.Model;
 
-namespace UntoMeWorld.MongoDatabase;
+namespace UntoMeWorld.MongoDatabase.ReadModels;
 
 public class MongoChurchReadModel : Church
 {

@@ -25,6 +25,7 @@ try
     builder.Services.AddTransient<IPastorsService, PastorsService>();
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
+    builder.Services.AddSwaggerGen();
 
     builder.Services.Configure<RolesServiceOptions>(builder.Configuration.GetSection("Services").GetSection("RolesService"));
     builder.Services.Configure<UserServiceOptions>(builder.Configuration.GetSection("Services").GetSection("UsersService"));
@@ -56,6 +57,9 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UntoMeWorld API V1"));
     
     app.MapRazorPages();
     app.MapControllers();

@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using UntoMeWorld.Domain.Model.Abstractions;
 
@@ -6,6 +7,7 @@ namespace UntoMeWorld.Domain.Model
 {
     public class Child : IModel, IPerson, IRecyclableModel
     {
+        [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
