@@ -11,6 +11,7 @@
   --shadow-color: #999;
   --controls-backround-color: #F5F5F5;
   --shadow-color-2: #dddd;
+  --hover-color: rgba(171, 171, 171, 0.27);
   
 }
 
@@ -24,6 +25,7 @@ body, * {
 @import "components/appbar";
 @import "components/loginDisplay";
 @import "components/list";
+@import "components/dropDown";
 @import "layouts/appLayout";
 @import "utils";
 

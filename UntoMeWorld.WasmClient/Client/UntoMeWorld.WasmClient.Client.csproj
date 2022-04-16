@@ -9,11 +9,10 @@
   
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +30,10 @@
     <_ContentIncludedByDefault Remove="Components\Layouts\RootLeveledComponent.razor" />
     <_ContentIncludedByDefault Remove="wwwroot\css\icons\phosphor-icons.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\icons\phosphor-icons.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\Icons\PhosphorIconClasses.cs" />
   </ItemGroup>
 
 </Project>

@@ -15,5 +15,5 @@ public class ChurchModel : Church
         IsDeleted = church.IsDeleted;
         IsActive = church.IsActive;
     }
-    public Pastor Pastor { get; set; }
+    public new Pastor Pastor { get; set; }
 }

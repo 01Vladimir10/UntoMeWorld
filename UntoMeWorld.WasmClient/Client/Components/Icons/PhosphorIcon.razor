@@ -1,0 +1,18 @@
+﻿@inherits PhosphorIconBase
+
+@switch (HtmlElement)
+{
+    case HtmlElement.Button:
+        <button class="@AllCssClasses"></button>
+        break;
+    case HtmlElement.Div:
+        <div class="@AllCssClasses"></div>
+        break;
+    case HtmlElement.Span:
+        <span class="@AllCssClasses"></span>
+        break;
+    case HtmlElement.I:
+    default:
+        <i class="@AllCssClasses"></i>
+        break;
+}

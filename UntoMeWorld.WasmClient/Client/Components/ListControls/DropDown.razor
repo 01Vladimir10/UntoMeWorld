@@ -1,0 +1,27 @@
+﻿@typeparam TItem
+@inherits DropDownBase<TItem>
+
+<button class="drop-down@(IsOpened ? " open" : "") @CssClass" type="button" @onclick="OpenDropdown">
+    <span class="sort-by__label">
+        @Placeholder
+    </span>
+    <span class="drop-down__option">
+        @SelectedOption.DisplayValue
+        @SelectedOption.Icon
+    </span>
+    <span>-</span>
+    <i class="drop-down__icon ph-caret-down">
+    </i>
+    <ul class="drop-down__options">
+        @foreach (var option in Options)
+        {
+            <li class="@(option.Value.Equals(SelectedOption.Value) ? "selected" : "")"
+                @onclick="() => OnOptionSelected(option)">
+                <span>
+                    @option.DisplayValue
+                </span>
+                @option.Icon
+            </li>
+        }
+    </ul>
+</button>

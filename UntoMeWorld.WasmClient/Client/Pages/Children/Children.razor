@@ -1,4 +1,5 @@
 ﻿@page "/children"
+@using UntoMeWorld.WasmClient.Client.Components.Icons
 
 <div class="list-layout">
 
@@ -10,13 +11,31 @@
             MaxSuggestions="4"
             HistoryCollectionKey="children__queries">
         </SearchView>
-        <h5>x</h5>
+        <DropDown
+            Placeholder="sort by"
+            Options="_options" OnSelectionChanged="OnSortByChanged" DefaultOption="2">
+
+        </DropDown>
     </div>
-<h5>@_query</h5>
+    <h5>@_query</h5>
+    <h5>Sorty by => @_sortBy</h5>
+
+    <PhosphorIcon
+        IconName="PhosphorIcons.Baby"/>
 </div>
 
 
 @code {
+
+    private readonly List<SortByOption<int>> _options = new()
+    {
+        new SortByOption<int>(1, "Name", PhosphorIcons.Render(PhosphorIcons.ArrowUp)),
+        new SortByOption<int>(2, "Name", PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
+        new SortByOption<int>(3, "Age", PhosphorIcons.Render(PhosphorIcons.ArrowUp)),
+        new SortByOption<int>(4, "Age", PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
+    };
+
+    private int _sortBy = 0;
 
     private string _query;
 
@@ -24,6 +43,12 @@
     {
         _query = arg;
         StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnSortByChanged(int sortBy)
+    {
+        _sortBy = sortBy;
         return Task.CompletedTask;
     }
 
