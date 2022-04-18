@@ -60,13 +60,11 @@ namespace UntoMeWorld.MongoDatabase.Helpers
 
             var count = first?.Count ?? 0;
 
-            var totalPages = (int)count / pageSize;
-
             var data = aggregation.First()
                 .Facets.First(x => x.Name == "data")
                 .Output<TResult>();
 
-            return (totalPages, data);
+            return ((int) count, data);
         }
     }
 }

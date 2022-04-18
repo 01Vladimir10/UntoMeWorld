@@ -1,55 +1,91 @@
 ﻿@page "/children"
-@using UntoMeWorld.WasmClient.Client.Components.Icons
+@using UntoMeWorld.WasmClient.Client.Data.Model
+@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.Domain.Common
+@using UntoMeWorld.WasmClient.Client.Services.Base
+@inject IChurchesService _childrenService
+
 
 <div class="list-layout">
 
     <div class="list-controls">
-        <SearchView
-            Placeholder="Search children"
-            OnSearch="OnSearch"
-            EnableSuggestions="true"
-            MaxSuggestions="4"
-            HistoryCollectionKey="children__queries">
-        </SearchView>
-        <DropDown
-            Placeholder="sort by"
-            Options="_options" OnSelectionChanged="OnSortByChanged" DefaultOption="2">
-
-        </DropDown>
+        <ListControlsLayout IsMultiSelecting="@_listController.IsMultiSelecting">
+            <NormalControls>
+                
+                <SearchView
+                    OnSearch="OnSearchSubmit"
+                    Placeholder="Search children"
+                    EnableSuggestions="true"
+                    MaxSuggestions="4"
+                    HistoryCollectionKey="children__queries">
+                </SearchView>
+                <DropDown
+                    Placeholder="sort by -"
+                    Options="_options"
+                    OnSelectionChanged="OnSortFieldChanged">
+                </DropDown>
+            </NormalControls>
+            <MultiSelectControls>
+                Multi selecting...
+            </MultiSelectControls>
+        </ListControlsLayout>
     </div>
-    <h5>@_query</h5>
-    <h5>Sorty by => @_sortBy</h5>
-
-    <PhosphorIcon
-        IconName="PhosphorIcons.Baby"/>
+    <ListView @ref="_listView"
+              ItemsProvider="_listController.ItemsProvider">
+        <ItemTemplate Context="child">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-1">
+                        <input type="checkbox" class="checkbox" @bind-value="@child.IsSelected"/>
+                    </div>
+                    <div class="col-4">
+                        @child.Item.Name
+                    </div>
+                    <div class="col">
+                        @child.Item.Pastor?.Name
+                    </div>
+                </div>
+            </div>
+        </ItemTemplate>
+    </ListView>
 </div>
 
 
 @code {
+    private ListView<string, Church> _listView;
+    private ListController<string, Church> _listController;
 
-    private readonly List<SortByOption<int>> _options = new()
+    private readonly List<DropDownOption<SortField>> _options = new()
     {
-        new SortByOption<int>(1, "Name", PhosphorIcons.Render(PhosphorIcons.ArrowUp)),
-        new SortByOption<int>(2, "Name", PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
-        new SortByOption<int>(3, "Age", PhosphorIcons.Render(PhosphorIcons.ArrowUp)),
-        new SortByOption<int>(4, "Age", PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
+        new DropDownOption<SortField>(SortField.Desc(nameof(Church.Name)), "Name", PhosphorIcons.Render(PhosphorIcons.ArrowUp)),
+        new DropDownOption<SortField>(SortField.Asc(nameof(Church.Name)), "Name", PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
     };
 
-    private int _sortBy = 0;
-
-    private string _query;
-
-    private Task OnSearch(string arg)
+    protected override async Task OnInitializedAsync()
     {
-        _query = arg;
-        StateHasChanged();
-        return Task.CompletedTask;
+        var paginationHelper = new PaginationHelper<Church>(_childrenService.Paginate) { PageSize = 50 };
+        _listController = new ListController<string, Church>(c => c.Id, paginationHelper)
+        {
+            OnDataRefresh = async () =>
+            {
+                if (_listView != null)
+                    await _listView.Reset();
+            }
+        };
+        await _listController.SetFilter(null);
     }
 
-    private Task OnSortByChanged(int sortBy)
+    private Task OnSortFieldChanged(SortField sortField)
     {
-        _sortBy = sortBy;
-        return Task.CompletedTask;
+        return _listController.SetSortField(sortField);
+    }
+
+    private Task OnSearchSubmit(string query)
+    {
+        return _listController.SetFilter(
+            string.IsNullOrEmpty(query)
+                ? null
+                : QueryLanguage.TextSearch(query));
     }
 
 }

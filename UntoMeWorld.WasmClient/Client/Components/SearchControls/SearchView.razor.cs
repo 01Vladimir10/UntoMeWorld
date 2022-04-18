@@ -5,28 +5,12 @@ using UntoMeWorld.WasmClient.Client.Components.Base;
 
 namespace UntoMeWorld.WasmClient.Client.Components.SearchControls;
 
-public class SearchViewBase : ComponentBase, ISearchView
+public class SearchViewBase : BaseSearchView
 {
     [Inject] public ILocalStorageService LocalStorageService { get; set; }
-    protected bool IsSearching { get; set; }
-
-    [Parameter] public string CssClass { get; set; }
-    [Parameter] public int MaxSuggestions { get; set; } = 10;
-    public string Query { get; set; }
-    protected List<SearchSuggestion> Suggestions { get; set; } = new();
-    [Parameter] public bool EnableSuggestions { get; set; } = true;
-
-    [Parameter] public string HistoryCollectionKey { get; set; }
-
-    [Parameter] public string Placeholder { get; set; }
-
-    [Parameter] public int MinQueryLength { get; set; }
-
-    [Parameter] public Func<string, Task> OnSearch { get; set; }
-
-    [Parameter] public Func<string, Task<IEnumerable<string>>> QuerySuggestionProvider { get; set; }
     private bool _hasHistoryBeenLoaded;
     private HashSet<string> _history;
+    protected List<SearchSuggestion> Suggestions { get; private set; }
 
     protected async Task OnSuggestionClicked(string suggestion)
     {
@@ -72,6 +56,7 @@ public class SearchViewBase : ComponentBase, ISearchView
         var suggestions = new List<SearchSuggestion>();
         if (EnableSuggestions)
             suggestions.AddRange(await GetSearchHistory(query));
+
         if (QuerySuggestionProvider != null)
             suggestions.AddRange(
                 (await QuerySuggestionProvider(query)).Select(s => new SearchSuggestion { Suggestion = s }));
@@ -90,6 +75,7 @@ public class SearchViewBase : ComponentBase, ISearchView
         Query = query;
     }
 
+
     private async Task LoadHistory()
     {
         if (_hasHistoryBeenLoaded)
@@ -104,7 +90,7 @@ public class SearchViewBase : ComponentBase, ISearchView
         await LoadHistory();
         if (_history.Contains(query))
             return;
-        
+
         _history.Add(query);
         await LocalStorageService.SetItemAsync(HistoryCollectionKey, _history);
     }
@@ -112,8 +98,10 @@ public class SearchViewBase : ComponentBase, ISearchView
     private async Task<List<SearchSuggestion>> GetSearchHistory(string query)
     {
         await LoadHistory();
-        return _history
-            .Where(item => item.ToLower().Contains(query.ToLower()))
+        return (string.IsNullOrEmpty(query)
+                ? _history
+                : _history
+                    .Where(item => item.ToLower().Contains(query.ToLower())))
             .Select(h => new SearchSuggestion
             {
                 Suggestion = h,

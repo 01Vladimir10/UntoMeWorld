@@ -57,13 +57,14 @@ namespace UntoMeWorld.MongoDatabase.Stores
         public async Task<PaginationResult<TModel>> Query(QueryFilter filter, string orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
-            var (totalPages, result) =
+            var (totalItems, result) =
                 await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, orderBy, orderDesc, page, pageSize,
                     _pipelineStages);
             return new PaginationResult<TModel>
             {
                 Result = result.Select(_modelConverter).ToList(),
-                TotalPages = totalPages,
+                TotalPages = (int) Math.Ceiling((double) totalItems / pageSize),
+                TotalItems = totalItems,
                 Page = page
             };
         }

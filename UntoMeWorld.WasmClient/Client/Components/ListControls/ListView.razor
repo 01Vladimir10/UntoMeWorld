@@ -1,0 +1,41 @@
+﻿@typeparam TKey
+@typeparam TItem
+@inherits BaseListView<TKey, TItem>
+
+@if (IsLoading)
+{
+    @LoadingTemplate
+}
+else if (IsEmpty)
+{
+    @EmptyTemplate
+}
+else
+{
+    <Virtualize
+        @ref="_virtualize"
+        Context="item"
+        ItemSize="50"
+        OverscanCount="10"
+        ItemsProvider="ItemsProvider">
+        @if (ItemTemplate != null)
+        {
+            @ItemTemplate(item)
+        }
+    </Virtualize>
+}
+
+@code {
+    private Virtualize<ListItem<TKey, TItem>> _virtualize;
+
+
+    public override async Task Reset()
+    {
+        await InvokeAsync(async () =>
+        {
+            await _virtualize.RefreshDataAsync();
+            StateHasChanged();
+        });
+    }
+
+}

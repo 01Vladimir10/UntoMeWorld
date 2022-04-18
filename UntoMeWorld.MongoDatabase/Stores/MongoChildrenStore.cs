@@ -10,7 +10,8 @@ namespace UntoMeWorld.MongoDatabase.Stores
     {
         private const string ChildrenCollectionName = "children";
         public MongoChildrenStore(MongoDbService service) :
-            base(service, ChildrenCollectionName, readModel =>
+            base(service, ChildrenCollectionName,
+                readModel =>
                 {
                     var child = readModel as Child;
                     child.Church = readModel.Church;

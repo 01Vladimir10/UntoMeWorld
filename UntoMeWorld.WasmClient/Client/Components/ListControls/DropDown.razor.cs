@@ -7,13 +7,13 @@ public class DropDownBase<T> : BaseDropDown<T>
     protected bool IsOpened { get; private set; }
 
     private bool _isFirstTime = true;
-    
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         if (!_isFirstTime)
             return;
-        
+
         SelectedOption = Options.First();
         if (DefaultOption != null)
             SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(DefaultOption));
@@ -25,10 +25,9 @@ public class DropDownBase<T> : BaseDropDown<T>
         IsOpened = !IsOpened;
     }
 
-    protected async Task OnOptionSelected(SortByOption<T> option)
+    protected Task OnOptionSelected(DropDownOption<T> option)
     {
         SelectedOption = option;
-        await OnSelectionChanged(option.Value);
+        return OnSelectionChanged == null ? Task.CompletedTask : OnSelectionChanged.Invoke(option.Value);
     }
-
 }

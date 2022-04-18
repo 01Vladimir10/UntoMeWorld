@@ -2,51 +2,5 @@
 @using UntoMeWorld.WasmClient.Client.Services.Base
 @using UntoMeWorld.WasmClient.Client.ViewModels
 @using UntoMeWorld.Domain.Model
-@inject IChurchesService _churchesService
-@inject IPastorService _pastorService
 
-<ListView TItem="Church" Items="@(_viewModel.Churches)">
-    <Header>
-        <div class="list-row">
-            <div class="list-col-8">
-                <div class="list-cell header">
-                    Name
-                </div>
-            </div>
-            <div class="list-col">
-                <div class="list-cell header">
-                    Pastor
-                </div>
-            </div>
-        </div>
-    </Header>
-    <ItemTemplate>
-        <div class="list-row">
-            <div class="list-col-8">
-                <div class="list-cell accent">
-                    @context.Name
-                </div>
-            </div>
-            <div class="list-col">
-                <div class="list-cell">
-                    @($"{context.Pastor?.Name} {context.Pastor?.Lastname}")
-                </div>
-            </div>
-            <div class="list-col-1">
-            </div>
-        </div>
-    </ItemTemplate>
-</ListView>
-
-@code {
-    private ChurchesViewModel _viewModel;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _viewModel = new ChurchesViewModel(_churchesService);
-        await _viewModel.UpdateChurches();
-    }
-
-}
+<h5>churches</h5>

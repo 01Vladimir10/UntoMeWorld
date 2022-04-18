@@ -7,5 +7,6 @@ namespace UntoMeWorld.Domain.Common
         public int Page { get; set; }
         public int TotalPages { get; set; }
         public List<T> Result { get; set; }
+        public int TotalItems { get; set; }
     }
 }

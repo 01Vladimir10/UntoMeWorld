@@ -10,6 +10,7 @@ public class PhosphorIconBase : Icon
         IconWeight.Thin => "-thin",
         IconWeight.Light => "-light",
         IconWeight.Bold => "-bold",
+        IconWeight.Fill => "-fill",
         _ => ""
     };
     protected string AllCssClasses => $"{IconName}{WeightClass} {CssClass}";

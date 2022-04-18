@@ -6,7 +6,7 @@ namespace UntoMeWorld.WasmClient.Client.Services;
 
 public class ChildrenService : GenericService<Child>, IChildrenService
 {
-    public ChildrenService(IStore<Child> store) : base(store)
+    public ChildrenService(IChildrenStore store) : base(store)
     {
     }
 }

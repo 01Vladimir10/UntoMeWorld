@@ -53,7 +53,7 @@
 
     .search-view-suggestion {
       display: flex;
-      padding: .25em 1em;
+      padding: 1em;
       align-items: center;
       cursor: pointer;
       background-color: var(--surface-color);
@@ -63,6 +63,7 @@
         color: var(--secondary-text-color);
         font-size: .75rem;
         font-weight: 500;
+        margin: 0;
       }
       .search-view-suggestion__icon {
         font-size: 1rem;

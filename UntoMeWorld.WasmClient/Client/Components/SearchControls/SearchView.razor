@@ -1,13 +1,13 @@
 ﻿@inherits SearchViewBase
 
-<div class="search-view @CssClass"
-     @onfocusin="() => IsSearching = true">
+<div class="search-view @CssClass">
     
     <i class="search-view__icon ph-magnifying-glass">
     </i>
     <input
         @bind="Query"
         @onkeydown="OnInputKeyDown"
+        @onfocusin="() => IsSearching = true"
         @oninput="OnQueryChanged"
         type="text"
         class="search-view__input"
@@ -32,8 +32,6 @@
                     }
                 </li>
             }
-
         </ul>
     }
-
 </div>
