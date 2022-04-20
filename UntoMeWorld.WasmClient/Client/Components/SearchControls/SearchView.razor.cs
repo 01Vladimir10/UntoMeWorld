@@ -45,6 +45,12 @@ public class SearchViewBase : BaseSearchView
         }
     }
 
+    protected void OnSearchFocusIn()
+    {
+        IsSearching = true;
+        StateHasChanged();
+    }
+
     protected async Task OnInputKeyDown(KeyboardEventArgs args)
     {
         if (args.Key == "Enter")

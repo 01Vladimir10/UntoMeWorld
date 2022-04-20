@@ -1,0 +1,32 @@
+﻿@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
+@implements UntoMeWorld.WasmClient.Client.Components.Base.IComponent
+
+
+<div class="expandable-item @RazorUtils.If(IsExpanded, "expanded") @CssClass">
+    <div class="expandable-item__content" @onclick="Toggle">
+        @ItemTemplate
+    </div>
+    <div class="expandable-item__expandable-content">
+        @ExpandedContentTemplate
+    </div>
+</div>
+
+@code {
+    private bool IsExpanded { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    private void Toggle()
+    {
+        IsExpanded = !IsExpanded;
+    }
+
+#nullable enable
+    [Parameter]
+    public RenderFragment? ItemTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? ExpandedContentTemplate { get; set; }
+#nullable disable
+}

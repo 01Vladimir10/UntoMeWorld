@@ -79,10 +79,18 @@ public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableMod
 
     private static async Task<TResult> InterpretServerResponse<TResult>(Task<ResponseDto<TResult>> callback)
     {
-        var result = await callback;
-        if (result.IsSuccessful)
-            return result.Data;
-        throw new Exception(result.ErrorMessage);
+        try
+        {
+            var result = await callback;
+            if (result.IsSuccessful)
+                return result.Data;
+            throw new Exception(result.ErrorMessage);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            throw;
+        }
     }
 }
 

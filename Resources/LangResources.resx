@@ -33,4 +33,7 @@
     <data name="ApplicationName" xml:space="preserve">
         <value>Untome World</value>
     </data>
+    <data name="FormatChildName" xml:space="preserve">
+        <value>{0} {1}</value>
+    </data>
 </root>

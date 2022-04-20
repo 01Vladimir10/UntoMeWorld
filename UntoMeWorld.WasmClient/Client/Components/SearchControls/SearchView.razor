@@ -7,7 +7,7 @@
     <input
         @bind="Query"
         @onkeydown="OnInputKeyDown"
-        @onfocusin="() => IsSearching = true"
+        @onfocusin="OnSearchFocusIn"
         @oninput="OnQueryChanged"
         type="text"
         class="search-view__input"
