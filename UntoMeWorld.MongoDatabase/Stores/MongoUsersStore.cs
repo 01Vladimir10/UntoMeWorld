@@ -4,14 +4,14 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.MongoDatabase.Common;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
     public class MongoUsersStore : GenericMongoStore<AppUser, AppUser>, IUserStore
     {
-        private const string UsersCollectionName = "users";
-        public MongoUsersStore(MongoDbService service) : base(service, UsersCollectionName)
+        public MongoUsersStore(MongoDbService service) : base(service, DbCollections.Users)
         {
             
         }

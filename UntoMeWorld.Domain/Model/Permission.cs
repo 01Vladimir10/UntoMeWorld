@@ -16,5 +16,6 @@
     public static class ResourceTypes
     {
         public const string ApiEndPoint = "ApiEndpoint";
+        public const string Wildcard = "*";
     }
 }
