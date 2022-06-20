@@ -16,6 +16,7 @@
     justify-content: center;
     color: var(--primary-text-color);
     align-items: center;
+    cursor: pointer;
   }
   &:hover .login-display__content {
     display: inline-flex;
@@ -49,6 +50,7 @@
       font-weight: 400;
       font-size: .825rem;
       padding: 0;
+      cursor: pointer;
       color: var(--secondary-text-color);
     }
   }

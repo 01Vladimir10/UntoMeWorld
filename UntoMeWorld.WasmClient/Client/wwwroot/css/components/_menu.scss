@@ -8,7 +8,7 @@
   overflow: hidden;
   background-color: var(--menu-bg-color);
   padding: .25em 0;
-  box-shadow: 1px -1px 5px var(--shadow-color);
+  box-shadow: 2px 1px 5px var(--shadow-color);
   z-index: 10;
 
   .navigation-menu__toggle {
@@ -34,6 +34,13 @@
     
     &, &:active, &:hover, &:focus {
       text-decoration: none;
+
+    }
+    
+    &:hover {
+      .navigation-menu-item__icon {
+        border-radius: 50%;
+      }
     }
     
     .navigation-menu-item__title {
@@ -49,6 +56,7 @@
       padding: .5em;
       border-radius: .375em;
       margin: 0 .5em;
+      transition: all .2s ease-in-out;
     }
     &.active {
 
@@ -72,6 +80,7 @@
     left: 0;
     box-shadow: -1px 1px 6px var(--shadow-color);
     padding: 0 .25rem;
+    transition: all 200ms ease;
     
     &.expanded {
       width: 14rem;
@@ -230,18 +239,20 @@
 .navigation-menu-overlay {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
-  right: 0;
+  left: 0;
   max-width: 0;
   opacity: 0;
-  background: linear-gradient(to right, #ddd8, #ddd2);
+  
+  background: linear-gradient(to left, transparent, var(--secondary-text-color));
   z-index: 9;
   display: none;
-  transition: all 200ms ease;
+  width: 100%;
+  transition: opacity .2s linear;
+  
   &.visible{
-    opacity: 1;
-    max-width: 200vw;
+    opacity: .125;
+    max-width: 100vw;
   }
   @media only screen and (min-width: 720px) {
     display: block;

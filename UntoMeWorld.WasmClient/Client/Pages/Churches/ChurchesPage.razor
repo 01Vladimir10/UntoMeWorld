@@ -1,6 +1,24 @@
 ﻿@page "/churches"
-@using UntoMeWorld.WasmClient.Client.Services.Base
-@using UntoMeWorld.WasmClient.Client.ViewModels
-@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.Security
+@using UntoMeWorld.Domain.Security
+@inject HttpClient Client;
 
-<h5>churches</h5>
+<h5>
+    @_permissions
+</h5>
+@code {
+
+    [CascadingParameter]
+    public IAuthorizationProvider AuthorizationProvider { get; set; }
+    
+    private string _permissions = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _permissions += $"Can Read children {await AuthorizationProvider.IsAuthorizedAsync("Children", PermissionType.Read)}\n";
+        _permissions += $"Can Purge children {await AuthorizationProvider.IsAuthorizedAsync("Children", PermissionType.Purge)}";
+    }
+
+
+}

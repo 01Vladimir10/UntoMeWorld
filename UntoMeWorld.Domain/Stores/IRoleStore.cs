@@ -8,6 +8,6 @@ namespace UntoMeWorld.Domain.Stores
     {
         public Task<List<Role>> GetByUser(string userId);
         public Task<Role> GetByRoleName(string roleName);
-        public Task<IDictionary<string, Role>> GetByRoleName(params string[] roleNames);
+        public Task<List<Role>> GetByRoleName(IEnumerable<string> roleNames);
     }
 }

@@ -1,10 +1,12 @@
-﻿.search-view {
+﻿@import "../variables";
+
+.search-view {
   display: flex;
   align-items: center;
   background-color: var(--controls-backround-color);
-  padding: .375rem .75rem;
+  padding: $controlsPadding;
   position: relative;
-  border-radius: .25rem;
+  border-radius: .5rem;
   
   .search-view__icon {
     font-size: 1rem;
