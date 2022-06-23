@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Client;
-using UntoMeWorld.WasmClient.Client.Data.Repo;
-using UntoMeWorld.WasmClient.Client.Data.Repo.Base;
 using UntoMeWorld.WasmClient.Client.Data.Stores;
 using UntoMeWorld.WasmClient.Client.Services;
 using UntoMeWorld.WasmClient.Client.Services.Base;
