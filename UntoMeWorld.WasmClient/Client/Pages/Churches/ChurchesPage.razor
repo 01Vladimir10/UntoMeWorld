@@ -1,24 +1,20 @@
 ﻿@page "/churches"
-@using UntoMeWorld.WasmClient.Client.Security
 @using UntoMeWorld.Domain.Security
-@inject HttpClient Client;
 
 <h5>
-    @_permissions
+    <AuthorizationContext ApiResource="ApiResource.Children">
+        <AuthorizedPanel
+            RequiredPermission="PermissionType.Read">
+            <h4>Read permission</h4>
+        </AuthorizedPanel>
+        <AuthorizedPanel
+            RequiredPermission="PermissionType.Purge">
+            <h4>Purge permission</h4>
+        </AuthorizedPanel>
+    </AuthorizationContext>
 </h5>
+
 @code {
-
-    [CascadingParameter]
-    public IAuthorizationProvider AuthorizationProvider { get; set; }
-    
-    private string _permissions = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _permissions += $"Can Read children {await AuthorizationProvider.IsAuthorizedAsync("Children", PermissionType.Read)}\n";
-        _permissions += $"Can Purge children {await AuthorizationProvider.IsAuthorizedAsync("Children", PermissionType.Purge)}";
-    }
 
 
 }

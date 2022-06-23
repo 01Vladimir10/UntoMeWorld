@@ -20,4 +20,15 @@ public class ResponseDto<T>
             IsSuccessful = false,
             ErrorMessage = error
         };
+
+    public Exception ToException()
+        => new ApiCallException(ErrorMessage);
+}
+
+public class ApiCallException : Exception
+{
+    public ApiCallException(string error) : base(
+        "An unexpected error occured while executing a call to the API, error message: " + error)
+    {
+    }
 }

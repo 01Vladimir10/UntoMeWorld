@@ -29,13 +29,3 @@ public static class AuthPolicies
     public const string UsersOnly = "UserAuthenticationOnly";
     public const string TokenAuthenticationOnly = "TokenAuthenticationOnly";
 }
-
-public enum ResourceType
-{
-    Children,
-    Pastors,
-    Churches,
-    Roles,
-    Tokens,
-    Unknown
-}

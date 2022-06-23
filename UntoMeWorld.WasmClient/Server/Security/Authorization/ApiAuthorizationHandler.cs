@@ -14,7 +14,7 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
 {
     private readonly IApiAuthorizationService _authorization;
     private readonly IHttpContextAccessor _contextAccessor;
-    private readonly CacheHelper<(ResourceType, PermissionType), string> _actionsCache;
+    private readonly CacheHelper<(ApiResource, PermissionType), string> _actionsCache;
 
     public ApiAuthorizationHandler(IApiAuthorizationService authorization, IHttpContextAccessor contextAccessor,
         IMemoryCache cache)
@@ -22,7 +22,7 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
         _authorization = authorization;
         _contextAccessor = contextAccessor;
         _actionsCache =
-            new CacheHelper<(ResourceType, PermissionType), string>(cache, "ApiEndpointAttributes__",
+            new CacheHelper<(ApiResource, PermissionType), string>(cache, "ApiEndpointAttributes__",
                 TimeSpan.MaxValue);
     }
 
@@ -47,7 +47,7 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
         ApiAuthorizationRequirement requirement)
     {
         var (resource, permissionType) = await GetExecutingEndpointMetadata();
-        if (resource == ResourceType.Unknown || permissionType == PermissionType.Unknown)
+        if (resource == ApiResource.Unknown || permissionType == PermissionType.Unknown)
         {
             return;
         }
@@ -62,28 +62,28 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
         context.Fail();
     }
 
-    private Task<(ResourceType, PermissionType)> GetExecutingEndpointMetadata()
+    private Task<(ApiResource, PermissionType)> GetExecutingEndpointMetadata()
         => _actionsCache.Get($"{CurrentRequestController}_{CurrentRequestAction}", () =>
         {
             var metadata = HttpContext.GetEndpoint()?.Metadata ?? new EndpointMetadataCollection();
             var resourceAttr = metadata.OfType<ResourceNameAttribute>().FirstOrDefault();
             var permissionAttr = metadata.OfType<RequiredPermissionAttribute>().FirstOrDefault();
-            var resource = resourceAttr?.Resource ?? ResourceType.Unknown;
+            var resource = resourceAttr?.ApiResource ?? ApiResource.Unknown;
             var permission = permissionAttr?.RequiredPermission ?? PermissionType.Unknown;
             return Task.FromResult((resource, permission));
         });
 
-    private async Task<bool> ValidateUserAuthenticatedRequest(ResourceType resource, PermissionType permission)
+    private async Task<bool> ValidateUserAuthenticatedRequest(ApiResource apiResource, PermissionType permission)
     {
         if (!IsUserAuthenticated || CurrentUser == null)
             return false;
-        return await _authorization.ValidateUserAuthenticatedRequest(CurrentUser, resource, permission);
+        return await _authorization.ValidateUserAuthenticatedRequest(CurrentUser, apiResource, permission);
     }
 
-    private async Task<bool> ValidateTokenAuthenticatedRequest(ResourceType resource, PermissionType permission)
+    private async Task<bool> ValidateTokenAuthenticatedRequest(ApiResource apiResource, PermissionType permission)
     {
         if (!IsTokenAuthenticated || string.IsNullOrEmpty(CurrentAuthToken))
             return false;
-        return await _authorization.ValidateTokenAuthenticatedRequest(CurrentAuthToken, resource, permission);
+        return await _authorization.ValidateTokenAuthenticatedRequest(CurrentAuthToken, apiResource, permission);
     }
 }

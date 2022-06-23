@@ -24,33 +24,33 @@ public class ApiAuthorizationService : IApiAuthorizationService
             throw new InvalidServiceConfigurationError("the AuthorizationServiceOptions cannot be null");
     }
 
-    public async Task<bool> ValidateUserAuthenticatedRequest(AppUser user, ResourceType resource,
+    public async Task<bool> ValidateUserAuthenticatedRequest(AppUser user, ApiResource apiResource,
         PermissionType requiredPermission)
     {
         if (user == null || user.IsDisabled || user.IsDeleted || await _users.IsDisabled(user.Id))
             return false;
         var permissions = await _roles.GetEffectivePermissionByRole(user.Roles);
-        return ValidateActionOnController(permissions, resource, requiredPermission);
+        return ValidateActionOnController(permissions, apiResource, requiredPermission);
     }
 
-    public async Task<bool> ValidateTokenAuthenticatedRequest(string jwtToken, ResourceType resource,
+    public async Task<bool> ValidateTokenAuthenticatedRequest(string jwtToken, ApiResource apiResource,
         PermissionType requiredPermission)
     {
         if (string.IsNullOrEmpty(jwtToken) || !await _tokens.Validate(jwtToken))
             return false;
         var token = _tokens.Read(jwtToken);
         var permissions = await _roles.GetEffectivePermissionByRole(token.Roles);
-        return ValidateActionOnController(permissions, resource, requiredPermission);
+        return ValidateActionOnController(permissions, apiResource, requiredPermission);
     }
 
     #region PermissionsEvaluators
 
-    private bool ValidateActionOnController(IDictionary<string, Permission> permissions, ResourceType resource,
+    private bool ValidateActionOnController(IDictionary<string, Permission> permissions, ApiResource apiResource,
         PermissionType permissionType)
     {
         Permission permission;
-        if (permissions.ContainsKey(resource.ToString()))
-            permission = permissions[resource.ToString()];
+        if (permissions.ContainsKey(apiResource.ToString()))
+            permission = permissions[apiResource.ToString()];
         else if (permissions.ContainsKey("*"))
             permission = permissions["*"];
         else

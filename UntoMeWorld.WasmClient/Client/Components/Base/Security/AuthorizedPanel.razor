@@ -1,0 +1,11 @@
+﻿@inherits AuthorizedControl
+
+@if (IsAuthorized)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
