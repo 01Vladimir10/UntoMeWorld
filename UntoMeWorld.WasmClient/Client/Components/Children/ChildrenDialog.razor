@@ -1,0 +1,55 @@
+﻿@using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
+@inherits BaseDialog<UntoMeWorld.Domain.Model.Child, bool>
+
+<div class="dialog">
+    <div class="dialog-header">
+        <h5 class="text title text-primary font-bold">
+            @(IsNewChild ? "New Child" : "Edit Child")
+        </h5>
+    </div>
+
+    <div class="dialog-content">
+        <h5 class="text subtitle underline">
+            Personal Information
+        </h5>
+
+        <div class="form-row">
+            <div class="form-input">
+                <label class="text caption emphasis">Name</label>
+                <input type="text">
+            </div>
+            <div class="form-input">
+                <label class="text caption emphasis">Name</label>
+                <input type="text">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="dialog-footer">
+
+        <Button
+            Text="Cancel"
+            IconName="@PhosphorIcons.XCircle">
+        </Button>
+
+        <Button
+            OnClick="Close"
+            Text="Save"
+            Style="@ButtonStyle.Primary"
+            IconName="@PhosphorIcons.FloppyDisk">
+        </Button>
+    </div>
+
+</div>
+
+@code {
+
+    private bool IsNewChild => Parameter == default;
+
+    private async Task Close()
+    {
+        await OnCloseAsync(false);
+    }
+
+}

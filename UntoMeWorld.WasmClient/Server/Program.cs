@@ -60,6 +60,7 @@ try
 
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UntoMeWorld API V1"));
+    app.MapSwagger();
     
     app.MapRazorPages();
     app.MapControllers();

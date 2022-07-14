@@ -1,0 +1,78 @@
+﻿.button {
+  --button-color: black;
+  --button-on-color: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  font-size: .875rem;
+  border-radius: .25em;
+  padding: .5em 1em;
+  justify-content: center;
+  gap: .5em;
+  background-color: transparent;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  margin: .125em;
+  font-weight: 500;
+  transition: all 200ms ease;
+  color: var(--button-color);
+  z-index: 1;
+
+  &.primary {
+    --button-color: var(--primary-color);
+    --button-on-color: var(--on-primary-color);
+  }
+
+  &.danger {
+    --button-color: var(--danger-color);
+    --button-on-color: var(--on-danger-color);
+  }
+
+  &::after, &::before {
+    position: absolute;
+    content: '';
+  }
+
+  &::before {
+    z-index: -1;
+    background-color: var(--button-color);
+    opacity: .25;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  &::after {
+    z-index: 0;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    max-width: 0;
+    aspect-ratio: 1;
+    background-color: var(--button-color);
+    transform: translate(-50%, -50%);
+    transition: all 250ms ease;
+  }
+
+  &:hover, &:focus, &:active {
+    text-decoration: none;
+    outline: none;
+    box-shadow: 0 0 8px var(--shadow-color);
+    color: var(--button-on-color);
+    background-color: transparent;
+
+    &::after {
+      max-width: 120%;
+    }
+  }
+  
+  .button__text, .button__icon {
+    z-index: 1;
+    color: inherit;
+    transition: all 100ms linear;
+  }
+
+}

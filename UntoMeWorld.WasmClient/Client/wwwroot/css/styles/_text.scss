@@ -1,0 +1,70 @@
+﻿h1, h2, h3, h4, h5 {
+  margin: 0;
+}
+
+.text {
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--primary-text-color);
+
+  &.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: .75em;
+  }
+
+  &.subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: .5em 0;
+  }
+
+  &.accent {
+    color: var(--primary-color);
+  }
+
+  &.secondary {
+    color: var(--secondary-text-color);
+  }
+
+  &.emphasis {
+    font-weight: 600;
+  }
+  
+  &.underline {
+    padding-bottom: .125em;
+    border-bottom: 1px solid var(--shadow-color-2);
+  }
+}
+
+.form-row {
+  display: grid;
+  margin-bottom: .5rem;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  
+  
+  & > * {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  
+}
+.form-input {
+  display: block;
+  
+  label {
+    display: block;
+  }
+  
+  input {
+    display: block;
+    min-width: 20ch;
+    padding: .5em .75em;
+    font-size: .875rem;
+    background-color: var(--controls-backround-color);
+    border-radius: .25em;
+    border: none;
+    width: 100%;
+  }
+}

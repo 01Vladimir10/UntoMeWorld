@@ -3,17 +3,13 @@
 @using UntoMeWorld.Domain.Model
 @using UntoMeWorld.Domain.Common
 @using UntoMeWorld.WasmClient.Client.Services.Base
-@using Resources
-@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
-@inject IChildrenService _childrenService
+@inject IChildrenService ChildrenService
 
 
 <div class="list-layout">
-
     <div class="list-controls">
         <ListControlsLayout IsMultiSelecting="@_listController.IsMultiSelecting">
             <NormalControls>
-
                 <SearchView
                     OnSearch="OnSearchSubmit"
                     Placeholder="Search children"
@@ -26,6 +22,9 @@
                     Options="_options"
                     OnSelectionChanged="OnSortFieldChanged">
                 </DropDown>
+                <Button Text="Open Dialog" OnClick="OpenDialog">
+                    
+                </Button>
             </NormalControls>
             <MultiSelectControls>
                 Multi selecting...
@@ -33,74 +32,14 @@
         </ListControlsLayout>
     </div>
     
-    <div class="d-flex text-sm font-medium text-left p-3">
-        <div class="col-8 col-m2-5 text-primary">
-            Name & church
-        </div>
-        <div class="col-2 col-md-1 text-primary">
-            Age
-        </div>
-        <div class="col-2 col-md-1 text-primary">
-            Gender
-        </div>
-        <div class="col-md-1 text-primary d-none d-md-block">
-            Sponsored
-        </div>
-    </div>
-    <ListView @ref="_listView"
-              ItemsProvider="_listController.ItemsProvider">
-        <ItemTemplate Context="item">
-            @{
-                var child = item.Item;
-            }
-            <ExpandableItem>
-                <ItemTemplate>
-                    <div class="d-flex text-sm  text-left font-normal ">
-                        <div class="col-8 col-md-5">
-                            <span class="text-normal font-medium d-block">
-                                @string.Format(LangResources.FormatChildName, child.Name, child.Lastname)
-                            </span>
-                            <span class="text-secondary d-block">
-                                @(child.Church?.Name)
-                            </span>
-                        </div>
-                        <div class="col-2 col-md-1">
-                            <div class="d-flex justify-content-center flex-column h-100">
-
-                                <span class="text-secondary">
-                                    @child.Age
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-2 col-md-1">
-                            <div class="d-flex justify-content-center flex-column h-100">
-                                <span class="text-secondary">
-                                    @child.Gender
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-1 d-none d-md-block">
-
-                            <div class="d-flex justify-content-center flex-column h-100">
-
-                                <span class="text-secondary">
-                                    @RazorUtils.BoolToString(child.IsSponsored)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </ItemTemplate>
-                <ExpandedContentTemplate>
-                    <h5>test</h5>
-                </ExpandedContentTemplate>
-            </ExpandableItem>
-        </ItemTemplate>
-    </ListView>
+    <ChildrenList @ref="_listView" ItemsProvider="_listController.ItemsProvider"/>
+    
 </div>
 
 
 @code {
-    private ListView<string, Child> _listView;
+    [CascadingParameter] public DialogsService DialogService { get; set; }
+    private ChildrenList _listView;
     private ListController<string, Child> _listController;
 
     private readonly List<DropDownOption<SortField>> _options = new()
@@ -109,9 +48,21 @@
         new DropDownOption<SortField>(SortField.Asc(nameof(Child.Name)), "Name", PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
     };
 
+
+    private Task OpenDialog()
+    {
+        DialogService.ShowDialogAsync<ChildrenDialog, Child, bool>(null, result =>
+        {
+            Console.WriteLine("Dialog returned: {0}", result);
+            return Task.CompletedTask;
+        }, false);
+        
+        return Task.CompletedTask;
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        var paginationHelper = new PaginationHelper<Child>(_childrenService.Paginate) { PageSize = 50 };
+        var paginationHelper = new PaginationHelper<Child>(ChildrenService.Paginate) { PageSize = 50 };
         _listController = new ListController<string, Child>(c => c.Id, paginationHelper)
         {
             OnDataRefresh = async () =>

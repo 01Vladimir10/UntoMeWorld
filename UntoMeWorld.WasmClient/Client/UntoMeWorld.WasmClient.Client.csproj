@@ -35,5 +35,7 @@
   <ItemGroup>
     <Compile Remove="Components\Icons\PhosphorIconClasses.cs" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Content Update="wwwroot\css\**" Watch="false" />
+  </ItemGroup>
 </Project>

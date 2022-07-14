@@ -1,0 +1,36 @@
+﻿@using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
+@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
+@inherits BaseHtmlComponent
+
+@if (IsVisible)
+{
+    <button class="button @StyleClass @CssClass"
+            @onclick="OnClick"
+            id="@RazorUtils.If(!string.IsNullOrEmpty(Id), Id)">
+        @if (!string.IsNullOrEmpty(IconName))
+        {
+            <PhosphorIcon IconName="IconName" Weight="IconWeight" CssClass="button__icon"/>
+        }
+        <span class="button__text">
+            @Text
+        </span>
+    </button>
+}
+
+
+@code {
+    [Parameter]
+    public string IconName { get; set; }
+
+    [Parameter]
+    public IconWeight IconWeight { get; set; } = IconWeight.Bold;
+
+    [Parameter]
+    public ButtonStyle Style { get; set; } = ButtonStyle.Flat;
+    
+    [Parameter]
+    public string Text { get; set; }
+
+    private string StyleClass => Style.ToString().ToLower();
+
+}

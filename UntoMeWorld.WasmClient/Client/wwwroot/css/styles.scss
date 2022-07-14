@@ -1,6 +1,7 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap');
 :root {
   --primary-color: #0283FB;
+  --on-primary-color: #fff;
   --primary-color-light: hsla(209, 98%, 50%, 0.25);
   --primary-text-color: #555555;
   --secondary-text-color: rgba(102, 102, 102, 0.62);
@@ -12,7 +13,8 @@
   --controls-backround-color: #F5F5F5;
   --shadow-color-2: #dddd;
   --hover-color: rgba(171, 171, 171, 0.27);
-  
+  --danger-color: #DD4242;
+  --on-danger-color: white;
 }
 
 body, * {
@@ -20,16 +22,26 @@ body, * {
   color: var(--primary-text-color);
 }
 
+
+@import "styles/text";
+@import "styles/buttons";
+
 @import "components/menu";
 @import "components/searchView";
 @import "components/appbar";
 @import "components/loginDisplay";
+@import "components/expandableItem";
 @import "components/list";
+@import "components/listItem";
 @import "components/dropDown";
+@import "components/dialog";
+
 
 @import "layouts/root";
 @import "layouts/appLayout";
 @import "utils";
+
+
 
 
 

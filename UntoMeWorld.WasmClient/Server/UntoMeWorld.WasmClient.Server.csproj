@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\UntoMeWorld.MongoDatabase\UntoMeWorld.MongoDatabase.csproj" />
     <ProjectReference Include="..\Client\UntoMeWorld.WasmClient.Client.csproj" />
     <ProjectReference Include="..\Shared\UntoMeWorld.WasmClient.Shared.csproj" />
+    
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +27,8 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="1.16.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.16.0" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <Watch Update="wwwroot\css\**" Watch="false"/>
+  </ItemGroup>
 </Project>

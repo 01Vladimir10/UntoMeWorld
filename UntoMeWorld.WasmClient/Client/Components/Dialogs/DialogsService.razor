@@ -1,0 +1,54 @@
+﻿@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
+<div class="dialog-container" data-open="@IsDialogOpen.ToString().ToLower()">
+    <div class="dialog-backdrop" @onclick="OnBackdropClick">
+    </div>
+    <div class="dialog-wrapper">
+        @_dialog
+    </div>
+</div>
+
+@code {
+    private bool IsDialogOpen { get; set; }
+
+    private RenderFragment _dialog;
+
+    private bool IsCancellable { get; set; }
+
+    private Func<Task> _onClose;
+
+    private async Task OnBackdropClick()
+    {
+        if (IsCancellable)
+        {
+            IsDialogOpen = false;
+            _dialog = _ => { };
+            await _onClose();
+        }
+    }
+
+    public void ShowDialogAsync<TDialog, TParameter, TResult>(TParameter parameter, Func<TResult, Task> onClose, bool isCancellable = true, TResult defaultResult = default) where TDialog : BaseDialog<TParameter, TResult>
+    {
+        Task CloseDialogParam(TResult result)
+        {
+            IsDialogOpen = false;
+            _dialog = _ => { };
+            StateHasChanged();
+            return onClose(result);
+        }
+
+        IsCancellable = isCancellable;
+        // Executed when closed forcefully
+        _onClose = () => onClose(defaultResult);
+
+        _dialog = builder =>
+        {
+            builder.OpenComponent<TDialog>(0);
+            builder.AddAttribute(1, nameof(BaseDialog<TParameter, TResult>.Parameter), parameter);
+            builder.AddAttribute(2, nameof(BaseDialog<TParameter, TResult>.OnCloseAsync), (Func<TResult, Task>)CloseDialogParam);
+            builder.CloseComponent();
+        };
+        IsDialogOpen = true;
+        StateHasChanged();
+    }
+
+}

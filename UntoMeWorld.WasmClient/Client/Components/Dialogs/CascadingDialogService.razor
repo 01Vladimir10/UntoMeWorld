@@ -1,0 +1,12 @@
+﻿
+
+<CascadingValue Value="_service">
+    <DialogsService @ref="_service"/>
+    @ChildContent
+</CascadingValue>
+
+@code {
+    private DialogsService _service;
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}
