@@ -48,23 +48,28 @@ public class ApiAuthorizationService : IAuthorizationProviderService
     
     private async Task<Dictionary<ApiResource, Permission>> GetCurrentUsersPermission()
     {
-        var response =
-            await _httpClient.GetJsonAsync<Dictionary<string, Permission>>(
-                ApiRoutes.Roles.GetCurrentUserPermissions);
-        if (!response.IsSuccessful || response.Data == null)
-            throw response.ToException();
-        var permissions = response.Data;
-        var result = new Dictionary<ApiResource, Permission>();
-
-        foreach (var resource in permissions.Keys.Where(resource => resource != null))
+        try
         {
-            if (Enum.TryParse<ApiResource>(resource, out var apiResource))
-                result[apiResource] = permissions[resource];
-            else
-                result[ApiResource.Wildcard] = permissions[resource];
-        }
+            var permissions =
+                await _httpClient.GetJsonAsync<Dictionary<string, Permission>>(
+                    ApiRoutes.Roles.GetCurrentUserPermissions);
+        
+            var result = new Dictionary<ApiResource, Permission>();
 
-        return result;
+            foreach (var resource in permissions.Keys.Where(resource => resource != null))
+            {
+                if (Enum.TryParse<ApiResource>(resource, out var apiResource))
+                    result[apiResource] = permissions[resource];
+                else
+                    result[ApiResource.Wildcard] = permissions[resource];
+            }
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public void Dispose()

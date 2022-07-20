@@ -3,24 +3,131 @@
 
 <div class="dialog">
     <div class="dialog-header">
-        <h5 class="text title text-primary font-bold">
+        <h5 class="text title text-primary font-bold m-0">
             @(IsNewChild ? "New Child" : "Edit Child")
         </h5>
     </div>
 
     <div class="dialog-content">
-        <h5 class="text subtitle underline">
-            Personal Information
-        </h5>
 
-        <div class="form-row">
-            <div class="form-input">
-                <label class="text caption emphasis">Name</label>
-                <input type="text">
+        <div class="container p-0">
+            <h5 class="text-base font-semiBold text-normal">
+                Personal Information
+            </h5>
+            <div class="row">
+
+                <div class="col-12 col-md-6">
+                    <div class="input">
+                        <label>Name</label>
+                        <input type="text">
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="input">
+                        <label>Lastname</label>
+                        <input type="text">
+                    </div>
+                </div>
             </div>
-            <div class="form-input">
-                <label class="text caption emphasis">Name</label>
-                <input type="text">
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Age</label>
+                        <input type="text">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Grade</label>
+                        <input type="number">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Gender</label>
+                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        </DropDown>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Church</label>
+                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        </DropDown>
+                    </div>
+                </div>
+            </div>
+
+
+            <h5 class="text-base font-semiBold text-normal mt-3">
+                Sizes
+            </h5>
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Top</label>
+                        <input type="number">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Waist</label>
+                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        </DropDown>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Shoes</label>
+                        <input type="text">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Underwear</label>
+                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        </DropDown>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="text-base font-semiBold text-normal mt-3">
+                Other information
+            </h5>
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Sponsored</label>
+                        <DropDown TItem="bool" Options="@(new List<DropDownOption<bool>> { new(true, "Yes"), new(false, "No") })">
+                        </DropDown>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Uniforms Count</label>
+                        <input type="number">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Receives shoes</label>
+                        <DropDown TItem="bool" Options="@(new List<DropDownOption<bool>> { new(true, "Yes"), new(false, "No") })">
+                        </DropDown>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="input">
+                        <label>Receives xmas gift</label>
+                        <DropDown TItem="bool" Options="@(new List<DropDownOption<bool>> { new(true, "Yes"), new(false, "No") })">
+                        </DropDown>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="input">
+                        <label>Notes</label>
+                        <textarea rows="2"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -30,11 +137,11 @@
 
         <Button
             Text="Cancel"
+            OnClick="Close"
             IconName="@PhosphorIcons.XCircle">
         </Button>
 
         <Button
-            OnClick="Close"
             Text="Save"
             Style="@ButtonStyle.Primary"
             IconName="@PhosphorIcons.FloppyDisk">

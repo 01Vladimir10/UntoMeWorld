@@ -29,6 +29,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Watch Update="wwwroot\css\**" Watch="false"/>
+    <Watch Update="wwwroot\css\**" Watch="false" />
   </ItemGroup>
 </Project>

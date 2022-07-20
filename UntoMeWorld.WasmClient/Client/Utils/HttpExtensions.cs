@@ -1,34 +1,34 @@
 ﻿using System.Net.Http.Json;
+using System.Text;
+using Newtonsoft.Json;
+using UntoMeWorld.WasmClient.Client.Data.Common;
 using UntoMeWorld.WasmClient.Shared.Model;
 
 namespace UntoMeWorld.WasmClient.Client.Utils;
 
 public static class HttpExtensions
 {
-    public static async Task<ResponseDto<T>> PostJsonAsync<T>(this HttpClient client, string url, object content)
-    {
-        Console.WriteLine($"sending post to {url}...");
-        var body = JsonContent.Create(content);
-        var response = await client.PostAsync(url, body);
-        return await response.Content.ReadFromJsonAsync<ResponseDto<T>>();
-    }
+    public static Task<T> PostJsonAsync<T>(this HttpClient client, string url, object content)
+        => InterpretResponse<T>(client.PostAsJsonAsync(url, content));
 
-    public static async Task<ResponseDto<T>> PutJsonAsync<T>(this HttpClient client, string url, object content)
-    {
-        var body = JsonContent.Create(content);
-        var response = await client.PutAsync(url, body);
-        return await response.Content.ReadFromJsonAsync<ResponseDto<T>>();
-    }
 
-    public static async Task<ResponseDto<T>> DeleteJsonAsync<T>(this HttpClient client, string url)
-    {
-        var response = await client.DeleteAsync(url);
-        return await response.Content.ReadFromJsonAsync<ResponseDto<T>>();
-    }
+    public static Task<T> PutJsonAsync<T>(this HttpClient client, string url, object content)
+        => InterpretResponse<T>(client.PutAsJsonAsync(url, content));
 
-    public static async Task<ResponseDto<T>> GetJsonAsync<T>(this HttpClient client, string url)
+    public static Task<T> DeleteJsonAsync<T>(this HttpClient client, string url)
+        => InterpretResponse<T>(client.DeleteAsync(url));
+
+    public static Task<T> GetJsonAsync<T>(this HttpClient client, string url)
+        => InterpretResponse<T>(client.GetAsync(url));
+    
+
+    private static async Task<TResult> InterpretResponse<TResult>(Task<HttpResponseMessage> responseTask)
     {
-        var response = await client.GetAsync(url);
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<ResponseDto<T>>() : default;
+        var response = await responseTask;
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<TResult>();
+
+        var error = await response.Content.ReadFromJsonAsync<ErrorDto>();
+        throw new ApiCallErrorException(error);
     }
 }

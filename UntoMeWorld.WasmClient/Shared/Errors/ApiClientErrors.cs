@@ -1,15 +1,19 @@
-﻿namespace UntoMeWorld.WasmClient.Shared.Errors;
+﻿using UntoMeWorld.Domain.Errors;
 
-public abstract class InvalidApiRequestRequestException : Exception
+namespace UntoMeWorld.WasmClient.Shared.Errors;
+
+public abstract class InvalidApiRequestRequestException : UserErrorException
 {
     protected InvalidApiRequestRequestException()
     {
-
+        Cause = "Your request has an invalid format or missing parameters";
+        Fix = "Please check the error messages provided and try again";
     }
 
     protected InvalidApiRequestRequestException(string message):base(message)
     {
-        
+        Cause = "Your request has an invalid format or missing parameters";
+        Fix = "Please check the error messages provided and try again";
     }
     
 }

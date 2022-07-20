@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Web;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using UntoMeWorld.WasmClient.Server.Common;
+using UntoMeWorld.WasmClient.Server.Common.Swagger;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
 using UntoMeWorld.WasmClient.Server.Services;
 using UntoMeWorld.WasmClient.Server.Services.Base;
@@ -25,7 +27,10 @@ try
     builder.Services.AddTransient<IPastorsService, PastorsService>();
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
+    });
 
     builder.Services.Configure<RolesServiceOptions>(builder.Configuration.GetSection("Services").GetSection("RolesService"));
     builder.Services.Configure<UserServiceOptions>(builder.Configuration.GetSection("Services").GetSection("UsersService"));

@@ -1,4 +1,5 @@
 ﻿using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Errors;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Services.Base;
@@ -6,9 +7,11 @@ using UntoMeWorld.WasmClient.Shared.Errors;
 
 namespace UntoMeWorld.WasmClient.Server.Services.Abstractions;
 
-public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, string> where TModel : IModel, IRecyclableModel
+public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, string>
+    where TModel : IModel, IRecyclableModel
 {
     protected readonly IStore<TModel> Store;
+
     public GenericDatabaseService(IStore<TModel> store)
     {
         Store = store;
@@ -16,17 +19,21 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
 
     public Task<TModel> Add(TModel item)
     {
+        Validate(item);
         item.CreatedOn = DateTime.Now;
         return Store.AddOne(item);
     }
+
     public Task<TModel> Get(string id)
     {
         if (string.IsNullOrEmpty(id))
             throw new MissingParametersException();
         return Store.Get(id);
     }
+
     public Task<TModel> Update(TModel item)
     {
+        Validate(item);
         item.LastUpdatedOn = DateTime.Now;
         return Store.UpdateOne(item);
     }
@@ -40,6 +47,7 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
     {
         return softDelete ? Store.DeleteOne(id) : Store.PurgeOne(id);
     }
+
     public Task<IEnumerable<TModel>> GetAll(string query = null)
     {
         return Store.All(query);
@@ -47,31 +55,22 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
 
     public Task<IEnumerable<TModel>> Add(IEnumerable<TModel> item)
     {
-        return Store.AddMany(item.ToList());
+        var models = item.ToList();
+        Validate(models);
+        return Store.AddMany(models.ToList());
     }
 
-    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null, bool orderDesc = false, int page = 1, int pageSize = 100)
+    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null,
+        bool orderDesc = false, int page = 1, int pageSize = 100)
     {
-        // Validate if the property exists
-        if (!string.IsNullOrEmpty(orderBy) &&
-            typeof(TModel).GetProperties().ToList().FindIndex(p => p.Name.ToLower().Equals(orderBy.ToLower())) < 0)
-            throw new InvalidSortByProperty();
         return Store.Query(filter, orderBy, orderDesc, page, pageSize);
-    }
-
-    private bool ValidateSearchByTextRequirement(QueryFilter filter)
-    {
-        if (filter == null)
-            return true;
-        if (filter.Operator is QueryOperator.TextSearch && string.IsNullOrEmpty(filter.Value as string) ||
-            filter.Value.ToString()!.Length < 3)
-            return false;
-        return filter.Children.Any() && filter.Children.Any(ValidateSearchByTextRequirement);
     }
 
     public Task<IEnumerable<TModel>> Update(IEnumerable<TModel> item)
     {
-        return Store.UpdateMany(item.ToList());
+        var models = item.ToList();
+        Validate(models);
+        return Store.UpdateMany(models);
     }
 
     public Task Restore(IEnumerable<string> item)
@@ -82,5 +81,19 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
     public Task Delete(IEnumerable<string> id, bool softDelete = true)
     {
         return softDelete ? Store.DeleteMany(id.ToArray()) : Store.PurgeMany(id.ToArray());
+    }
+
+    private static void Validate(TModel model)
+    {
+        var result = ModelValidator.Validate(model);
+        if (!result.IsValid)
+            throw new ModelValidationException(result);
+    }
+    private static void Validate(IEnumerable<TModel> models)
+    {
+        foreach (var model in models)
+        {
+            Validate(model);
+        }
     }
 }

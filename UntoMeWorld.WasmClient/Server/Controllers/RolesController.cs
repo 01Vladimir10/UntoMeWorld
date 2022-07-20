@@ -22,17 +22,17 @@ public class RolesController : BaseController
 
     [HttpGet("{roleId}")]
     [RequiredPermission(PermissionType.Read)]
-    public Task<ActionResult<ResponseDto<Role>>> GetRole(string roleId) =>
+    public Task<IActionResult> GetRole(string roleId) =>
         ServiceCallResult(() => _service.Get(roleId));
 
     [HttpGet]
     [RequiredPermission(PermissionType.Read)]
-    public Task<ActionResult<ResponseDto<List<Role>>>> GetRoles() =>
+    public Task<IActionResult> GetRoles() =>
         ServiceCallResult(() => Task.FromResult(new List<Role>()));
 
     [HttpGet("Permissions")]
     [RequiredPermission(PermissionType.Read)]
-    public Task<ActionResult<ResponseDto<Dictionary<string, Permission>>>> GetCurrentUserPermissions() =>
+    public Task<IActionResult> GetCurrentUserPermissions() =>
         ServiceCallResult(
             async () =>
             {

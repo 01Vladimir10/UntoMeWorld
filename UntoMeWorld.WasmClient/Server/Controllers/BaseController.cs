@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Errors;
-using UntoMeWorld.WasmClient.Shared.Errors;
 using UntoMeWorld.WasmClient.Shared.Model;
 
 namespace UntoMeWorld.WasmClient.Server.Controllers;
@@ -10,29 +8,31 @@ namespace UntoMeWorld.WasmClient.Server.Controllers;
 [Route("api/[controller]")]
 public abstract class BaseController : ControllerBase
 {
-    protected static async Task<ActionResult<ResponseDto<TResponse>>> ServiceCallResult<TResponse>(
+    protected async Task<IActionResult> ServiceCallResult<TResponse>(
         Func<Task<TResponse>> func)
     {
-        ResponseDto<TResponse> response;
         try
         {
             var result = await func();
-            response = ResponseDto<TResponse>.Successful(result);
-        }
-        catch (InvalidApiRequestRequestException exception)
-        {
-            return ResponseDto<TResponse>.Error(exception.Message);
-        }
-        catch (InvalidQueryFilterException exception)
-        {
-            return ResponseDto<TResponse>.Error(exception.Message);
+            return Ok(result);
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error occured while executing request: {0}", e);
-            return new StatusCodeResult(500);
+            return e is UserErrorException userError
+                ? BadRequestError(userError)
+                : InternalServerError(e);
         }
-
-        return new JsonResult(response);
     }
+
+    protected static IActionResult InternalServerError(Exception error)
+        => new ObjectResult(new ErrorDto { Error = error.Message, Cause = "", Fix = "Contact support"})
+        {
+            StatusCode = StatusCodes.Status500InternalServerError
+        };
+
+    protected static IActionResult BadRequestError(UserErrorException e)
+        => new ObjectResult(new ErrorDto(e))
+        {
+            StatusCode = StatusCodes.Status400BadRequest
+        };
 }

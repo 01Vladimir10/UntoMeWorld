@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Security;
+using UntoMeWorld.WasmClient.Server.Security.Authorization.Attributes;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.Model;
@@ -11,6 +13,7 @@ namespace UntoMeWorld.WasmClient.Server.Controllers;
 [ApiController]
 [Authorize("UserAuthenticationOnly")]
 [Route("api/[controller]")]
+[ResourceName(ApiResource.Tokens)]
 public class TokensController : ControllerBase
 {
     private readonly ITokensService _factory;
@@ -21,6 +24,7 @@ public class TokensController : ControllerBase
     }
 
     [HttpGet("add")]
+    [RequiredPermission(PermissionType.Add)]
     public async Task<ActionResult<ResponseDto<string>>> Add()
     {
         var currentUser = HttpContext.User.Claims.ToAppUser();

@@ -25,7 +25,7 @@ public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableMod
         => _client.GetFromJsonAsync<IEnumerable<T>>(EndPoint);
 
     public Task<IEnumerable<T>> All(string query)
-        => InterpretServerResponse(_client.PostJsonAsync<IEnumerable<T>>(EndPoint, new object()));
+        => _client.PostJsonAsync<IEnumerable<T>>(EndPoint, new object());
 
     public Task<IEnumerable<T>> All(Predicate<T> query)
     {
@@ -36,62 +36,47 @@ public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableMod
         bool orderByDesc = false,
         int page = 1,
         int pageSize = 100)
-        => InterpretServerResponse(_client.PostJsonAsync<PaginationResult<T>>(Paths.Query, new QueryRequestDto
+        => _client.PostJsonAsync<PaginationResult<T>>(Paths.Query, new QueryRequestDto
         {
             Filter = filter,
             OrderBy = orderBy ?? string.Empty,
             OrderDesc = orderByDesc,
             Page = page,
             PageSize = pageSize
-        }));
+        });
 
     public Task<T> AddOne(T data)
-        => InterpretServerResponse(_client.PostJsonAsync<T>(Paths.Add, data));
+        => _client.PostJsonAsync<T>(Paths.Add, data);
 
     public Task<T> UpdateOne(T data)
-        => InterpretServerResponse(_client.PutJsonAsync<T>(Paths.Update, data));
+        => _client.PutJsonAsync<T>(Paths.Update, data);
     
     public Task DeleteOne(string key)
-        => InterpretServerResponse(_client.DeleteJsonAsync<bool>($"{Paths.Delete}/{key}"));
+        => _client.DeleteJsonAsync<bool>($"{Paths.Delete}/{key}");
     public Task PurgeOne(string key)
-        => InterpretServerResponse(_client.DeleteJsonAsync<bool>($"{Paths.Purge}/{key}"));
+        => _client.DeleteJsonAsync<bool>($"{Paths.Purge}/{key}");
 
     public Task RestoreOne(string key)
-        => InterpretServerResponse(_client.PutJsonAsync<bool>($"{Paths.Restore}/{key}", new object()));
+        => _client.PutJsonAsync<bool>($"{Paths.Restore}/{key}", new object());
 
     public Task DeleteMany(IEnumerable<string> keys)
-        => InterpretServerResponse(_client.PostJsonAsync<bool>(Paths.DeleteMany, keys));
+        => _client.PostJsonAsync<bool>(Paths.DeleteMany, keys);
 
     public Task PurgeMany(IEnumerable<string> keys)
-        => InterpretServerResponse(_client.PostJsonAsync<bool>(Paths.PurgeMany, keys));
+        => _client.PostJsonAsync<bool>(Paths.PurgeMany, keys);
 
     public Task RestoreMany(IEnumerable<string> keys)
-        => InterpretServerResponse(_client.PostJsonAsync<bool>(Paths.RestoreMany, keys));
+        => _client.PostJsonAsync<bool>(Paths.RestoreMany, keys);
 
     public Task<IEnumerable<T>> AddMany(List<T> data)
-        => InterpretServerResponse(_client.PostJsonAsync<IEnumerable<T>>(Paths.AddMany, data));
+        => _client.PostJsonAsync<IEnumerable<T>>(Paths.AddMany, data);
 
     public Task<IEnumerable<T>> UpdateMany(List<T> data)
-        => InterpretServerResponse(_client.PostJsonAsync<IEnumerable<T>>(Paths.UpdateMany, data));
+        => _client.PostJsonAsync<IEnumerable<T>>(Paths.UpdateMany, data);
     
     public Task<T> Get(string id)
-        => InterpretServerResponse(_client.GetJsonAsync<T>($"{Paths.GetOne}/{id}"));
+        => _client.GetJsonAsync<T>($"{Paths.GetOne}/{id}");
 
-    private static async Task<TResult> InterpretServerResponse<TResult>(Task<ResponseDto<TResult>> callback)
-    {
-        try
-        {
-            var result = await callback;
-            if (result.IsSuccessful)
-                return result.Data;
-            throw new Exception(result.ErrorMessage);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
-            throw;
-        }
-    }
 }
 
 public class ServerActionsPaths
