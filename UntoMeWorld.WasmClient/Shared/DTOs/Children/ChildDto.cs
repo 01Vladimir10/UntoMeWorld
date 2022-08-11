@@ -5,7 +5,7 @@ namespace UntoMeWorld.WasmClient.Shared.DTOs.Children;
 public class ChildDto : IDto<Child>
 {
     public string Name { get; set; }
-    public string LastName { get; set; }
+    public string Lastname { get; set; }
     public Gender Gender { get; set; }
     public int Age { get; set; }
     public int Grade { get; set; }
@@ -46,7 +46,7 @@ public class ChildDto : IDto<Child>
             ReceivesShoes = ReceivesShoes,
             ReceivesUniforms = ReceivesUniforms,
             Name = Name,
-            Lastname = LastName,
+            Lastname = Lastname,
             Age = Age,
             Gender = Gender,
             Notes = Notes,
@@ -54,4 +54,26 @@ public class ChildDto : IDto<Child>
         };
     }
 
+    public virtual ChildDto From(Child child)
+    {
+        IsActive = child.IsActive;
+        IsSponsored = child.IsSponsored;
+        Grade = child.Grade;
+        ChurchId = child.ChurchId;
+        ShoeSize = child.ShoeSize;
+        TopSize = child.TopSize;
+        WaistSize = child.WaistSize;
+        UnderwearSize = child.UnderwearSize;
+        BraSize = child.BraSize;
+        UniformsCount = child.UniformsCount;
+        ReceivesChristmasGift = child.ReceivesChristmasGift;
+        ReceivesShoes = child.ReceivesShoes;
+        ReceivesUniforms = child.ReceivesUniforms;
+        Name = child.Name;
+        Lastname = child.Lastname;
+        Age = child.Age;
+        Gender = child.Gender;
+        Notes = child.Notes;
+        return this;
+    }
 }

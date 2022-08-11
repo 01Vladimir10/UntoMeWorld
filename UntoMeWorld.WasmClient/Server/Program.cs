@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Common.Swagger;
@@ -29,6 +30,12 @@ try
     builder.Services.AddTransient<IRolesService, RolesService>();
     builder.Services.AddSwaggerGen(c =>
     {
+        c.AddServer(new OpenApiServer
+        {
+            Description = "Local host",
+            Url = "https://localhost:5001"
+        });
+        c.SupportNonNullableReferenceTypes();
         c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
     });
 

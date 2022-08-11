@@ -17,7 +17,6 @@ builder.Services.AddHttpClient("UntoMeWorld.WasmClient.ServerAPI", client => cli
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
 builder.Services.AddTransient<IChurchesStore, RemoteChurchesStore>();
-builder.Services.AddTransient<IPastorsStore, RemotePastorsStore>();
 builder.Services.AddTransient<IChildrenStore, RemoteChildrenStore>();
 
 builder.Services.AddBlazoredLocalStorage();

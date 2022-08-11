@@ -3,11 +3,15 @@ using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Client.Utils;
+using UntoMeWorld.WasmClient.Shared.DTOs;
 using UntoMeWorld.WasmClient.Shared.Model;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Stores;
 
-public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableModel, IModel
+public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<TModel>
+    where TModel : IRecyclableModel, IModel
+    where TAddDto : IDto<TModel>
+    where TUpdateDto : IUpdateDto<TModel>
 {
     protected readonly string EndPoint;
     private readonly HttpClient _client;
@@ -20,23 +24,22 @@ public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableMod
         Paths = new ServerActionsPaths(EndPoint);
     }
 
+    public Task<IEnumerable<TModel>> All()
+        => _client.GetFromJsonAsync<IEnumerable<TModel>>(EndPoint);
 
-    public Task<IEnumerable<T>> All()
-        => _client.GetFromJsonAsync<IEnumerable<T>>(EndPoint);
+    public Task<IEnumerable<TModel>> All(string query)
+        => _client.PostJsonAsync<IEnumerable<TModel>>(EndPoint, new object());
 
-    public Task<IEnumerable<T>> All(string query)
-        => _client.PostJsonAsync<IEnumerable<T>>(EndPoint, new object());
-
-    public Task<IEnumerable<T>> All(Predicate<T> query)
+    public Task<IEnumerable<TModel>> All(Predicate<TModel> query)
     {
         throw new NotImplementedException();
     }
 
-    public Task<PaginationResult<T>> Query(QueryFilter filter = null, string orderBy = null,
+    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null,
         bool orderByDesc = false,
         int page = 1,
         int pageSize = 100)
-        => _client.PostJsonAsync<PaginationResult<T>>(Paths.Query, new QueryRequestDto
+        => _client.PostJsonAsync<PaginationResult<TModel>>(Paths.Query, new QueryRequestDto
         {
             Filter = filter,
             OrderBy = orderBy ?? string.Empty,
@@ -45,14 +48,15 @@ public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableMod
             PageSize = pageSize
         });
 
-    public Task<T> AddOne(T data)
-        => _client.PostJsonAsync<T>(Paths.Add, data);
+    public Task<TModel> AddOne(TModel data)
+        => _client.PostJsonAsync<TModel>(Paths.Add, ToAddDto(data));
 
-    public Task<T> UpdateOne(T data)
-        => _client.PutJsonAsync<T>(Paths.Update, data);
-    
+    public Task<TModel> UpdateOne(TModel data)
+        => _client.PutJsonAsync<TModel>(Paths.Update, ToUpdateDto(data));
+
     public Task DeleteOne(string key)
         => _client.DeleteJsonAsync<bool>($"{Paths.Delete}/{key}");
+
     public Task PurgeOne(string key)
         => _client.DeleteJsonAsync<bool>($"{Paths.Purge}/{key}");
 
@@ -68,15 +72,17 @@ public abstract class GenericRemoteStore<T> : IStore<T> where T : IRecyclableMod
     public Task RestoreMany(IEnumerable<string> keys)
         => _client.PostJsonAsync<bool>(Paths.RestoreMany, keys);
 
-    public Task<IEnumerable<T>> AddMany(List<T> data)
-        => _client.PostJsonAsync<IEnumerable<T>>(Paths.AddMany, data);
+    public Task<IEnumerable<TModel>> AddMany(List<TModel> data)
+        => _client.PostJsonAsync<IEnumerable<TModel>>(Paths.AddMany, data.Select(ToAddDto));
 
-    public Task<IEnumerable<T>> UpdateMany(List<T> data)
-        => _client.PostJsonAsync<IEnumerable<T>>(Paths.UpdateMany, data);
-    
-    public Task<T> Get(string id)
-        => _client.GetJsonAsync<T>($"{Paths.GetOne}/{id}");
+    public Task<IEnumerable<TModel>> UpdateMany(List<TModel> data)
+        => _client.PostJsonAsync<IEnumerable<TModel>>(Paths.UpdateMany, data.Select(ToUpdateDto));
 
+    public Task<TModel> Get(string id)
+        => _client.GetJsonAsync<TModel>($"{Paths.GetOne}/{id}");
+
+    protected abstract TAddDto ToAddDto(TModel model);
+    protected abstract TUpdateDto ToUpdateDto(TModel model);
 }
 
 public class ServerActionsPaths
@@ -92,7 +98,7 @@ public class ServerActionsPaths
     public string DeleteMany { get; }
     public string UpdateMany { get; }
     public string RestoreMany { get; }
-    public string PurgeMany{ get; }
+    public string PurgeMany { get; }
 
     public ServerActionsPaths(string endpoint)
     {
@@ -109,4 +115,4 @@ public class ServerActionsPaths
         RestoreMany = endpoint + "/bin/bulk/restore";
         PurgeMany = endpoint + "/bin/bulk/delete";
     }
-} 
+}
