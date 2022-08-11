@@ -17,13 +17,10 @@ namespace UntoMeWorld.Domain.Model
         public DateTime LastUpdatedOn { get; set; }
         public string Name { get; set; }
         public Address Address { get; set; }
-        public string PastorId { get; set; }
-        
-        [BsonIgnore]
         public Pastor Pastor { get; set; }
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Address)}: {Address}, {nameof(PastorId)}: {PastorId}";
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Address)}: {Address}, {nameof(Pastor)}: {Pastor}";
         }
     }
 }
