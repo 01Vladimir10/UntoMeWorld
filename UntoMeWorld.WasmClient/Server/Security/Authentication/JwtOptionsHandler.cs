@@ -27,7 +27,7 @@ public class JwtOptionsHandler : IPostConfigureOptions<JwtBearerOptions>
                 if (!string.IsNullOrEmpty(context.Principal.ToAppUser()?.Id))
                     return;
                 var userId = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var authProvider = context.Principal?.Claims.FirstOrDefault(c => c.Type.Contains("authProvider"))?.Value ?? "default";
+                var authProvider = context.Principal?.Claims.FirstOrDefault(c => c.Type.Contains("identityprovider"))?.Value ?? "default";
                 if (string.IsNullOrEmpty(userId))
                     return;
                 var user = await _service.GetOrCreateUserByThirdPartyAccountInfo(authProvider, userId, () => new AppUser

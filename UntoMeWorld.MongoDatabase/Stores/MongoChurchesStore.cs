@@ -1,12 +1,11 @@
 ﻿using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Stores;
-using UntoMeWorld.MongoDatabase.Helpers;
 using UntoMeWorld.MongoDatabase.ReadModels;
 using UntoMeWorld.MongoDatabase.Services;
 
 namespace UntoMeWorld.MongoDatabase.Stores
 {
-    public class MongoChurchesStore : GenericMongoStore<Church, MongoChurchReadModel>, IChurchesStore
+    public class MongoChurchesStore : GenericMongoStore<Church, Church>, IChurchesStore
     {
         private const string ChurchesCollection = "churches";
 
@@ -16,7 +15,7 @@ namespace UntoMeWorld.MongoDatabase.Stores
                 var church = c as Church;
                 church.Pastor = c.Pastor;
                 return church;
-            }, MongoPipelineReadStages.ChurchPipeLineStages)
+            })
         {
             
         }
