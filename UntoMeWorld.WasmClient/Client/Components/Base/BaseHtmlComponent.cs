@@ -7,8 +7,8 @@ public abstract class BaseHtmlComponent : ComponentBase
     [Parameter]
     public string CssClass { get; set; }
     
-    [Parameter]
-    public Func<Task> OnClick { get; set; }
+    [Parameter] public Func<Task> OnClickAsync { get; set; }
+    [Parameter] public Action OnClick { get; set; }
 
     [Parameter] public bool IsVisible { get; set; } = true;
     

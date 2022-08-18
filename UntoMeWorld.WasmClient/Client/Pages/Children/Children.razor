@@ -22,9 +22,6 @@
                     Options="_options"
                     OnSelectionChangedAsync="OnSortFieldChanged">
                 </DropDown>
-                <Button Text="Open Dialog" OnClick="OpenDialog">
-                    
-                </Button>
             </NormalControls>
             <MultiSelectControls>
                 Multi selecting...
@@ -32,8 +29,10 @@
         </ListControlsLayout>
     </div>
     
-    <ChildrenList @ref="_listView" ItemsProvider="_listController.ItemsProvider"/>
-    
+    <ChildrenList
+        OnEditClicked="EditChild"
+        OnDeleteClicked="DeleteChild"
+        @ref="_listView" ItemsProvider="_listController.ItemsProvider"/>
 </div>
 
 
@@ -49,15 +48,21 @@
     };
 
 
-    private Task OpenDialog()
+    private void EditChild(Child child)
     {
-        DialogService.ShowDialogAsync<ChildrenDialog, Child, bool>(null, result =>
+        DialogService.ShowDialogAsync<ChildrenDialog, Child, Child>(child, async c =>
         {
-            Console.WriteLine("Dialog returned: {0}", result);
-            return Task.CompletedTask;
-        }, false);
+            if (c != null)
+            {
+                await ChildrenService.Update(c);
+                await _listController.Refresh();
+            }
+        }, isCancellable:false);
+    }
+    
+    private void DeleteChild(Child child)
+    {
         
-        return Task.CompletedTask;
     }
 
     protected override async Task OnInitializedAsync()

@@ -5,7 +5,7 @@
 @if (IsVisible)
 {
     <button class="button @StyleClass @CssClass"
-            @onclick="OnClick"
+            @onclick="OnButtonClick"
             id="@RazorUtils.If(!string.IsNullOrEmpty(Id), Id)">
         @if (!string.IsNullOrEmpty(IconName))
         {
@@ -32,5 +32,13 @@
     public string Text { get; set; }
 
     private string StyleClass => Style.ToString().ToLower();
+
+
+    private async void OnButtonClick()
+    {
+        if (OnClickAsync != null)
+            await OnClickAsync();
+        OnClick?.Invoke();
+    }
 
 }

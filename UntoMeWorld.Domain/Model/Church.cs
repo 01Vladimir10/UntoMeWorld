@@ -28,9 +28,17 @@ namespace UntoMeWorld.Domain.Model
         {
             if (MemberwiseClone() is not Church church)
                 return new Church();
-            church.Address = Address.Clone();
-            church.Pastor = Pastor.Clone();
+            church.Address = Address?.Clone();
+            church.Pastor = Pastor?.Clone();
             return church;
         }
+
+        public override int GetHashCode()
+        {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
+            return Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj) => obj != null && (obj as Church)?.Id == Id;
     }
 }

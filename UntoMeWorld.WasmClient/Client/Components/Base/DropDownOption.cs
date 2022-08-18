@@ -34,4 +34,8 @@ public static class DropDownOptionExtensions
     public static IEnumerable<DropDownOption<T>> ToDropDownOptionsList<T>(this IEnumerable<T> source,
         Func<T, string> selector) =>
         source.Select(i => new DropDownOption<T>(selector(i), i));
+    public static IEnumerable<DropDownOption<TValue>> ToDropDownOptionsList<T, TValue>(this IEnumerable<T> source,
+        Func<T, string> displayNameSelector,
+        Func<T, TValue> valueSelector) =>
+        source.Select(i => new DropDownOption<TValue>(displayNameSelector(i), valueSelector(i)));
 }

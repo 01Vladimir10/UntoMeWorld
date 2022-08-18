@@ -13,9 +13,8 @@ public class DropDownBase<T> : BaseDropDown<T>
         base.OnParametersSet();
         if (!_isFirstTime)
             return;
-        
-        SelectedOption = Options.First();
-        if (DefaultOption != null)
+        SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(SelectedValue)) ?? Options.First();
+        if (DefaultOption != null && SelectedOption == null)
             SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(DefaultOption));
         
         _isFirstTime = false;
@@ -30,7 +29,6 @@ public class DropDownBase<T> : BaseDropDown<T>
     {
         await InvokeAsync(() =>
         {
-
             SelectedOption = option;
             SelectedValue = option.Value;
             OnSelectionChanged?.Invoke(option.Value);

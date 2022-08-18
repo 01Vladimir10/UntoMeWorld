@@ -46,7 +46,9 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Gender</label>
-                        <DropDown SelectedValue="@Child.Gender" Options="@(DropDowns.FromEnum<Gender>())">
+                        <DropDown
+                            @bind-SelectedValue="Child.Gender"
+                            Options="@(DropDowns.FromEnum<Gender>())">
                         </DropDown>
                     </div>
                 </div>
@@ -55,7 +57,7 @@
                         <label>Church</label>
                         <DropDown
                             MaxDisplayCharLength="15"
-                            OnSelectionChangedAsync="OnChurchSelectionChanged"
+                            @bind-SelectedValue="Child.Church"
                             Options="@ChurchesOptions">
                         </DropDown>
                     </div>
@@ -88,9 +90,10 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Underwear</label>
-                        <DropDown 
-                        SelectedValue="Child.UnderwearSize"
-                        Options="@(DropDowns.FromEnum<UnderwearSize>())"></DropDown>
+                        <DropDown
+                            @bind-SelectedValue="Child.UnderwearSize"
+                            Options="@(DropDowns.FromEnum<UnderwearSize>())">
+                        </DropDown>
                     </div>
                 </div>
             </div>
@@ -102,7 +105,10 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Sponsored</label>
-                        <DropDown SelectedValue="Child.IsSponsored" Options="@DropDowns.Boolean"></DropDown>
+                        <DropDown
+                            @bind-SelectedValue="Child.IsSponsored"
+                            Options="@DropDowns.Boolean">
+                        </DropDown>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -114,8 +120,9 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Receives shoes</label>
-                        <DropDown OnSelectionChanged="value => Child.ReceivesShoes = value"
-                                  Options="@DropDowns.Boolean">
+                        <DropDown
+                            @bind-SelectedValue="Child.ReceivesShoes"
+                            Options="@DropDowns.Boolean">
                         </DropDown>
                     </div>
                 </div>
@@ -123,6 +130,7 @@
                     <div class="input">
                         <label>Receives xmas gift</label>
                         <DropDown
+                            @bind-SelectedValue="Child.ReceivesChristmasGift"
                             Options="@DropDowns.Boolean">
                         </DropDown>
                     </div>
@@ -142,12 +150,14 @@
 
         <Button
             Text="Cancel"
-            OnClick="Close"
+            OnClickAsync="Close"
             IconName="@PhosphorIcons.XCircle">
         </Button>
 
         <Button
+            CssClass="ms-2"
             Text="Save"
+            OnClickAsync="Save"
             Style="@ButtonStyle.Primary"
             IconName="@PhosphorIcons.FloppyDisk">
         </Button>

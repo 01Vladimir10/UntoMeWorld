@@ -2,210 +2,213 @@
 @using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
 @using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
 
+
 <ListView @ref="_listView"
           Columns="Columns"
           ItemsProvider="ItemsProvider">
 
-    <ItemTemplate Context="cell">
-        @{
-            var child = cell.Data;
-            switch (cell.ColumnIndex)
-            {
-                case 0:
-                    <span class="text subtitle m-0">
-                        @child.Name
-                    </span>
-                    <span class=" text secondary">
-                        @(child.Church?.Name)
-                    </span>
-                    break;
-                case 1:
-                    <span class="text secondary">
-                        @child.Age
-                    </span>
-                    break;
-                case 2:
-                    <span class="text secondary">
-                        @child.Gender.ToString()
-                    </span>
-                    break;
-                case 3:
-                    <span class="text secondary">
-                        @RazorUtils.BoolToString(child.IsSponsored)
-                    </span>
-                    break;
-            }
+<ItemTemplate Context="cell">
+    @{
+        var child = cell.Data;
+        switch (cell.ColumnIndex)
+        {
+            case 0:
+                <span class="text subtitle m-0">
+                    @child.Name
+                </span>
+                <span class=" text secondary">
+                    @(child.Church?.Name)
+                </span>
+                break;
+            case 1:
+                <span class="text secondary">
+                    @child.Age
+                </span>
+                break;
+            case 2:
+                <span class="text secondary">
+                    @child.Gender.ToString()
+                </span>
+                break;
+            case 3:
+                <span class="text secondary">
+                    @RazorUtils.BoolToString(child.IsSponsored)
+                </span>
+                break;
         }
-    </ItemTemplate>
-    <ExpandableItemContentTemplate Context="child">
-        <div class="row mt-3">
-            <div class="d-md-none col-12">
-                <h5 class="text subtitle underline">
-                    General Information
-                </h5>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="d-sm-none list-row">
-                            <span class="text primary emphasis">
-                                Gender
-                            </span>
-                            <span class="text secondary">
-                                @child.Gender
-                            </span>
-                        </div>
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Sponsored
-                            </span>
-                            <span class="text secondary">
-                                @RazorUtils.BoolToString(child.IsSponsored)
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <br class="d-md-none">
-
-            <div class="col-12 col-md-6">
-                <h5 class="text subtitle underline">
-                    Sizes
-                </h5>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Top
-                            </span>
-                            <span class="text secondary">
-                                @child.TopSize
-                            </span>
-                        </div>
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Waist
-                            </span>
-                            <span class="text secondary">
-                                @child.WaistSize
-                            </span>
-                        </div>
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Shoes
-                            </span>
-                            <span class="text secondary">
-                                @child.ShoeSize
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Underwar
-                            </span>
-                            <span class="text secondary">
-                                @child.UnderwearSize
-                            </span>
-                        </div>
-                        @if (child.Gender == Gender.Female)
-                        {
-                            <div class="list-row">
-                                <span class="text primary emphasis">
-                                    Bra
-                                </span>
-                                <span class="text secondary">
-                                    @child.BraSize
-                                </span>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-            <br class="d-md-none">
-            
-            <div class="col-12 col-md-6">
-                <h5 class="text subtitle underline">
-                    Other information
-                </h5>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Receives uniforms
-                            </span>
-                            <span class="text secondary">
-                                @RazorUtils.BoolToString(child.ReceivesUniforms)
-                            </span>
-                        </div>
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Uniforms
-                            </span>
-                            <span class="text secondary">
-                                @child.UniformsCount
-                            </span>
-                        </div>
-
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Receives Shoes
-                            </span>
-                            <span class="text secondary">
-                                @RazorUtils.BoolToString(child.ReceivesShoes)
-                            </span>
-                        </div>
+    }
+</ItemTemplate>
+<ExpandableItemContentTemplate Context="child">
+    <div class="row mt-3">
+        <div class="d-md-none col-12">
+            <h5 class="text subtitle underline">
+                General Information
+            </h5>
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-sm-none list-row">
+                        <span class="text primary emphasis">
+                            Gender
+                        </span>
+                        <span class="text secondary">
+                            @child.Gender
+                        </span>
                     </div>
 
-                    <div class="col-12 col-md-6">
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Created on
-                            </span>
-                            <span class="text secondary">
-                                @child.CreatedOn.ToString("MMM dd, yyyy")
-                            </span>
-                        </div>
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Last updated on
-                            </span>
-                            <span class="text secondary">
-                                @child.CreatedOn.ToString("MMM dd, yyyy")
-                            </span>
-                        </div>
-                        <div class="list-row">
-                            <span class="text primary emphasis">
-                                Notes
-                            </span>
-                            <span class="text secondary">
-                                @child.WaistSize
-                            </span>
-                        </div>
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Sponsored
+                        </span>
+                        <span class="text secondary">
+                            @RazorUtils.BoolToString(child.IsSponsored)
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-2 my-2">
-            <Button IconName="@PhosphorIcons.PencilLine"
-                    IconWeight="IconWeight.Bold"
-                    Text="Edit"
-                    CssClass="font-semiBold"
-                    Style="@ButtonStyle.Primary">
-            </Button>
-            <Button IconName="@PhosphorIcons.TrashSimple"
-                    Text="Delete" Style="@ButtonStyle.Danger"
-                    IconWeight="IconWeight.Bold"
-                    CssClass="ms-2 font-semiBold">
-            </Button>
+
+        <br class="d-md-none">
+
+        <div class="col-12 col-md-6">
+            <h5 class="text subtitle underline">
+                Sizes
+            </h5>
+            <div class="row">
+                <div class="col-12 col-md-6">
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Top
+                        </span>
+                        <span class="text secondary">
+                            @child.TopSize
+                        </span>
+                    </div>
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Waist
+                        </span>
+                        <span class="text secondary">
+                            @child.WaistSize
+                        </span>
+                    </div>
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Shoes
+                        </span>
+                        <span class="text secondary">
+                            @child.ShoeSize
+                        </span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Underwar
+                        </span>
+                        <span class="text secondary">
+                            @child.UnderwearSize
+                        </span>
+                    </div>
+                    @if (child.Gender == Gender.Female)
+                    {
+                        <div class="list-row">
+                            <span class="text primary emphasis">
+                                Bra
+                            </span>
+                            <span class="text secondary">
+                                @child.BraSize
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
-    </ExpandableItemContentTemplate>
+        <br class="d-md-none">
+
+        <div class="col-12 col-md-6">
+            <h5 class="text subtitle underline">
+                Other information
+            </h5>
+            <div class="row">
+                <div class="col-12 col-md-6">
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Receives uniforms
+                        </span>
+                        <span class="text secondary">
+                            @RazorUtils.BoolToString(child.ReceivesUniforms)
+                        </span>
+                    </div>
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Uniforms
+                        </span>
+                        <span class="text secondary">
+                            @child.UniformsCount
+                        </span>
+                    </div>
+
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Receives Shoes
+                        </span>
+                        <span class="text secondary">
+                            @RazorUtils.BoolToString(child.ReceivesShoes)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Created on
+                        </span>
+                        <span class="text secondary">
+                            @child.CreatedOn.ToString("MMM dd, yyyy")
+                        </span>
+                    </div>
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Last updated on
+                        </span>
+                        <span class="text secondary">
+                            @child.CreatedOn.ToString("MMM dd, yyyy")
+                        </span>
+                    </div>
+                    <div class="list-row">
+                        <span class="text primary emphasis">
+                            Notes
+                        </span>
+                        <span class="text secondary">
+                            @child.WaistSize
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-2 my-2">
+        <Button IconName="@PhosphorIcons.PencilLine"
+                IconWeight="IconWeight.Bold"
+                Text="Edit"
+                OnClick="() => OnEditClicked(child)"
+                CssClass="font-semiBold"
+                Style="@ButtonStyle.Primary">
+        </Button>
+        <Button IconName="@PhosphorIcons.TrashSimple"
+                Text="Delete" Style="@ButtonStyle.Danger"
+                IconWeight="IconWeight.Bold"
+                OnClick="() => OnDeleteClicked(child)"
+                CssClass="ms-2 font-semiBold">
+        </Button>
+    </div>
+</ExpandableItemContentTemplate>
 
 
 </ListView>
@@ -221,6 +224,12 @@
     };
 
     private ListView<string, Child> _listView;
+
+    [Parameter]
+    public Action<Child> OnEditClicked { get; set; }
+
+    [Parameter]
+    public Action<Child> OnDeleteClicked { get; set; }
 
     [Parameter]
     public ItemsProviderDelegate<ListItem<string, Child>> ItemsProvider { get; set; }
