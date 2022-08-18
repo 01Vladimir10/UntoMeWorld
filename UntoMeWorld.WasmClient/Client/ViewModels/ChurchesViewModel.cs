@@ -3,7 +3,7 @@ using UntoMeWorld.WasmClient.Client.Services.Base;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
-public class ChurchesViewModel : BaseViewModel
+public class ChurchesViewModel
 {
     public List<Church> Churches { get; private set; } = new();
 

@@ -1,6 +1,6 @@
 ﻿using UntoMeWorld.Domain.Model;
 
-namespace UntoMeWorld.WasmClient.Client.Utils;
+namespace UntoMeWorld.WasmClient.Client.Utils.Extensions;
 
 public static class ModelExtensions
 {

@@ -6,7 +6,7 @@ using UntoMeWorld.WasmClient.Client.Services.Base;
 using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
-public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
+public class GenericViewModel<TModel> where TModel : IModel
 {
     private readonly IService<TModel> _service;
     private IDictionary<string, TModel> _itemsDictionary = new Dictionary<string, TModel>();
@@ -25,9 +25,8 @@ public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
         {
             var newItem = await _service.Add(item);
             if (newItem == null || string.IsNullOrEmpty(newItem.Id))
-                throw new Exception($"The item of type {typeof(TModel).Name} could not be updated");
+                throw new Exception($"The item of type {typeof(TModel).Name} could not be added");
             _itemsDictionary.Add(newItem.Id, newItem);
-            OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
         {
@@ -43,7 +42,6 @@ public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
                 throw new Exception($"The item of type {typeof(TModel).Name} could not be updated");
             
             _itemsDictionary[item.Id] = item;
-            OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
         {
@@ -57,7 +55,6 @@ public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
             await _service.Delete(item.Id);
             if(!_itemsDictionary.Remove(item.Id))
                 throw new Exception($"The item of type {typeof(TModel).Name} could not be deleted");
-            OnPropertyChanged(nameof(Items));
         }
         catch (Exception e)
         {
@@ -82,7 +79,6 @@ public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
             Descendent = desc
         };
         await UpdateList();
-        OnPropertyChanged(nameof(SortField));
     }
     #region Properties
     public IEnumerable<TModel> Items
@@ -91,7 +87,6 @@ public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
         set
         {
             _itemsDictionary = value.ToDictionary(i => i.Id, i => i);
-            OnPropertyChanged(nameof(Items));
         }
     }
     
@@ -104,20 +99,14 @@ public class GenericViewModel<TModel> : BaseViewModel where TModel : IModel
     public bool IsMultiSelecting
     {
         get => MultiSelectController.IsMultiSelecting;
-        set
-        {
-            MultiSelectController.IsMultiSelecting = value;
-            OnPropertyChanged(nameof(IsMultiSelecting));
-        }
+        set => MultiSelectController.IsMultiSelecting = value;
     }
     private void InitMultiSelection()
     {
         MultiSelectController.OnMultiSelectStop = () =>
         {
-            IsMultiSelecting = false;
-            OnPropertyChanged(nameof(IsMultiSelecting));
+            IsMultiSelecting = false; 
         };
     }
-
     #endregion
 }

@@ -1,10 +1,8 @@
 ﻿using System.Net.Http.Json;
-using System.Text;
-using Newtonsoft.Json;
 using UntoMeWorld.WasmClient.Client.Data.Common;
 using UntoMeWorld.WasmClient.Shared.Model;
 
-namespace UntoMeWorld.WasmClient.Client.Utils;
+namespace UntoMeWorld.WasmClient.Client.Utils.Extensions;
 
 public static class HttpExtensions
 {
