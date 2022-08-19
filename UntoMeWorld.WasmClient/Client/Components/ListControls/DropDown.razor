@@ -1,16 +1,18 @@
 ﻿@typeparam TItem
+@using UntoMeWorld.WasmClient.Client.Utils.Extensions
 @inherits DropDownBase<TItem>
 
 <button class="drop-down@(IsOpened ? " open" : "") @CssClass" type="button" @onclick="OpenDropdown">
     <span class="sort-by__label">
         @Placeholder
     </span>
+
+    <span class="drop-down__option">
+        @SelectedOption?.DisplayValue.Truncate(MaxDisplayCharLength)
+        @SelectedOption?.Icon
+    </span>
     @if (SelectedOption != null)
     {
-        <span class="drop-down__option">
-            @SelectedOption.DisplayValue
-            @SelectedOption.Icon
-        </span>
     }
     <PhosphorIcon IconName="PhosphorIcons.CaretDown" CssClass="drop-down__icon"/>
     <ul class="drop-down__options">

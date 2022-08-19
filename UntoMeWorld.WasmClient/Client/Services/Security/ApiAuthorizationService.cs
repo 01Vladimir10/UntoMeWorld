@@ -2,6 +2,7 @@
 using UntoMeWorld.Domain.Security;
 using UntoMeWorld.WasmClient.Client.Data.Common;
 using UntoMeWorld.WasmClient.Client.Utils;
+using UntoMeWorld.WasmClient.Client.Utils.Extensions;
 
 namespace UntoMeWorld.WasmClient.Client.Services.Security;
 

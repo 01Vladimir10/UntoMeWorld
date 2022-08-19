@@ -13,11 +13,11 @@ public class DropDownBase<T> : BaseDropDown<T>
         base.OnParametersSet();
         if (!_isFirstTime)
             return;
-
-        SelectedOption = Options.First();
-        if (DefaultOption != null)
+        SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(SelectedValue)) ?? Options.First();
+        if (DefaultOption != null && SelectedOption == null)
             SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(DefaultOption));
-        _isFirstTime = true;
+        
+        _isFirstTime = false;
     }
 
     protected void OpenDropdown()
@@ -25,9 +25,30 @@ public class DropDownBase<T> : BaseDropDown<T>
         IsOpened = !IsOpened;
     }
 
-    protected Task OnOptionSelected(DropDownOption<T> option)
+    protected async Task OnOptionSelected(DropDownOption<T> option)
     {
-        SelectedOption = option;
-        return OnSelectionChanged == null ? Task.CompletedTask : OnSelectionChanged.Invoke(option.Value);
+        await InvokeAsync(() =>
+        {
+            SelectedOption = option;
+            SelectedValue = option.Value;
+            OnSelectionChanged?.Invoke(option.Value);
+            OnSelectionChangedAsync?.Invoke(option.Value);
+        });
+    }
+}
+
+public static class DropDowns
+{
+    public static readonly IReadOnlyList<DropDownOption<bool>> Boolean = new List<DropDownOption<bool>>
+    {
+        new(true, "Yes"), 
+        new(false, "No")
+    };
+
+    public static List<DropDownOption<T>> FromEnum<T>() where T :  struct, Enum
+    {
+        if (!typeof(T).IsEnum)
+            throw new ArgumentException("T is not an Enum type");
+        return Enum.GetValues<T>().Select(e => new DropDownOption<T>(e, Enum.GetName(e))).ToList();
     }
 }

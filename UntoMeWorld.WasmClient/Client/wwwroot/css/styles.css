@@ -644,6 +644,7 @@ h1, h2, h3, h4, h5 {
   outline: 0.0125rem solid rgba(135, 135, 135, 0.25);
   border-radius: 0.5rem;
   gap: 0.5em;
+  max-height: 100%;
 }
 .drop-down .drop-down__option, .drop-down .drop-down__icon {
   color: var(--primary-text-color);
@@ -656,6 +657,7 @@ h1, h2, h3, h4, h5 {
 .drop-down .drop-down__option {
   margin-right: auto;
   margin-left: 0;
+  text-overflow: ellipsis;
 }
 .drop-down ul.drop-down__options {
   position: absolute;
@@ -770,6 +772,12 @@ h1, h2, h3, h4, h5 {
 }
 .dialog .dialog-header {
   padding: 0.5rem 0;
+}
+.dialog .dialog-content {
+  max-height: 70vh !important;
+  overflow-x: hidden;
+  padding: 0 0.25em;
+  overflow-y: auto;
 }
 .dialog .dialog-footer {
   display: flex;
@@ -900,16 +908,16 @@ body {
   overflow-y: auto;
   height: 100%;
 }
-.page .page-content::-webkit-scrollbar-track {
+.page::-webkit-scrollbar-track, .page *::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(224, 224, 224, 0.66);
   border-radius: 10px;
   background-color: #F5F5F5;
 }
-.page .page-content::-webkit-scrollbar {
+.page::-webkit-scrollbar, .page *::-webkit-scrollbar {
   width: 0.3rem;
   background-color: #F5F5F5;
 }
-.page .page-content::-webkit-scrollbar-thumb {
+.page::-webkit-scrollbar-thumb, .page *::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px #dddd;
   background-color: #adadad;

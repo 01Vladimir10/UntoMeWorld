@@ -58,6 +58,13 @@
     padding: .5rem 0;
   }
   
+  .dialog-content {
+    max-height: 70vh !important;
+    overflow-x: hidden;
+    padding: 0 .25em;
+    overflow-y: auto;
+  }
+  
   .dialog-footer {
     display: flex;
     align-items: center;

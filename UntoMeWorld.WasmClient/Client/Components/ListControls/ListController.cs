@@ -80,7 +80,7 @@ public class ListController<TKey, TItem>
         SelectedItemsCount = 0;
     }
 
-    private async Task Refresh()
+    public async Task Refresh()
     {
         _paginationHelper.Reset();
         await CallApi();

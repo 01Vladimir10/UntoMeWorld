@@ -1,11 +1,12 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model
 {
-    public class Pastor : IModel, IPerson, IRecyclableModel
+    public class Pastor : IModel, IPerson, IRecyclableModel, ICloneable<Pastor>
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -20,6 +21,11 @@ namespace UntoMeWorld.Domain.Model
         public string Lastname { get; set; }
         public int Age { get; set; }
         public Gender Gender { get; set; }
+
+        public Pastor Clone()
+        {
+            return (Pastor) MemberwiseClone();
+        }
 
         public override string ToString()
         {

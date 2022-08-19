@@ -1,10 +1,10 @@
-﻿using System.Net.Http.Json;
-using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Stores;
-using UntoMeWorld.WasmClient.Client.Utils;
+using UntoMeWorld.WasmClient.Client.Utils.Extensions;
 using UntoMeWorld.WasmClient.Shared.DTOs;
 using UntoMeWorld.WasmClient.Shared.Model;
+using static UntoMeWorld.Domain.Common.QueryLanguage;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Stores;
 
@@ -24,11 +24,11 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
         Paths = new ServerActionsPaths(EndPoint);
     }
 
-    public Task<IEnumerable<TModel>> All()
-        => _client.GetFromJsonAsync<IEnumerable<TModel>>(EndPoint);
+    public async Task<IEnumerable<TModel>> All()
+        => await Query(Ne(nameof(IRecyclableModel.IsDeleted), false)).ContinueWith(t => t.Result.Result);
 
-    public Task<IEnumerable<TModel>> All(string query)
-        => _client.PostJsonAsync<IEnumerable<TModel>>(EndPoint, new object());
+    public async Task<IEnumerable<TModel>> All(string query)
+        => await Query(TextSearch(query)).ContinueWith(t => t.Result.Result);
 
     public Task<IEnumerable<TModel>> All(Predicate<TModel> query)
     {

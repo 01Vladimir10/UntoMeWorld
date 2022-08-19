@@ -17,7 +17,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "UW_DB_CONNECTION_STRING": "mongodb://127.0.0.1:27017/untome?directConnection=true&serverSelectionTimeoutMS=2000",
-        "UW_DB_NAME": "untome",
+        "UW_DB_NAME": "default",
         "UW_JWT_SECRET": "g62zL2ugUm81prw1TznjIjwjLFSdLTaruiGup_92ccIu6MoW3"
       }
     },

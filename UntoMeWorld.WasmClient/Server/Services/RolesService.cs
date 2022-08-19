@@ -36,12 +36,12 @@ public class RolesService : GenericSecurityService<Role>, IRolesService
     public Task<List<Role>> GetByRoleName(params string[] roleNames)
         => _store.GetByRoleName(roleNames);
 
-    public Task<Dictionary<string, Permission>> GetEffectivePermissionByRole(IEnumerable<string> roles)
+    public async Task<Dictionary<string, Permission>> GetEffectivePermissionByRole(IEnumerable<string> roles)
     {
         var rolesList = roles.ToList();
         return _options.EnableCaching
-            ? _permissionsByRoles.Get(BuildRolesCacheKey(rolesList), () => _GetEffectivePermissionsByRoles(rolesList))
-            : _GetEffectivePermissionsByRoles(rolesList);
+            ? await _permissionsByRoles.Get(BuildRolesCacheKey(rolesList), () => _GetEffectivePermissionsByRoles(rolesList))
+            : await _GetEffectivePermissionsByRoles(rolesList);
     }
 
     private async Task<Dictionary<string, Permission>> _GetEffectivePermissionsByRoles(IEnumerable<string> roleIds)

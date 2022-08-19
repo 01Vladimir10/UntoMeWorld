@@ -12,6 +12,7 @@
   outline: $controlsBorder;
   border-radius: .5rem;
   gap: .5em;
+  max-height: 100%;
 
   .drop-down__option, .drop-down__icon {
     color: var(--primary-text-color);
@@ -24,6 +25,7 @@
   .drop-down__option {
     margin-right: auto;
     margin-left: 0;
+    text-overflow: ellipsis;
   }
 
   ul.drop-down__options {

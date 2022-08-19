@@ -1,11 +1,12 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model
 {
-    public class Church : IModel, IRecyclableModel
+    public class Church : IModel, IRecyclableModel, ICloneable<Church>
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -22,5 +23,22 @@ namespace UntoMeWorld.Domain.Model
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Address)}: {Address}, {nameof(Pastor)}: {Pastor}";
         }
+
+        public Church Clone()
+        {
+            if (MemberwiseClone() is not Church church)
+                return new Church();
+            church.Address = Address?.Clone();
+            church.Pastor = Pastor?.Clone();
+            return church;
+        }
+
+        public override int GetHashCode()
+        {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
+            return Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj) => obj != null && (obj as Church)?.Id == Id;
     }
 }

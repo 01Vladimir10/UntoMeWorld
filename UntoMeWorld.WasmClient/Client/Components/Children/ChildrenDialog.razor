@@ -1,5 +1,6 @@
 ﻿@using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
-@inherits BaseDialog<UntoMeWorld.Domain.Model.Child, bool>
+@using UntoMeWorld.Domain.Model
+@inherits BaseChildrenDialog
 
 <div class="dialog">
     <div class="dialog-header">
@@ -19,13 +20,13 @@
                 <div class="col-12 col-md-6">
                     <div class="input">
                         <label>Name</label>
-                        <input type="text">
+                        <input type="text" @bind="@Child.Name">
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="input">
                         <label>Lastname</label>
-                        <input type="text">
+                        <input type="text" @bind="@Child.Lastname">
                     </div>
                 </div>
             </div>
@@ -33,26 +34,31 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Age</label>
-                        <input type="text">
+                        <input type="number" @bind="@Child.Age">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Grade</label>
-                        <input type="number">
+                        <input type="number" @bind="@Child.Grade">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Gender</label>
-                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        <DropDown
+                            @bind-SelectedValue="Child.Gender"
+                            Options="@(DropDowns.FromEnum<Gender>())">
                         </DropDown>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Church</label>
-                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        <DropDown
+                            MaxDisplayCharLength="15"
+                            @bind-SelectedValue="Child.Church"
+                            Options="@ChurchesOptions">
                         </DropDown>
                     </div>
                 </div>
@@ -66,26 +72,27 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Top</label>
-                        <input type="number">
+                        <input type="number" @bind="Child.TopSize">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Waist</label>
-                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
-                        </DropDown>
+                        <input type="number" @bind="Child.WaistSize">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Shoes</label>
-                        <input type="text">
+                        <input type="number" @bind="@Child.ShoeSize">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Underwear</label>
-                        <DropDown TItem="string" Options="@(new List<DropDownOption<string>> { new("Female", "Female"), new("Male", "Male") })">
+                        <DropDown
+                            @bind-SelectedValue="Child.UnderwearSize"
+                            Options="@(DropDowns.FromEnum<UnderwearSize>())">
                         </DropDown>
                     </div>
                 </div>
@@ -98,34 +105,40 @@
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Sponsored</label>
-                        <DropDown TItem="bool" Options="@(new List<DropDownOption<bool>> { new(true, "Yes"), new(false, "No") })">
+                        <DropDown
+                            @bind-SelectedValue="Child.IsSponsored"
+                            Options="@DropDowns.Boolean">
                         </DropDown>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Uniforms Count</label>
-                        <input type="number">
+                        <input type="number" @bind="@Child.UniformsCount">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Receives shoes</label>
-                        <DropDown TItem="bool" Options="@(new List<DropDownOption<bool>> { new(true, "Yes"), new(false, "No") })">
+                        <DropDown
+                            @bind-SelectedValue="Child.ReceivesShoes"
+                            Options="@DropDowns.Boolean">
                         </DropDown>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="input">
                         <label>Receives xmas gift</label>
-                        <DropDown TItem="bool" Options="@(new List<DropDownOption<bool>> { new(true, "Yes"), new(false, "No") })">
+                        <DropDown
+                            @bind-SelectedValue="Child.ReceivesChristmasGift"
+                            Options="@DropDowns.Boolean">
                         </DropDown>
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="input">
                         <label>Notes</label>
-                        <textarea rows="2"></textarea>
+                        <textarea rows="2" @bind="Child.Notes"></textarea>
                     </div>
                 </div>
             </div>
@@ -137,26 +150,17 @@
 
         <Button
             Text="Cancel"
-            OnClick="Close"
+            OnClickAsync="Close"
             IconName="@PhosphorIcons.XCircle">
         </Button>
 
         <Button
+            CssClass="ms-2"
             Text="Save"
+            OnClickAsync="Save"
             Style="@ButtonStyle.Primary"
             IconName="@PhosphorIcons.FloppyDisk">
         </Button>
     </div>
 
 </div>
-
-@code {
-
-    private bool IsNewChild => Parameter == default;
-
-    private async Task Close()
-    {
-        await OnCloseAsync(false);
-    }
-
-}
