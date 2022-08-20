@@ -5,11 +5,14 @@
   left: 0;
   z-index: 1000;
   height: 100%;
+  display: grid;
+  place-content: center;
   
   &[data-open=true] {
     top: 0;
     
     .dialog-backdrop {
+      z-index: 999;
       opacity: 1;
       &::before {
         opacity: .375;
@@ -26,8 +29,6 @@
     opacity: 0;
     transition: all 100ms linear;
     backdrop-filter: blur(1);
-    display: grid;
-    place-content: center;
     &::before {
       position: absolute;
       top: 0;
@@ -43,6 +44,8 @@
 }
 
 .dialog {
+  pointer-events: all;
+  z-index: 1001;
   background-color: var(--surface-color);
   padding: .875rem;
   border-radius: .5rem;

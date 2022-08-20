@@ -89,8 +89,8 @@ h1, h2, h3, h4, h5 {
   display: inline-flex;
   align-items: center;
   font-size: 0.875rem;
-  border-radius: 0.25em;
-  padding: 0.5em 1em;
+  border-radius: 0.5rem;
+  padding: 0.75em;
   justify-content: center;
   gap: 0.5em;
   background-color: transparent;
@@ -139,7 +139,6 @@ h1, h2, h3, h4, h5 {
 .button:hover, .button:focus, .button:active {
   text-decoration: none;
   outline: none;
-  box-shadow: 0 0 8px var(--shadow-color);
   color: var(--button-on-color);
   background-color: transparent;
 }
@@ -400,7 +399,6 @@ h1, h2, h3, h4, h5 {
 }
 .search-view .search-view__input {
   border: none;
-  padding: 0.25em;
   flex-grow: 1;
   width: auto;
   max-width: unset;
@@ -724,11 +722,14 @@ h1, h2, h3, h4, h5 {
   left: 0;
   z-index: 1000;
   height: 100%;
+  display: grid;
+  place-content: center;
 }
 .dialog-container[data-open=true] {
   top: 0;
 }
 .dialog-container[data-open=true] .dialog-backdrop {
+  z-index: 999;
   opacity: 1;
 }
 .dialog-container[data-open=true] .dialog-backdrop::before {
@@ -743,8 +744,6 @@ h1, h2, h3, h4, h5 {
   opacity: 0;
   transition: all 100ms linear;
   backdrop-filter: blur(1);
-  display: grid;
-  place-content: center;
 }
 .dialog-container .dialog-backdrop::before {
   position: absolute;
@@ -759,6 +758,8 @@ h1, h2, h3, h4, h5 {
 }
 
 .dialog {
+  pointer-events: all;
+  z-index: 1001;
   background-color: var(--surface-color);
   padding: 0.875rem;
   border-radius: 0.5rem;
@@ -812,6 +813,61 @@ h1, h2, h3, h4, h5 {
 .input input:focus, .input select:focus, .input textarea:focus {
   filter: brightness(0.95);
   outline: none;
+}
+
+#toastsContainer {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 1200;
+}
+
+.toast {
+  padding: 0.5em 0.75em;
+  border-radius: 0.5rem;
+  background-color: var(--surface-color);
+  font-size: 0.875rem;
+  box-shadow: 0 0 8px var(--shadow-color-2);
+  opacity: 0;
+  transform: translateY(50%);
+  color: var(--primary-text-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  transition: all 500ms ease;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast .toast-content {
+  color: inherit;
+}
+.toast .toast-icon {
+  color: inherit;
+  font-size: 1.25em;
+}
+.toast.error {
+  background-color: var(--error-color, #d50f0f);
+  color: var(--on-error-color, white);
+}
+.toast.primary {
+  background-color: var(--primary-color, white);
+  color: var(--primary-text-color, black);
+}
+.toast.warning {
+  background-color: var(--warning-color, #e39b12);
+  color: var(--on-warning-color, black);
+}
+.toast.success {
+  background-color: var(--success-color, #06b606);
+  color: var(--on-success-color, white);
 }
 
 body {

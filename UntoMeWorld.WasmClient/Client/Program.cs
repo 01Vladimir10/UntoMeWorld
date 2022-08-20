@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Client;
+using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Data.Stores;
 using UntoMeWorld.WasmClient.Client.Services;
 using UntoMeWorld.WasmClient.Client.Services.Base;
@@ -13,9 +14,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+
 builder.Services.AddHttpClient("UntoMeWorld.WasmClient.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
+builder.Services.AddSingleton<ToastService, ToastService>();
 builder.Services.AddTransient<IChurchesStore, RemoteChurchesStore>();
 builder.Services.AddTransient<IChildrenStore, RemoteChildrenStore>();
 

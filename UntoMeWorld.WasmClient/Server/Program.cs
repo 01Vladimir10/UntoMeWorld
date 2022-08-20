@@ -27,6 +27,7 @@ try
     builder.Services.AddTransient<IPastorsService, PastorsService>();
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
+    
     builder.Services.AddSwaggerGen(c =>
     {
         c.AddServer(new OpenApiServer

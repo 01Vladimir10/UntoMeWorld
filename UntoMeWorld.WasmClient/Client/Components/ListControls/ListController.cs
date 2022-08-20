@@ -23,6 +23,7 @@ public class ListController<TKey, TItem>
         ItemsProvider = GetItems;
         Items = new List<ListItem<TKey, TItem>>();
     }
+    
 
     private async ValueTask<ItemsProviderResult<ListItem<TKey, TItem>>> GetItems(ItemsProviderRequest request)
     {

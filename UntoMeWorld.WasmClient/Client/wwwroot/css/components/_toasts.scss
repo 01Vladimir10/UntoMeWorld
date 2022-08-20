@@ -1,0 +1,59 @@
+﻿@import "../variables";
+
+#toastsContainer {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  z-index: 1200;
+}
+
+.toast {
+  padding: .5em .75em;
+  border-radius: $controlsBorderRadius;
+  background-color: var(--surface-color);
+  font-size: $controlsFontSize;
+  box-shadow: 0 0 8px var(--shadow-color-2);
+  opacity: 0;
+  transform: translateY(50%);
+  color: var(--primary-text-color);
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  transition: all 500ms ease;
+
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast-content {
+    color: inherit;
+  }
+  .toast-icon {
+    color: inherit;
+    font-size: 1.25em;
+  }
+  &.error {
+    background-color: var(--error-color, #d50f0f);
+    color: var(--on-error-color, white);
+  }
+  &.primary {
+
+    background-color: var(--primary-color, white);
+    color: var(--primary-text-color, black);
+  }
+  &.warning {
+    background-color: var(--warning-color, #e39b12);
+    color: var(--on-warning-color, black);
+  }
+  &.success {
+    background-color: var(--success-color, #06b606);
+    color: var(--on-success-color, white);
+  }
+}

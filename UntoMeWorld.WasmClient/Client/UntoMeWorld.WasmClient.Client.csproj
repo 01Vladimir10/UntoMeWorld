@@ -38,4 +38,7 @@
   <ItemGroup>
     <Content Update="wwwroot\css\**" Watch="false" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Components\Common" />
+  </ItemGroup>
 </Project>

@@ -28,10 +28,10 @@ namespace UntoMeWorld.Domain.Model
         [Range(26, 46, ErrorMessage = "The shoe size must be a value between 26 and 46")]
         public int ShoeSize { get; set; }
 
-        [Range(8, 18, ErrorMessage = "The shoe size must be a value between 8 and 18")]
+        [Range(8, 18, ErrorMessage = "The top size must be a value between 8 and 18")]
         public int TopSize { get; set; }
 
-        [Range(18, 40, ErrorMessage = "The underwear size must be a value between 26 and 40")]
+        [Range(18, 40, ErrorMessage = "The waist size must be a value between 26 and 40")]
         public int WaistSize { get; set; }
 
         public UnderwearSize UnderwearSize { get; set; }

@@ -22,6 +22,10 @@ public class PhosphorIconBase : Icon
     public PhosphorIconBase(string iconName)
     {
         IconName = iconName;
+    }public PhosphorIconBase(string iconName, IconWeight weight)
+    {
+        IconName = iconName;
+        Weight = weight;
     }
     public override string ToString()
     {

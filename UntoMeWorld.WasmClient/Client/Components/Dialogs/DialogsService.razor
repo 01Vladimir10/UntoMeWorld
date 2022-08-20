@@ -1,8 +1,9 @@
 ﻿@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
 <div class="dialog-container" data-open="@IsDialogOpen.ToString().ToLower()">
     <div class="dialog-backdrop" @onclick="OnBackdropClick">
-        @_dialog
+        
     </div>
+    @_dialog
 </div>
 
 @code {
@@ -24,7 +25,7 @@
         }
     }
 
-    public void ShowDialogAsync<TDialog, TParameter, TResult>(TParameter parameter, Func<TResult, Task> onClose, bool isCancellable = true, TResult defaultResult = default) where TDialog : BaseDialog<TParameter, TResult>
+    public void ShowDialog<TDialog, TParameter, TResult>(TParameter parameter, Func<TResult, Task> onClose, bool isCancellable = true, TResult defaultResult = default) where TDialog : BaseDialog<TParameter, TResult>
     {
         Task CloseDialogParam(TResult result)
         {

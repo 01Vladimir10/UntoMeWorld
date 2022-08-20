@@ -1,0 +1,61 @@
+﻿@page "/children"
+@using UntoMeWorld.WasmClient.Client.Data.Model
+@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.Domain.Security
+@using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
+@inherits ChildrenPageBase
+
+<AuthorizationContext ApiResource="ApiResource.Children">
+
+    <div class="list-layout">
+        <div class="list-controls">
+            <ListControlsLayout IsMultiSelecting="@ListController.IsMultiSelecting">
+                <NormalControls>
+                    <SearchView
+                        OnSearch="OnSearchSubmit"
+                        Placeholder="Search children"
+                        EnableSuggestions="true"
+                        MaxSuggestions="4"
+                        HistoryCollectionKey="children__queries">
+                    </SearchView>
+                    <DropDown
+                        Placeholder="sort by -"
+                        Options="_options"
+                        OnSelectionChangedAsync="OnSortFieldChanged">
+                    </DropDown>
+                    <AuthorizedPanel
+                        RequiredPermission="PermissionType.Add">
+                        <Button Style="@ButtonStyle.Primary" IconName="@PhosphorIcons.PlusCircle" Text="Add Child"
+                                OnClick="AddChild"
+                                CssClass="px-4">
+
+                        </Button>
+
+                    </AuthorizedPanel>
+                </NormalControls>
+                <MultiSelectControls>
+                    Multi selecting...
+                </MultiSelectControls>
+            </ListControlsLayout>
+        </div>
+        <br>
+        <ChildrenList
+            OnEditClicked="EditChild"
+            OnDeleteClicked="DeleteChild"
+            @ref="ListView"
+            ItemsProvider="ListController.ItemsProvider"/>
+    </div>
+</AuthorizationContext>
+
+
+@code {
+
+    private readonly List<DropDownOption<SortField>> _options = new()
+    {
+        new DropDownOption<SortField>(SortField.Desc(nameof(Child.Name)), "Name",
+            PhosphorIcons.Render(PhosphorIcons.ArrowUp)),
+        new DropDownOption<SortField>(SortField.Asc(nameof(Child.Name)), "Name",
+            PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
+    };
+
+}

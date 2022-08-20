@@ -92,11 +92,29 @@
                         <label>Underwear</label>
                         <DropDown
                             @bind-SelectedValue="Child.UnderwearSize"
+                            MaxDisplayCharLength="10"
                             Options="@(DropDowns.FromEnum<UnderwearSize>())">
                         </DropDown>
                     </div>
                 </div>
             </div>
+
+            @if (Child.Gender == Gender.Female)
+            {
+                <div class="row">
+
+                    <div class="col-6 col-md-3">
+                        <div class="input">
+                            <label>Bra</label>
+                            <DropDown
+                                @bind-SelectedValue="Child.BraSize"
+                                MaxDisplayCharLength="15"
+                                Options="@(DropDowns.FromEnum<UnderwearSize>())">
+                            </DropDown>
+                        </div>
+                    </div>
+                </div>
+            }
 
             <h5 class="text-base font-semiBold text-normal mt-3">
                 Other information

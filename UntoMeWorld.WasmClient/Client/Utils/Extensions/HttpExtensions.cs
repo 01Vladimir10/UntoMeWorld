@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using UntoMeWorld.WasmClient.Client.Data.Common;
 using UntoMeWorld.WasmClient.Shared.Model;
 
@@ -23,9 +24,13 @@ public static class HttpExtensions
     private static async Task<TResult> InterpretResponse<TResult>(Task<HttpResponseMessage> responseTask)
     {
         var response = await responseTask;
+        
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadFromJsonAsync<TResult>();
 
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+            throw new UnauthorizedAccessException("You do not have sufficient permissions to execute this task");
+        
         var error = await response.Content.ReadFromJsonAsync<ErrorDto>();
         throw new ApiCallErrorException(error);
     }

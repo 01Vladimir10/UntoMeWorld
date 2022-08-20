@@ -1,5 +1,6 @@
 ﻿@using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
-@using UntoMeWorld.WasmClient.Client.Components.Common
+@using UntoMeWorld.WasmClient.Client.Components
+@using UntoMeWorld.WasmClient.Client.Components.Interop
 @implements UntoMeWorld.WasmClient.Client.Components.Base.IComponent
 @inject IJSRuntime JsRuntime
 
@@ -24,7 +25,7 @@
         await base.OnAfterRenderAsync(isFirstRender);
         if (isFirstRender)
         {
-            await JsRuntime.InvokeVoidAsync(ComponentFunctions.InitExpandableItem, _itemId);
+            await JsRuntime.InvokeVoidAsync(InteropFunctions.InitExpandableItem, _itemId);
         }
     }
 

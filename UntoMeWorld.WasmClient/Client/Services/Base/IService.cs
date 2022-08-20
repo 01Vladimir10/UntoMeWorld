@@ -7,7 +7,8 @@ public interface IService<T>
     public Task<PaginationResult<T>> Paginate(QueryFilter filter = null, string orderBy = null, bool orderDesc = false,
         int page = 1,
         int pageSize = 30);
-    
+
+    public Task<List<T>> All();
     public Task<PaginationResult<T>> PaginateDeleted(QueryFilter filter = null, string orderBy = null, bool orderDesc = false,
         int page = 1,
         int pageSize = 30);

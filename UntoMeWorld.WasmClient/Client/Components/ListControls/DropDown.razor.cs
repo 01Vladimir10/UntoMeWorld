@@ -1,4 +1,5 @@
-﻿using UntoMeWorld.WasmClient.Client.Components.Base;
+﻿using Newtonsoft.Json;
+using UntoMeWorld.WasmClient.Client.Components.Base;
 
 namespace UntoMeWorld.WasmClient.Client.Components.ListControls;
 
@@ -13,9 +14,9 @@ public class DropDownBase<T> : BaseDropDown<T>
         base.OnParametersSet();
         if (!_isFirstTime)
             return;
-        SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(SelectedValue)) ?? Options.First();
-        if (DefaultOption != null && SelectedOption == null)
-            SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(DefaultOption));
+        
+        if (SelectedOption == null && DefaultOption != null)
+            SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(DefaultOption)) ?? Options.FirstOrDefault();
         
         _isFirstTime = false;
     }

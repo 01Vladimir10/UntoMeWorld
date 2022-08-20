@@ -29,6 +29,12 @@ public abstract class GenericService<T> : IService<T> where T : IModel, IRecycla
         return _store.Query(finalQuery, orderBy, orderDesc, page, pageSize);
     }
 
+    public async Task<List<T>> All()
+    {
+        var result = await Paginate(null, pageSize: 100000, page:1);
+        return result.Result;
+    }
+
     public Task<PaginationResult<T>> PaginateDeleted(QueryFilter filter = null, string orderBy = null,
         bool orderDesc = false, int page = 1,
         int pageSize = 30)

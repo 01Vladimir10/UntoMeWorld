@@ -39,6 +39,6 @@ namespace UntoMeWorld.Domain.Model
             return Id.GetHashCode();
         }
 
-        public override bool Equals(object obj) => obj != null && (obj as Church)?.Id == Id;
+        public override bool Equals(object obj) => obj is Church church && church.Id == Id;
     }
 }

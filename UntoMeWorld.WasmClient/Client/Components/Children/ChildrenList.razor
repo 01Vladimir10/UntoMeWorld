@@ -1,5 +1,7 @@
 ﻿@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.Domain.Security
 @using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
+@using UntoMeWorld.WasmClient.Client.Utils.Extensions
 @using UntoMeWorld.WasmClient.Client.Utils.UIHelpers
 
 
@@ -14,7 +16,7 @@
         {
             case 0:
                 <span class="text subtitle m-0">
-                    @child.Name
+                    @child.FullName()
                 </span>
                 <span class=" text secondary">
                     @(child.Church?.Name)
@@ -186,27 +188,33 @@
                             Notes
                         </span>
                         <span class="text secondary">
-                            @child.WaistSize
+                            @child.Notes
                         </span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="d-flex align-items-center gap-2 my-2">
-        <Button IconName="@PhosphorIcons.PencilLine"
-                IconWeight="IconWeight.Bold"
-                Text="Edit"
-                OnClick="() => OnEditClicked(child)"
-                CssClass="font-semiBold"
-                Style="@ButtonStyle.Primary">
-        </Button>
-        <Button IconName="@PhosphorIcons.TrashSimple"
-                Text="Delete" Style="@ButtonStyle.Danger"
-                IconWeight="IconWeight.Bold"
-                OnClick="() => OnDeleteClicked(child)"
-                CssClass="ms-2 font-semiBold">
-        </Button>
+    <div class="d-flex align-items-center my-2">
+        <AuthorizedPanel
+            RequiredPermission="PermissionType.Update">
+
+            <Button IconName="@PhosphorIcons.PencilLine"
+                    IconWeight="IconWeight.Bold"
+                    Text="Edit"
+                    OnClick="() => OnEditClicked(child)"
+                    CssClass="font-semiBold"
+                    Style="@ButtonStyle.Primary">
+            </Button>
+        </AuthorizedPanel>
+        <AuthorizedPanel RequiredPermission="PermissionType.Delete">
+            <Button IconName="@PhosphorIcons.TrashSimple"
+                    Text="Delete" Style="@ButtonStyle.Danger"
+                    IconWeight="IconWeight.Bold"
+                    OnClick="() => OnDeleteClicked(child)"
+                    CssClass="ms-2 font-semiBold">
+            </Button>
+        </AuthorizedPanel>
     </div>
 </ExpandableItemContentTemplate>
 

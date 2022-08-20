@@ -1,12 +1,14 @@
-﻿.button {
+﻿@import "../variables";
+
+.button {
   --button-color: black;
   --button-on-color: #fff;
 
   display: inline-flex;
   align-items: center;
-  font-size: .875rem;
-  border-radius: .25em;
-  padding: .5em 1em;
+  font-size: $controlsFontSize;
+  border-radius: $controlsBorderRadius  ;
+  padding: $controlsPadding;
   justify-content: center;
   gap: .5em;
   background-color: transparent;
@@ -60,7 +62,6 @@
   &:hover, &:focus, &:active {
     text-decoration: none;
     outline: none;
-    box-shadow: 0 0 8px var(--shadow-color);
     color: var(--button-on-color);
     background-color: transparent;
 

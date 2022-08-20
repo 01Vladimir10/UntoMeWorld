@@ -36,6 +36,7 @@ public class PaginationHelper<T>
     public void Reset()
     {
         PageIndex = 0;
+        TotalPages = 1;
     }
 
     public async Task<List<T>> FetchNextPage()
