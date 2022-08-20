@@ -63,7 +63,7 @@ namespace UntoMeWorld.MongoDatabase.Stores
             return new PaginationResult<TModel>
             {
                 Result = result.Select(_modelConverter).ToList(),
-                TotalPages = (int) Math.Ceiling((double) totalItems / pageSize),
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
                 TotalItems = totalItems,
                 Page = page
             };
@@ -145,6 +145,15 @@ namespace UntoMeWorld.MongoDatabase.Stores
                 return null;
             var result = facets[0].Output<TReadModel>();
             return result == null || !result.Any() ? null : _modelConverter(result[0]);
+        }
+    }
+
+    public abstract class GenericMongoStore<TModel> : GenericMongoStore<TModel, TModel>
+        where TModel : class, IModel, IRecyclableModel
+    {
+        protected GenericMongoStore(MongoDbService service, string collection) :
+            base(service, collection, m => m)
+        {
         }
     }
 }
