@@ -36,7 +36,7 @@ namespace UntoMeWorld.Domain.Model
         public override int GetHashCode()
         {
             // ReSharper disable once NonReadonlyMemberInGetHashCode
-            return Id.GetHashCode();
+            return Id?.GetHashCode() ?? 0;
         }
 
         public override bool Equals(object obj) => obj is Church church && church.Id == Id;

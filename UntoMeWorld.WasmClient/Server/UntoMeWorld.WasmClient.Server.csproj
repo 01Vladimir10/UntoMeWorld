@@ -31,4 +31,10 @@
   <ItemGroup>
     <Watch Update="wwwroot\css\**" Watch="false" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

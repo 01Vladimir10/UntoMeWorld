@@ -30,13 +30,35 @@
     <_ContentIncludedByDefault Remove="Components\Layouts\RootLeveledComponent.razor" />
     <_ContentIncludedByDefault Remove="wwwroot\css\icons\phosphor-icons.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\icons\phosphor-icons.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_appbar.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_dialog.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_dropDown.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_expandableItem.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_forms.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_list.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_listItem.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_loginDisplay.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_menu.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_searchView.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\components\_toasts.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\layouts\_appLayout.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\layouts\_listControls.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\layouts\_root.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles.css.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles\_buttons.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles\_text.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\_utils.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\_variables.scss" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Components\Icons\PhosphorIconClasses.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="wwwroot\css\**" Watch="false" />
+    <Content Update="wwwroot\content\css\**" Watch="false" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\Common" />

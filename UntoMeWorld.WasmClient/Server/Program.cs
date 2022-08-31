@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
@@ -12,7 +13,7 @@ using UntoMeWorld.WasmClient.Server.Services.Options;
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    
+
     builder.Services.AddOptions();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -27,7 +28,7 @@ try
     builder.Services.AddTransient<IPastorsService, PastorsService>();
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
-    
+
     builder.Services.AddSwaggerGen(c =>
     {
         c.AddServer(new OpenApiServer
@@ -39,14 +40,16 @@ try
         c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
     });
 
-    builder.Services.Configure<RolesServiceOptions>(builder.Configuration.GetSection("Services").GetSection("RolesService"));
-    builder.Services.Configure<UserServiceOptions>(builder.Configuration.GetSection("Services").GetSection("UsersService"));
+    builder.Services.Configure<RolesServiceOptions>(builder.Configuration.GetSection("Services")
+        .GetSection("RolesService"));
+    builder.Services.Configure<UserServiceOptions>(builder.Configuration.GetSection("Services")
+        .GetSection("UsersService"));
 
     builder.Services.AddControllersWithViews();
     builder.Services.AddRazorPages();
 
     var app = builder.Build();
-    
+
 
 // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -60,8 +63,16 @@ try
         app.UseHsts();
     }
 
-    app.UseHttpsRedirection();
-    app.Urls.Add("https://*:5001");
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
+        //app.UseHttpsRedirection();
+    }
+    
+    
     app.UseBlazorFrameworkFiles();
     app.UseStaticFiles();
 
@@ -70,10 +81,11 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UntoMeWorld API V1"));
     app.MapSwagger();
-    
+
     app.MapRazorPages();
     app.MapControllers();
 
