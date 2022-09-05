@@ -15,10 +15,11 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
-builder.Services.AddHttpClient("UntoMeWorld.WasmClient.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+builder.Services
+    .AddHttpClient("UntoMeWorld.WasmClient.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
-builder.Services.AddSingleton<ToastService, ToastService>();
+builder.Services.AddSingleton<ToastService>();
 builder.Services.AddTransient<IChurchesStore, RemoteChurchesStore>();
 builder.Services.AddTransient<IChildrenStore, RemoteChildrenStore>();
 

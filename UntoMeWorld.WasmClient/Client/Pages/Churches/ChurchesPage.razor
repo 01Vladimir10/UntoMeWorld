@@ -2,19 +2,30 @@
 @using UntoMeWorld.Domain.Security
 @using UntoMeWorld.WasmClient.Client.Services.Base
 @using UntoMeWorld.Domain.Model
+@using UntoMeWorld.Domain.Common
 
 @inject IChurchesService ChurchesService
 
 
-<h5>
-    <AuthorizationContext ApiResource="ApiResource.Children">
-        <AuthorizedPanel
-            RequiredPermission="PermissionType.Read">
+<AuthorizationContext ApiResource="ApiResource.Churches">
+    <AuthorizedPanel
+        RequiredPermission="PermissionType.Read">
+
+        <div class="list-layout">
+            <div class="list-controls">
+                <SearchView
+                    OnSearch="OnSearchSubmit"
+                    Placeholder="Search churches"
+                    EnableSuggestions="true"
+                    MaxSuggestions="4"
+                    HistoryCollectionKey="churches__queries">
+                </SearchView>
+            </div>
             <ListView
+                @ref="_listView"
                 Columns="Columns"
-                
                 ItemsProvider="_listController.ItemsProvider">
-                
+
                 <ItemTemplate Context="item">
                     @switch (item.ColumnIndex)
                     {
@@ -37,18 +48,23 @@
                 </ItemTemplate>
 
             </ListView>
-            
-            
-        </AuthorizedPanel>
-    </AuthorizationContext>
-</h5>
+        </div>
+
+
+    </AuthorizedPanel>
+</AuthorizationContext>
 
 @code {
+    private ListView<string, Church> _listView;
     private ListController<string, Church> _listController;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _listController = new ListController<string, Church>(c => c.Id, new PaginationHelper<Church>(ChurchesService.Paginate) { PageSize = 50 });
+        _listController = new ListController<string, Church>(c => c.Id, new PaginationHelper<Church>(ChurchesService.Paginate) { PageSize = 50 })
+        {
+            OnDataRefresh = () => _listView?.Reset()
+        };
     }
 
     private static List<ListColumn> Columns => new()
@@ -57,5 +73,14 @@
         new ListColumn("Address", "col-4"),
         new ListColumn("Pastor", "col-4")
     };
+
+    private Task OnSearchSubmit(string query)
+    {
+        return _listController.SetFilter(
+            string.IsNullOrEmpty(query)
+                ? null
+                : QueryLanguage.TextSearch(query));
+    }
+
 
 }

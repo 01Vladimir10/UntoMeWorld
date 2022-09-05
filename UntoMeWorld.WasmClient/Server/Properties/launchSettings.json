@@ -32,7 +32,7 @@
       "commandLineArgs": "watch run",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "UW_DB_CONNECTION_STRING": "mongodb+srv://ganduDev:sBgl0ySU38Jdk8YB@untomeworld.9itjc.mongodb.net/?retryWrites=true&w=majority",
+        "UW_DB_CONNECTION_STRING": "mongodb+srv://production:OeMJW64jwpNXDdL0@untomeworld.9itjc.mongodb.net/?retryWrites=true&w=majority",
         "UW_DB_NAME": "UntoMeWorld",
         "UW_JWT_SECRET": "g62zL2ugUm81prw1TznjIjwjLFSdLTaruiGup_92ccIu6MoW3"
       }

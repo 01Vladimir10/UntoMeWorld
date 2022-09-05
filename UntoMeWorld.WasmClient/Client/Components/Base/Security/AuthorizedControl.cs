@@ -9,6 +9,7 @@ public abstract class AuthorizedControl : ComponentBase, IAuthorizedControl
     [CascadingParameter] public ApiResource CascadingApiResource { get; set; } = ApiResource.Unknown;
     [Parameter] public ApiResource ApiResource { get; set; } = ApiResource.Unknown;
     [Parameter] public PermissionType RequiredPermission { get; set; }
+    [Parameter] public List<PermissionType> RequiredPermissions { get; set; }
     [Inject] public IAuthorizationProviderService AuthorizationProvider { get; set; }
     private ApiResource EffectiveResource => ApiResource == ApiResource.Unknown ? CascadingApiResource : ApiResource;
     protected bool IsAuthorized { get; private set; }
@@ -16,7 +17,15 @@ public abstract class AuthorizedControl : ComponentBase, IAuthorizedControl
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        IsAuthorized = await AuthorizationProvider.ChallengeAsync(EffectiveResource, RequiredPermission);
+
+        if (RequiredPermissions?.Any() ?? false)
+        {
+            IsAuthorized = await AuthorizationProvider.ChallengeAsync(EffectiveResource, RequiredPermissions);
+        }
+        else
+        {
+            IsAuthorized = await AuthorizationProvider.ChallengeAsync(EffectiveResource, RequiredPermission);
+        }
     }
     
 }

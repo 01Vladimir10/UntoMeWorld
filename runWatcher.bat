@@ -1,2 +1,2 @@
-cd UntoMeWorld.WasmClient\Client\wwwroot\css\
-CssWatcher.exe -e "*.min.map,*.css"
+cd UntoMeWorld.WasmClient\Client\wwwroot\css
+CssWatcher.exe . -e "*.min.map,*.css"

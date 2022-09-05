@@ -22,11 +22,13 @@
 
 .list-view-item {
   padding: .5rem 1rem;
-  margin: .5rem 0;
+  margin: .5rem .25rem;
   box-shadow: 0 1px 6px var(--shadow-color-2);
   border-radius: .5rem;
   align-items: stretch;
 }
+
+
 .list-row {
   display: flex;
   align-items: center;

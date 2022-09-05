@@ -10,27 +10,37 @@ public class ApiAuthorizationService : IAuthorizationProviderService
 {
     public IDictionary<ApiResource, Permission> CurrentUserPermissions { get; set; }
     private readonly HttpClient _httpClient;
-    private bool _isInitialized;
 
     public ApiAuthorizationService(IHttpClientFactory client)
     {
         _httpClient = client.CreateClient("UntoMeWorld.WasmClient.ServerAPI");
     }
 
+    private async Task Init()
+    {
+        CurrentUserPermissions ??= await GetCurrentUsersPermission();
+    }
+
     public async Task<bool> ChallengeAsync(ApiResource apiResource, PermissionType requiredPermission)
     {
-        if (!_isInitialized || CurrentUserPermissions == null)
-        {
-            _isInitialized = true;
-            CurrentUserPermissions = await GetCurrentUsersPermission();
-        }
+        await Init();
+        return Challenge(apiResource, requiredPermission);
+    }
 
+    private bool Challenge(ApiResource apiResource, PermissionType requiredPermission)
+    {
         if (CurrentUserPermissions.ContainsKey(apiResource))
             return ChallengePermissions(CurrentUserPermissions[apiResource], requiredPermission);
         
         return CurrentUserPermissions.ContainsKey(ApiResource.Wildcard) &&
                ChallengePermissions(CurrentUserPermissions[ApiResource.Wildcard], requiredPermission);
     }
+    public async Task<bool> ChallengeAsync(ApiResource apiResource, IEnumerable<PermissionType> requiredPermissions)
+    {
+        await Init();
+        return requiredPermissions.Any(p => Challenge(apiResource, p));
+    }
+
     private static bool ChallengePermissions(Permission permission, PermissionType permissionType)
     {
         return permissionType switch
@@ -54,7 +64,7 @@ public class ApiAuthorizationService : IAuthorizationProviderService
             var permissions =
                 await _httpClient.GetJsonAsync<Dictionary<string, Permission>>(
                     ApiRoutes.Roles.GetCurrentUserPermissions);
-        
+
             var result = new Dictionary<ApiResource, Permission>();
 
             foreach (var resource in permissions.Keys.Where(resource => resource != null))
@@ -64,6 +74,7 @@ public class ApiAuthorizationService : IAuthorizationProviderService
                 else
                     result[ApiResource.Wildcard] = permissions[resource];
             }
+
             return result;
         }
         catch (Exception e)

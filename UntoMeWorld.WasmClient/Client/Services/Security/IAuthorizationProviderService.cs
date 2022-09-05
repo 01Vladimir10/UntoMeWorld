@@ -8,4 +8,5 @@ public interface IAuthorizationProviderService : IDisposable
     
     public IDictionary<ApiResource, Permission> CurrentUserPermissions { get; set; }
     public Task<bool> ChallengeAsync(ApiResource apiResource, PermissionType requiredPermission);
+    public Task<bool> ChallengeAsync(ApiResource apiResource, IEnumerable<PermissionType> requiredPermissions);
 }
