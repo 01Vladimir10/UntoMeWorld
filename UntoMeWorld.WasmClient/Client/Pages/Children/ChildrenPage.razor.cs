@@ -27,6 +27,7 @@ public class ChildrenPageBase : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         var paginationHelper = new PaginationHelper<Child>(ChildrenService.Paginate) { PageSize = 50 };
+        
         ListController = new ListController<string, Child>(c => c.Id, paginationHelper)
         {
             OnDataRefresh = async () =>

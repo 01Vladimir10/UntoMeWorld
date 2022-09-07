@@ -68,12 +68,12 @@ const Toast = {
         if (iconClass) {
             toast.insertBefore(createNode('i', { class: `toast-icon ${iconClass}` }), toast.firstChild)
         }
-        this.container.appendChild(toast);
         
-        setTimeout(() => toast.classList.add('show'), 1);
+        this.container.appendChild(toast);
+        setTimeout(() =>toast.classList.add('show'), 1);
         setTimeout(() => {
             toast.classList.remove('show');
-            setTimeout(() => this.container.removeChild(toast), 1000);
+            setTimeout(() => this.container.removeChild(toast), 500);
         }, duration);
     },
     createDebounce: debounce((text, iconClass = null, cssClass = '', duration = 200) => {

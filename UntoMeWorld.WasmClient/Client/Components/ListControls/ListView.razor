@@ -35,38 +35,44 @@
                 @ref="_virtualize"
                 Context="item"
                 ItemSize="50"
-                OverscanCount="10"
+                OverscanCount="5"
                 ItemsProvider="ItemsProvider">
-                <div class="list-view-item">
+                <ItemContent>
+                    <div class="list-view-item">
+                        <ExpandableItem>
+                            <Header>
+                                @if (ItemTemplate != null)
+                                {
+                                    var cell = new ListCell<TKey, TItem> { RowKey = item.Key, Data = item.Item };
 
-                    <ExpandableItem>
-                        <Header>
-                            @if (ItemTemplate != null)
-                            {
-                                var cell = new ListCell<TKey, TItem> { RowKey = item.Key, Data = item.Item };
-
-                                <div class="row">
-                                    @for (var i = 0; i < Columns.Count; i++)
-                                    {
-                                        cell.ColumnIndex = i;
-                                        <div class="@Columns[i].CssClass">
-                                            <div class="list-cell">
-                                                @ItemTemplate(cell)
+                                    <div class="row">
+                                        @for (var i = 0; i < Columns.Count; i++)
+                                        {
+                                            cell.ColumnIndex = i;
+                                            <div class="@Columns[i].CssClass">
+                                                <div class="list-cell">
+                                                    @ItemTemplate(cell)
+                                                </div>
                                             </div>
-                                        </div>
-                                    }
-                                </div>
-                            }
-                        </Header>
-                        <Content>
-                            @if (ExpandableItemContentTemplate != null)
-                            {
-                                @ExpandableItemContentTemplate(item.Item)
-                            }
-                        </Content>
+                                        }
+                                    </div>
+                                }
+                            </Header>
+                            <Content>
+                                @if (ExpandableItemContentTemplate != null)
+                                {
+                                    @ExpandableItemContentTemplate(item.Item)
+                                }
+                            </Content>
 
-                    </ExpandableItem>
-                </div>
+                        </ExpandableItem>
+                    </div>
+                </ItemContent>
+                <Placeholder>
+                    <div class="d-flex align-items-center justify-content-center" style="height: 150px">
+                        Loading...
+                    </div>
+                </Placeholder>
             </Virtualize>
         }
     </div>

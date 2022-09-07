@@ -2,6 +2,7 @@
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client.Services.Base;
+using UntoMeWorld.WasmClient.Client.Utils.Common;
 using static UntoMeWorld.Domain.Common.QueryLanguage;
 
 namespace UntoMeWorld.WasmClient.Client.Services;
@@ -12,6 +13,7 @@ namespace UntoMeWorld.WasmClient.Client.Services;
 public abstract class GenericService<T> : IService<T> where T : IModel, IRecyclableModel
 {
     private readonly IStore<T> _store;
+    private readonly SimpleTaskManager<PaginationResult<T>> _taskManager = new();
 
     protected GenericService(IStore<T> store)
     {
@@ -26,7 +28,7 @@ public abstract class GenericService<T> : IService<T> where T : IModel, IRecycla
             ? Eq(nameof(IRecyclableModel.IsDeleted), false)
             : And(Eq(nameof(IRecyclableModel.IsDeleted), false), filter);
         
-        return _store.Query(finalQuery, orderBy, orderDesc, page, pageSize);
+        return _taskManager.ExecuteTask(() => _store.Query(finalQuery, orderBy, orderDesc, page, pageSize));
     }
 
     public async Task<List<T>> All()

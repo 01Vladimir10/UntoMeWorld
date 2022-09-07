@@ -2,7 +2,7 @@
 @using UntoMeWorld.Domain.Model
 @using UntoMeWorld.Domain.Security
 @using UntoMeWorld.WasmClient.Client.Main
-@inject NavigationManager _manager 
+@inject NavigationManager Manager 
 
 <div class="navigation-menu @(_isExpanded ? "expanded" : "")">
 
@@ -67,7 +67,7 @@
     {
         base.OnInitialized();
         
-        _manager.LocationChanged += (_, _) =>
+        Manager.LocationChanged += (_, _) =>
         {
             _isExpanded = false;
             StateHasChanged();
