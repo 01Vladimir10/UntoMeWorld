@@ -576,7 +576,7 @@ h1, h2, h3, h4, h5 {
 
 @keyframes nodeInserted {
   from {
-    opacity: 0.99;
+    opacity: 0;
   }
   to {
     opacity: 1;
@@ -830,17 +830,30 @@ h1, h2, h3, h4, h5 {
 
 .toast {
   padding: 0.5em 0.75em;
+  position: relative;
+  isolation: isolate;
   border-radius: 0.5rem;
-  background-color: var(--surface-color);
   font-size: 0.875rem;
   box-shadow: 0 0 8px var(--shadow-color-2);
-  opacity: 0;
-  transform: translateY(50%);
   color: var(--primary-text-color);
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
+  background-color: transparent;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(50%);
   transition: all 500ms ease;
+}
+.toast::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-color: var(--toast-background-color);
 }
 .toast.show {
   opacity: 1;
@@ -854,19 +867,19 @@ h1, h2, h3, h4, h5 {
   font-size: 1.25em;
 }
 .toast.error {
-  background-color: var(--error-color, #d50f0f);
+  --toast-background-color: var(--error-color, #ea5959);
   color: var(--on-error-color, white);
 }
 .toast.primary {
-  background-color: var(--primary-color, white);
+  --toast-background-color: var(--primary-color, white);
   color: var(--primary-text-color, black);
 }
 .toast.warning {
-  background-color: var(--warning-color, #e39b12);
+  --toast-background-color: var(--warning-color, #e39b12);
   color: var(--on-warning-color, black);
 }
 .toast.success {
-  background-color: var(--success-color, #67c062);
+  --toast-background-color: var(--success-color, #67c062);
   color: var(--on-success-color, white);
 }
 

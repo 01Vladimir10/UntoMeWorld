@@ -51,7 +51,7 @@ public class ToastService
     public ToastService(IJSRuntime runtime)
     {
         _runtime = runtime;
-        _dispatcher = new ThrottleDispatcher(500);
+        _dispatcher = new ThrottleDispatcher(TimeSpan.FromMilliseconds(500));
     }
 
     public Task ShowErrorAsync(string content, string icon = null, ToastDuration duration = ToastDuration.Medium)
@@ -72,13 +72,14 @@ public class ToastService
             CssClass = $"{style.ToString().ToLower()} {cssClass}"
         };
 
-    private async Task ShowToast(Toast toast, ToastDuration duration)
+    private Task ShowToast(Toast toast, ToastDuration duration)
     {
-        await _dispatcher.ThrottleAsync(async () =>
+        _dispatcher.AddTask(async () =>
         {
             await _runtime.InvokeVoidAsync(InteropFunctions.CreateToast, toast.Content, toast.Icon, toast.CssClass,
                 (int)duration);
         });
+        return Task.CompletedTask;
     }
     public async void Show(Toast toast, ToastDuration duration) => await ShowToast(toast, duration);
     public async Task ShowAsync(Toast toast, ToastDuration duration) => await ShowToast(toast, duration);
