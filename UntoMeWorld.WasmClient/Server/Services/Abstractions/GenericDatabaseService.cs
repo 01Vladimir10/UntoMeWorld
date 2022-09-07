@@ -1,7 +1,7 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Application.Stores;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Errors;
 using UntoMeWorld.Domain.Model.Abstractions;
-using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.Errors;
 

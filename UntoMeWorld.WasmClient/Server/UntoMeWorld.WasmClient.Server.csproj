@@ -14,8 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UntoMeWorld.Application\UntoMeWorld.Application.csproj" />
     <ProjectReference Include="..\..\UntoMeWorld.Domain\UntoMeWorld.Domain.csproj" />
-    <ProjectReference Include="..\..\UntoMeWorld.MongoDatabase\UntoMeWorld.MongoDatabase.csproj" />
+    <ProjectReference Include="..\..\UntoMeWorld.Infrastructure\UntoMeWorld.Infrastructure.csproj" />
     <ProjectReference Include="..\Client\UntoMeWorld.WasmClient.Client.csproj" />
     <ProjectReference Include="..\Shared\UntoMeWorld.WasmClient.Shared.csproj" />
     
@@ -36,5 +37,9 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Common\Utils" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
-using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client.Utils.Extensions;
 using UntoMeWorld.WasmClient.Shared.DTOs;
 using UntoMeWorld.WasmClient.Shared.Model;

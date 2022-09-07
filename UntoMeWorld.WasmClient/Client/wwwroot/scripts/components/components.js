@@ -7,6 +7,14 @@
     }
     
 };
+function debounce(func, timeout = 300){
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+}
+
 function createNode(tag, attributes = {}, ...children) {
     const element = document.createElement(tag)
     for (const attribute in attributes) {
@@ -67,7 +75,10 @@ const Toast = {
             toast.classList.remove('show');
             setTimeout(() => this.container.removeChild(toast), 1000);
         }, duration);
-    }
+    },
+    createDebounce: debounce((text, iconClass = null, cssClass = '', duration = 200) => {
+        Toast.create(text, iconClass, cssClass, duration);
+    }, 500),
 }
 
 function createToast (text, cssClass = '', duration = 200, iconClass = null) {

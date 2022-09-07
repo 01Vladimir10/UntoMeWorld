@@ -2,7 +2,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client;
 using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Data.Stores;

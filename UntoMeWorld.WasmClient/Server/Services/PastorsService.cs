@@ -1,5 +1,5 @@
-﻿using UntoMeWorld.Domain.Model;
-using UntoMeWorld.Domain.Stores;
+﻿using UntoMeWorld.Application.Stores;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Server.Services.Abstractions;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 

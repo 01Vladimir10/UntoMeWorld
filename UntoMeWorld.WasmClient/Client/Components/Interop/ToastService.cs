@@ -1,5 +1,6 @@
 ﻿using Microsoft.JSInterop;
 using UntoMeWorld.WasmClient.Client.Components.Base;
+using UntoMeWorld.WasmClient.Client.Utils.Common;
 
 namespace UntoMeWorld.WasmClient.Client.Components.Interop;
 
@@ -45,10 +46,12 @@ public class Toast
 public class ToastService
 {
     private readonly IJSRuntime _runtime;
+    private readonly ThrottleDispatcher _dispatcher;
 
     public ToastService(IJSRuntime runtime)
     {
         _runtime = runtime;
+        _dispatcher = new ThrottleDispatcher(500);
     }
 
     public Task ShowErrorAsync(string content, string icon = null, ToastDuration duration = ToastDuration.Medium)
@@ -62,23 +65,21 @@ public class ToastService
 
     public Toast Create(string content, string icon = null, ToastStyle style = ToastStyle.General,
         IconWeight iconWeight = IconWeight.Bold, string cssClass = null)
-        => new Toast(this)
+        => new(this)
         {
             Content = content,
             Icon = string.IsNullOrEmpty(icon) ? "" : $"{icon}-{iconWeight.ToString().ToLower()}",
             CssClass = $"{style.ToString().ToLower()} {cssClass}"
         };
 
-
-    public async void Show(Toast toast, ToastDuration duration)
+    private async Task ShowToast(Toast toast, ToastDuration duration)
     {
-        await _runtime.InvokeVoidAsync(InteropFunctions.CreateToast, toast.Content, toast.Icon, toast.CssClass,
-            (int)duration);
+        await _dispatcher.ThrottleAsync(async () =>
+        {
+            await _runtime.InvokeVoidAsync(InteropFunctions.CreateToast, toast.Content, toast.Icon, toast.CssClass,
+                (int)duration);
+        });
     }
-    
-    public async Task ShowAsync(Toast toast, ToastDuration duration)
-    {
-        await _runtime.InvokeVoidAsync(InteropFunctions.CreateToast, toast.Content, toast.Icon, toast.CssClass,
-            (int)duration);
-    }
+    public async void Show(Toast toast, ToastDuration duration) => await ShowToast(toast, duration);
+    public async Task ShowAsync(Toast toast, ToastDuration duration) => await ShowToast(toast, duration);
 }

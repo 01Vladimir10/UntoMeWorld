@@ -1,6 +1,6 @@
 ﻿using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
-using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client.Services.Base;
 using static UntoMeWorld.Domain.Common.QueryLanguage;
 

@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Resources\Resources.csproj" />
+    <ProjectReference Include="..\..\UntoMeWorld.Application\UntoMeWorld.Application.csproj" />
     <ProjectReference Include="..\..\UntoMeWorld.Domain\UntoMeWorld.Domain.csproj" />
     <ProjectReference Include="..\Shared\UntoMeWorld.WasmClient.Shared.csproj" />
   </ItemGroup>

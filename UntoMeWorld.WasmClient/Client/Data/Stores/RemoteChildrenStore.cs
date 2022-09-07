@@ -1,5 +1,5 @@
 ﻿using UntoMeWorld.Domain.Model;
-using UntoMeWorld.Domain.Stores;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Shared.DTOs.Children;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Stores;

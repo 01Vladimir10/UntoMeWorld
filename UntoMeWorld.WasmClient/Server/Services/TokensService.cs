@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.Domain.Model;
-using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Common.Helpers;
 using UntoMeWorld.WasmClient.Server.Security.Crypto;
 using UntoMeWorld.WasmClient.Server.Security.Utils;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using UntoMeWorld.Domain.Extensions;
+using UntoMeWorld.Application.Extensions;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.Domain.Model;
-using UntoMeWorld.Domain.Stores;
 using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Common.Helpers;
 using UntoMeWorld.WasmClient.Server.Services.Abstractions;

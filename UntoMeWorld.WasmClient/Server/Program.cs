@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using UntoMeWorld.Infrastructure;
 using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Common.Swagger;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
@@ -17,9 +18,9 @@ try
     builder.Services.AddOptions();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    
     builder.Services.ConfigureAuthorization(builder.Configuration);
-
-    builder.Services.UseMongoDb();
+    builder.Services.RegisterInfrastructure();
 
 // Add services that consume the datastore services and are used by the controllers.
     builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
