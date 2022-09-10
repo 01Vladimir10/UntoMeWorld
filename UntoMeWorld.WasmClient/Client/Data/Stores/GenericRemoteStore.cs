@@ -1,4 +1,5 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Application.Common;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client.Utils.Common;
@@ -36,13 +37,15 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
         throw new NotImplementedException();
     }
 
-    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null,
+    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null,
+        string textQuery = null, string orderBy = null,
         bool orderByDesc = false,
         int page = 1,
         int pageSize = 100)
         => _client.PostJsonAsync<PaginationResult<TModel>>(Paths.Query, new QueryRequestDto
         {
             Filter = filter,
+            TextQuery = textQuery,
             OrderBy = orderBy ?? string.Empty,
             OrderDesc = orderByDesc,
             Page = page,

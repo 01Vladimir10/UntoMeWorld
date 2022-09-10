@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Newtonsoft.Json;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Data.Model;
@@ -28,7 +29,6 @@ public class ListController<TKey, TItem>
 
     private async ValueTask<ItemsProviderResult<ListItem<TKey, TItem>>> GetItems(ItemsProviderRequest request)
     {
-        Console.WriteLine($"Requesting more items => {JsonConvert.SerializeObject(request)}, callApi?: {request.StartIndex + request.Count > Items.Count}");
         if (request.StartIndex + request.Count > Items.Count)
             await CallApi();
         
@@ -83,10 +83,16 @@ public class ListController<TKey, TItem>
         SelectedItemsCount = 0;
     }
 
+    private bool _isLoading;
+
     public async Task Refresh()
     {
+        if (_isLoading)
+            return;
+        _isLoading = true;
         _paginationHelper.Reset();
         await CallApi();
         await OnDataRefresh();
+        _isLoading = false;
     }
 }

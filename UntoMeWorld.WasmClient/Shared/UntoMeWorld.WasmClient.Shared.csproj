@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UntoMeWorld.Application\UntoMeWorld.Application.csproj" />
     <ProjectReference Include="..\..\UntoMeWorld.Domain\UntoMeWorld.Domain.csproj" />
   </ItemGroup>
 

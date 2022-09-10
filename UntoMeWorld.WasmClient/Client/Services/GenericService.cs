@@ -1,4 +1,5 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Application.Common;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client.Services.Base;
@@ -20,7 +21,7 @@ public abstract class GenericService<T> : IService<T> where T : IModel, IRecycla
         _store = store;
     }
 
-    public Task<PaginationResult<T>> Paginate(QueryFilter filter = null, string orderBy = null, bool orderDesc = false,
+    public async Task<PaginationResult<T>> Paginate(QueryFilter filter = null, string textQuery = null, string orderBy = null, bool orderDesc = false,
         int page = 1, int pageSize = 30)
     {
         // Ensure that only non deleted items will be returned.
@@ -28,7 +29,11 @@ public abstract class GenericService<T> : IService<T> where T : IModel, IRecycla
             ? Eq(nameof(IRecyclableModel.IsDeleted), false)
             : And(Eq(nameof(IRecyclableModel.IsDeleted), false), filter);
         
-        return _taskManager.ExecuteTask(() => _store.Query(finalQuery, orderBy, orderDesc, page, pageSize));
+        return await _taskManager.ExecuteTask(async () =>
+            {
+                await Task.Yield();
+                return await _store.Query(finalQuery, textQuery ?? string.Empty, orderBy ?? string.Empty, orderDesc, page, pageSize);
+            });
     }
 
     public async Task<List<T>> All()
@@ -37,7 +42,9 @@ public abstract class GenericService<T> : IService<T> where T : IModel, IRecycla
         return result.Result;
     }
 
-    public Task<PaginationResult<T>> PaginateDeleted(QueryFilter filter = null, string orderBy = null,
+    public Task<PaginationResult<T>> PaginateDeleted(QueryFilter filter = null, 
+        string textQuery = null,
+        string orderBy = null,
         bool orderDesc = false, int page = 1,
         int pageSize = 30)
     {
@@ -46,7 +53,7 @@ public abstract class GenericService<T> : IService<T> where T : IModel, IRecycla
             ? Eq(nameof(IRecyclableModel.IsDeleted), true)
             : And(Eq(nameof(IRecyclableModel.IsDeleted), false), filter);
         
-        return _store.Query(finalQuery, orderBy, orderDesc, page, pageSize);
+        return _store.Query(finalQuery, textQuery ?? string.Empty, orderBy ?? string.Empty, orderDesc, page, pageSize);
     }
 
     public Task<T> Add(T item)

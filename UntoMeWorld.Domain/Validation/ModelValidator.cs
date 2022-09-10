@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace UntoMeWorld.Domain.Common
+namespace UntoMeWorld.Domain.Validation
 {
     public class ModelValidationResult
     {

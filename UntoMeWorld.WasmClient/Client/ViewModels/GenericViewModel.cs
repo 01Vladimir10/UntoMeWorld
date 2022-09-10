@@ -69,7 +69,7 @@ public class GenericViewModel<TModel> where TModel : IModel
     }
     public async Task UpdateList()
     {
-        Items =  (await _service.Paginate(null, SortField.FieldName, SortField.Descendent)).Result;
+        Items =  (await _service.Paginate(null, "",SortField.FieldName, SortField.Descendent)).Result;
     }
     public async Task SortElementsBy(string fieldName, bool desc = false)
     {

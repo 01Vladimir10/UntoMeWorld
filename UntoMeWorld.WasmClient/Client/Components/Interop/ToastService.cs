@@ -51,7 +51,7 @@ public class ToastService
     public ToastService(IJSRuntime runtime)
     {
         _runtime = runtime;
-        _dispatcher = new ThrottleDispatcher(TimeSpan.FromMilliseconds(500));
+        _dispatcher = new ThrottleDispatcher(TimeSpan.FromMilliseconds(250));
     }
 
     public Task ShowErrorAsync(string content, string icon = null, ToastDuration duration = ToastDuration.Medium)

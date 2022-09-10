@@ -1,8 +1,10 @@
 ﻿@page "/children"
+@attribute [Authorize]
 @using UntoMeWorld.WasmClient.Client.Data.Model
 @using UntoMeWorld.Domain.Model
 @using UntoMeWorld.Domain.Security
 @using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
+@using Microsoft.AspNetCore.Authorization
 @inherits ChildrenPageBase
 
 <AuthorizationContext ApiResource="ApiResource.Children">

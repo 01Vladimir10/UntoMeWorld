@@ -1,5 +1,6 @@
-﻿using MongoDB.Driver;
-using UntoMeWorld.Domain.Common;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Infrastructure.Helpers
@@ -9,6 +10,7 @@ namespace UntoMeWorld.Infrastructure.Helpers
         public static async Task<(int totalPages, IReadOnlyList<TResult> readOnlyList)>
             QueryByPageAndSort<T, TResult>(this IMongoCollection<T> collection, QueryFilter queryFilter, string sortBy,
                 bool sortAsc, int page, int pageSize,
+                string query = null,
                 List<IPipelineStageDefinition> additionalDataStages = null)
             where T : IModel
 
@@ -19,15 +21,22 @@ namespace UntoMeWorld.Infrastructure.Helpers
                     PipelineStageDefinitionBuilder.Count<T>()
                 }));
 
-            var sortOrder = string.IsNullOrEmpty(sortBy) ? Builders<T>.Sort.Descending(_ => _.Id) :
-                sortAsc ? Builders<T>.Sort.Ascending(sortBy) : Builders<T>.Sort.Descending(sortBy);
 
-            var dataStages = new IPipelineStageDefinition[]
+
+            var dataStages = new List<IPipelineStageDefinition>();
+            
+            if (!string.IsNullOrEmpty(sortBy) && !sortBy.Equals("default", StringComparison.InvariantCultureIgnoreCase))
             {
-                PipelineStageDefinitionBuilder.Sort(sortOrder),
+                var sortOrder = string.IsNullOrEmpty(sortBy) ? Builders<T>.Sort.Descending(_ => _.Id) :
+                    sortAsc ? Builders<T>.Sort.Ascending(sortBy) : Builders<T>.Sort.Descending(sortBy);
+                dataStages.Add(PipelineStageDefinitionBuilder.Sort(sortOrder));
+            }
+            
+            dataStages.AddRange(new []
+            {
                 PipelineStageDefinitionBuilder.Skip<T>((page - 1) * pageSize),
                 PipelineStageDefinitionBuilder.Limit<T>(pageSize)
-            }.ToList();
+            });
 
             additionalDataStages?.ForEach(e => dataStages.Add(e));
 
@@ -41,27 +50,46 @@ namespace UntoMeWorld.Infrastructure.Helpers
             var filter = queryFilter == null ? Builders<T>.Filter.Empty : QueryFilterConverter.Convert<T>(queryFilter);
 
 
-            var aggregation = await collection
-                .Aggregate()
+            var mongoQuery = collection.Aggregate();
+            if (!string.IsNullOrEmpty(query))
+            {
+                mongoQuery = mongoQuery
+                        .AppendStage(TextSearchFilter<T>(collection.CollectionNamespace.CollectionName, query));
+            }
+
+            var aggregationResults = await mongoQuery
                 .Match(filter)
                 .Facet(countFacet, dataFacet)
                 .ToListAsync();
 
-            if (!aggregation?.Any() ?? true)
+            if (!aggregationResults?.Any() ?? true)
                 return (0, new List<TResult>());
 
-            var first = aggregation[0]
+            var first = aggregationResults[0]
                 .Facets.First(x => x.Name == "count")
                 .Output<AggregateCountResult>()
                 .FirstOrDefault();
 
             var count = first?.Count ?? 0;
 
-            var data = aggregation.First()
+            var data = aggregationResults.First()
                 .Facets.First(x => x.Name == "data")
                 .Output<TResult>();
 
-            return ((int) count, data);
+            return ((int)count, data);
         }
+
+        private static BsonDocumentPipelineStageDefinition<T, T> TextSearchFilter<T>(string collection, string query,
+            string path = null)
+            => new(
+                new BsonDocument("$search",
+                    new BsonDocument()
+                        .Add("index", $"{collection.ToLower()}_search_index")
+                        .Add("text", new BsonDocument()
+                            .Add("query", query)
+                            .Add("path", string.IsNullOrEmpty(path) ? new BsonDocument("wildcard", "*") : path)
+                            .Add("fuzzy", new BsonDocument())
+                        ))
+            );
     }
 }

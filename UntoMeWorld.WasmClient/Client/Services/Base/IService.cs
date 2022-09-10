@@ -1,15 +1,16 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Application.Common;
+using UntoMeWorld.Domain.Common;
 
 namespace UntoMeWorld.WasmClient.Client.Services.Base;
 
 public interface IService<T>
 {
-    public Task<PaginationResult<T>> Paginate(QueryFilter filter = null, string orderBy = null, bool orderDesc = false,
+    public Task<PaginationResult<T>> Paginate(QueryFilter filter = null, string textQuery = null, string orderBy = null, bool orderDesc = false,
         int page = 1,
         int pageSize = 30);
 
     public Task<List<T>> All();
-    public Task<PaginationResult<T>> PaginateDeleted(QueryFilter filter = null, string orderBy = null, bool orderDesc = false,
+    public Task<PaginationResult<T>> PaginateDeleted(QueryFilter filter = null, string textQuery = null, string orderBy = null, bool orderDesc = false,
         int page = 1,
         int pageSize = 30);
 

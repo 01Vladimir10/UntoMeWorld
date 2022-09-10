@@ -1,7 +1,9 @@
-﻿using UntoMeWorld.Application.Stores;
+﻿using UntoMeWorld.Application.Common;
+using UntoMeWorld.Application.Stores;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Errors;
 using UntoMeWorld.Domain.Model.Abstractions;
+using UntoMeWorld.Domain.Validation;
 using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.Errors;
 
@@ -60,10 +62,10 @@ public abstract class GenericDatabaseService<TModel> : IDatabaseService<TModel, 
         return Store.AddMany(models.ToList());
     }
 
-    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string orderBy = null,
+    public Task<PaginationResult<TModel>> Query(QueryFilter filter = null, string textQuery = null, string orderBy = null,
         bool orderDesc = false, int page = 1, int pageSize = 100)
     {
-        return Store.Query(filter, orderBy, orderDesc, page, pageSize);
+        return Store.Query(filter, textQuery ?? string.Empty, orderBy ?? string.Empty, orderDesc, page, pageSize);
     }
 
     public Task<IEnumerable<TModel>> Update(IEnumerable<TModel> item)

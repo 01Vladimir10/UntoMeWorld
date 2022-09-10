@@ -22,11 +22,9 @@ public class ChildrenPageBase : ComponentBase
     protected ChildrenList ListView;
     protected ListController<string, Child> ListController;
 
-
-
     protected override async Task OnInitializedAsync()
     {
-        var paginationHelper = new PaginationHelper<Child>(ChildrenService.Paginate) { PageSize = 50 };
+        var paginationHelper = new PaginationHelper<Child>(ChildrenService.Paginate) { PageSize = 10 };
         
         ListController = new ListController<string, Child>(c => c.Id, paginationHelper)
         {

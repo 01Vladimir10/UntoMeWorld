@@ -24,7 +24,7 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
         => ServiceCallResult(() =>
         {
             query.Validate<TModel>();
-            return DatabaseService.Query(query.Filter, query.OrderBy, query.OrderDesc, query.Page, query.PageSize);
+            return DatabaseService.Query(query.Filter, query.TextQuery, query.OrderBy, query.OrderDesc, query.Page, query.PageSize);
         });
 
     [RequiredPermission(PermissionType.Add)]

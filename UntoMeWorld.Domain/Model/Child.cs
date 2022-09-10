@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model

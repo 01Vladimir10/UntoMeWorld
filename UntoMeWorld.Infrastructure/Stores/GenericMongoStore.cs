@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
@@ -50,12 +51,13 @@ namespace UntoMeWorld.Infrastructure.Stores
             return await result.ToListAsync();
         }
 
-        public async Task<PaginationResult<TModel>> Query(QueryFilter filter, string orderBy = null,
+        public async Task<PaginationResult<TModel>> Query(QueryFilter filter,
+            string query = null,
+            string orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
             var (totalItems, result) =
-                await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, orderBy ?? string.Empty, orderDesc, page, pageSize,
-                    _pipelineStages);
+                await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, orderBy ?? string.Empty, orderDesc, page, pageSize, query, _pipelineStages);
             return new PaginationResult<TModel>
             {
                 Result = result.Select(_modelConverter).ToList(),
