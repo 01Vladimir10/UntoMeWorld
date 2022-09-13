@@ -7,7 +7,7 @@ namespace UntoMeWorld.Application.Stores
         public Task<IEnumerable<T>> All();
         public Task<IEnumerable<T>> All(string query);
         public Task<IEnumerable<T>> All(Predicate<T> query);
-        public Task<PaginationResult<T>> Query(QueryFilter filter = null, string orderBy = null, bool orderByDesc = false, int page = 1, int pageSize = 100);
+        public Task<PaginationResult<T>> Query(QueryFilter? filter = null, string? textQuery = null, string? orderBy = null, bool orderByDesc = false, int page = 1, int pageSize = 100);
         public Task<T> AddOne(T data);
         public Task<T> UpdateOne(T data);
         public Task DeleteOne(string key);

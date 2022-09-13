@@ -5,12 +5,7 @@ public static class ServerConstants
     public const string HeaderToken = "ApiToken";
 }
 
-public static class PermissionSelectionModes
-{
-    public const string MostPermissive = "MostPermissive";
-    public const string LeastPermissive = "LeastPermissive";
-    public const string MostSpecific = "MostSpecific";
-}
+
 public static class RoleSelectionModes
 {
     public const string MostPermissive = "MostPermissive";

@@ -1,7 +1,8 @@
-﻿using UntoMeWorld.Domain.Model;
+﻿using UntoMeWorld.Application.Services;
+using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Security;
 using UntoMeWorld.WasmClient.Server.Security.Authorization.Attributes;
-using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.DTOs.Church;
 
 namespace UntoMeWorld.WasmClient.Server.Controllers;

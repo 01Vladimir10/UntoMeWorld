@@ -1,10 +1,12 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using UntoMeWorld.Application.Extensions.Security;
+using UntoMeWorld.Application.Services;
+using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Server.Security.Constants;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
-using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.Security.Utils;
 
 namespace UntoMeWorld.WasmClient.Server.Security.Authentication;
@@ -24,7 +26,7 @@ public class JwtOptionsHandler : IPostConfigureOptions<JwtBearerOptions>
         {
             OnTokenValidated = async context =>
             {
-                if (!string.IsNullOrEmpty(context.Principal.ToAppUser()?.Id))
+                if (!string.IsNullOrEmpty(context.Principal?.ToAppUser().Id))
                     return;
                 var userId = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 var authProvider = context.Principal?.Claims.FirstOrDefault(c => c.Type.Contains("identityprovider"))?.Value ?? "default";
@@ -44,7 +46,7 @@ public class JwtOptionsHandler : IPostConfigureOptions<JwtBearerOptions>
                     new(CustomClaims.IsDeleted, user.IsDeleted.ToString()),
                     new(CustomClaims.IsDisabled, user.IsDisabled.ToString()),
                 };
-                context.Principal.AddIdentity(new ClaimsIdentity(claims));
+                context.Principal?.AddIdentity(new ClaimsIdentity(claims));
             }
         };
     }

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
   </ItemGroup>
 
@@ -40,6 +41,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Common\Utils" />
+    <Folder Include="Common\Model" />
+    <Folder Include="Services\Base" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Components.Children;
@@ -8,25 +8,24 @@ using UntoMeWorld.WasmClient.Client.Components.Icons;
 using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Components.ListControls;
 using UntoMeWorld.WasmClient.Client.Data.Model;
-using UntoMeWorld.WasmClient.Client.Services.Base;
+using UntoMeWorld.WasmClient.Client.Utils.Extensions;
 
 namespace UntoMeWorld.WasmClient.Client.Pages.Children;
 
 public class ChildrenPageBase : ComponentBase
 {
-    [Inject] public IChildrenService ChildrenService { get; set; }
-    [Inject] public ToastService ToastService { get; set; }
+    [Inject] public IChildrenService ChildrenService { get; set; } = null!;
+    [Inject] public ToastService ToastService { get; set; } = null!;
+    [CascadingParameter] public DialogsService? DialogService { get; set; }
 
-    [CascadingParameter] public DialogsService DialogService { get; set; }
-
-    protected ChildrenList ListView;
-    protected ListController<string, Child> ListController;
+    protected ChildrenList? ListView;
+    protected ListController<string, Child>? ListController;
 
 
 
     protected override async Task OnInitializedAsync()
     {
-        var paginationHelper = new PaginationHelper<Child>(ChildrenService.Paginate) { PageSize = 50 };
+        var paginationHelper = new PaginationHelper<Child>(r => ChildrenService.Paginate(r)) { PageSize = 50 };
         
         ListController = new ListController<string, Child>(c => c.Id, paginationHelper)
         {
@@ -41,27 +40,24 @@ public class ChildrenPageBase : ComponentBase
 
     protected Task OnSortFieldChanged(SortField sortField)
     {
-        return ListController.SetSortField(sortField);
+        return ListController?.SetSortField(sortField) ?? Task.CompletedTask;
     }
 
     protected Task OnSearchSubmit(string query)
     {
-        return ListController.SetFilter(
-            string.IsNullOrEmpty(query)
-                ? null
-                : QueryLanguage.TextSearch(query));
+        return ListController?.SetTextQuery(query) ?? Task.CompletedTask;
     }
 
     protected void AddChild()
     {
-        DialogService.ShowDialog<ChildrenDialog, Child, Child>(null, async child =>
+        DialogService?.ShowDialog<ChildrenDialog, Child, Child>(null, async child =>
         {
             if (child != null)
             {
                 try
                 {
                     await ChildrenService.Add(child);
-                    await ListController.Refresh();
+                    await ListController?.Refresh()!;
                     await ToastService.ShowSuccessAsync("Saved successfully!", PhosphorIcons.Check);
                 }
                 catch (Exception e)
@@ -74,14 +70,14 @@ public class ChildrenPageBase : ComponentBase
 
     protected void EditChild(Child editChild)
     {
-        DialogService.ShowDialog<ChildrenDialog, Child, Child>(editChild, async child =>
+        DialogService?.ShowDialog<ChildrenDialog, Child, Child>(editChild, async child =>
         {
             if (child != null)
             {
                 try
                 {
                     await ChildrenService.Update(child);
-                    await ListController.Refresh();
+                    await ListController?.Refresh()!;
                     await ToastService.ShowSuccessAsync("Saved successfully!", PhosphorIcons.Check);
                 }
                 catch (Exception e)
@@ -94,7 +90,7 @@ public class ChildrenPageBase : ComponentBase
 
     protected void DeleteChild(Child child)
     {
-        DialogService.ShowConfirmationAsync("Delete", "Are you sure you want to delete this?",
+        DialogService?.ShowConfirmationAsync("Delete", "Are you sure you want to delete this?",
             async answer =>
             {
                 if (!answer)
@@ -103,7 +99,7 @@ public class ChildrenPageBase : ComponentBase
                 try
                 {
                     await ChildrenService.Delete(child.Id);
-                    await ListController.Refresh();
+                    await ListController?.Refresh()!;
                     await ToastService.ShowSuccessAsync("Deleted successfully!", PhosphorIcons.Check);
                 }
                 catch (Exception e)

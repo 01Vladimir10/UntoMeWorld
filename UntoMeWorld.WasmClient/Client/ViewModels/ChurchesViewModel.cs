@@ -1,5 +1,5 @@
-﻿using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Client.Services.Base;
+﻿using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Domain.Model;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 
@@ -16,7 +16,7 @@ public class ChurchesViewModel
 
     public async Task UpdateChurches()
     {
-        var churches = await _service.Paginate();
+        var churches = await _service.Query();
         Churches = churches.Result;
     }
 }

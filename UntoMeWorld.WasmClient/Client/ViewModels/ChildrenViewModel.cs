@@ -1,5 +1,5 @@
-﻿using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Client.Services.Base;
+﻿using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Domain.Model;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
 

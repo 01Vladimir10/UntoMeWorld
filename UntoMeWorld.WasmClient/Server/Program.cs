@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using UntoMeWorld.Application.Services;
+using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Application.Services.Options;
 using UntoMeWorld.Infrastructure;
-using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Common.Swagger;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
-using UntoMeWorld.WasmClient.Server.Services;
-using UntoMeWorld.WasmClient.Server.Services.Base;
-using UntoMeWorld.WasmClient.Server.Services.Options;
 
 try
 {
@@ -26,7 +25,6 @@ try
     builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
     builder.Services.AddTransient<IChurchesService, ChurchesService>();
     builder.Services.AddTransient<IChildrenService, ChildrenService>();
-    builder.Services.AddTransient<IPastorsService, PastorsService>();
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
 

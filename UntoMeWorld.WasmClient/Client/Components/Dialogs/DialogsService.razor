@@ -9,11 +9,11 @@
 @code {
     private bool IsDialogOpen { get; set; }
 
-    private RenderFragment _dialog;
+    private RenderFragment _dialog = _ => { };
 
     private bool IsCancellable { get; set; }
 
-    private Func<Task> _onClose;
+    private Func<Task> _onClose = () => Task.CompletedTask;
 
     private async Task OnBackdropClick()
     {
@@ -25,7 +25,7 @@
         }
     }
 
-    public void ShowDialog<TDialog, TParameter, TResult>(TParameter parameter, Func<TResult, Task> onClose, bool isCancellable = true, TResult defaultResult = default) where TDialog : BaseDialog<TParameter, TResult>
+    public void ShowDialog<TDialog, TParameter, TResult>(TParameter? parameter, Func<TResult?, Task> onClose, bool isCancellable = true, TResult? defaultResult = default) where TDialog : BaseDialog<TParameter, TResult>
     {
         Task CloseDialogParam(TResult result)
         {

@@ -5,8 +5,8 @@ namespace UntoMeWorld.WasmClient.Client.Components.Dialogs;
 public class BaseDialog<TParam, TResult> : ComponentBase
 {
     [Parameter]
-    public TParam Parameter { get; set; }
+    public TParam? Parameter { get; set; }
     
     [Parameter]
-    public Func<TResult, Task> OnCloseAsync { get; set; }
+    public Func<TResult?, Task> OnCloseAsync { get; set; } = _ => Task.CompletedTask;
 }

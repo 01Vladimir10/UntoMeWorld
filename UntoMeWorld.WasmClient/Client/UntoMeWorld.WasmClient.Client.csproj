@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
@@ -64,8 +64,5 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="wwwroot\content\css\**" Watch="false" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\Common" />
   </ItemGroup>
 </Project>

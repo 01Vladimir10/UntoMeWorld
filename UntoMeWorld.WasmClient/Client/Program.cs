@@ -2,12 +2,12 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using UntoMeWorld.Application.Services;
+using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client;
 using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Data.Stores;
-using UntoMeWorld.WasmClient.Client.Services;
-using UntoMeWorld.WasmClient.Client.Services.Base;
 using UntoMeWorld.WasmClient.Client.Services.Security;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -27,7 +27,6 @@ builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddSingleton<IAuthorizationProviderService, ApiAuthorizationService>();
 builder.Services.AddTransient<IChurchesService, ChurchesService>();
-builder.Services.AddTransient<IPastorService, PastorsService>();
 builder.Services.AddTransient<IChildrenService, ChildrenService>();
 
 // Supply HttpClient instances that include access tokens when making requests to the server project

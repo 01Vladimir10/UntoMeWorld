@@ -50,11 +50,13 @@ namespace UntoMeWorld.Infrastructure.Stores
             return await result.ToListAsync();
         }
 
-        public async Task<PaginationResult<TModel>> Query(QueryFilter filter, string orderBy = null,
+        public async Task<PaginationResult<TModel>> Query(QueryFilter filter, 
+            string textQuery = null,
+            string orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
             var (totalItems, result) =
-                await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, orderBy ?? string.Empty, orderDesc, page, pageSize,
+                await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, textQuery, orderBy ?? string.Empty, orderDesc, page, pageSize,
                     _pipelineStages);
             return new PaginationResult<TModel>
             {

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
+using UntoMeWorld.Application.Errors;
+using UntoMeWorld.Application.Services;
+using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Application.Services.Options;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Security;
 using UntoMeWorld.WasmClient.Server.Common;
-using UntoMeWorld.WasmClient.Server.Services.Base;
-using UntoMeWorld.WasmClient.Server.Services.Options;
-using UntoMeWorld.WasmClient.Shared.Errors;
 
 namespace UntoMeWorld.WasmClient.Server.Services.Security;
 

@@ -1,8 +1,8 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Application.Services.Base;
+using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.WasmClient.Client.Data.Model;
-using UntoMeWorld.WasmClient.Client.Services.Base;
 using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 
 namespace UntoMeWorld.WasmClient.Client.ViewModels;
@@ -65,11 +65,11 @@ public class GenericViewModel<TModel> where TModel : IModel
     {
         if (string.IsNullOrWhiteSpace(query))
             await UpdateList();
-        Items = (await _service.Paginate(QueryLanguage.TextSearch(query))).Result;
+        Items = (await _service.Query(QueryLanguage.TextSearch(query))).Result;
     }
     public async Task UpdateList()
     {
-        Items =  (await _service.Paginate(null, SortField.FieldName, SortField.Descendent)).Result;
+        Items =  (await _service.Query(null, null,SortField.FieldName, SortField.Descendent)).Result;
     }
     public async Task SortElementsBy(string fieldName, bool desc = false)
     {

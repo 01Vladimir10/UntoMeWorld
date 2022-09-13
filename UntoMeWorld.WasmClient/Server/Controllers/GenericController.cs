@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using UntoMeWorld.Application.Services;
+using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Domain.Security;
 using UntoMeWorld.WasmClient.Server.Security.Authorization.Attributes;
-using UntoMeWorld.WasmClient.Server.Services.Base;
 using UntoMeWorld.WasmClient.Shared.DTOs;
 using UntoMeWorld.WasmClient.Shared.Model;
 namespace UntoMeWorld.WasmClient.Server.Controllers;
@@ -12,11 +13,11 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     where TAddDto : IDto<TModel> 
     where TUpdateDto : IUpdateDto<TModel>
 {
-    protected readonly IDatabaseService<TModel, string> DatabaseService;
+    protected readonly IService<TModel, string> Service;
 
-    protected GenericController(IDatabaseService<TModel, string> databaseService)
+    protected GenericController(IService<TModel, string> service)
     {
-        DatabaseService = databaseService;
+        Service = service;
     }
 
     [RequiredPermission(PermissionType.Read)]
@@ -24,13 +25,13 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
         => ServiceCallResult(() =>
         {
             query.Validate<TModel>();
-            return DatabaseService.Query(query.Filter, query.OrderBy, query.OrderDesc, query.Page, query.PageSize);
+            return Service.Query(query.Filter, query.TextQuery, query.OrderBy, query.OrderDesc, query.Page, query.PageSize);
         });
 
     [RequiredPermission(PermissionType.Add)]
     public override Task<IActionResult> Add(TAddDto item)
     {
-        return ServiceCallResult(() => DatabaseService.Add(item.ToModel()));
+        return ServiceCallResult(() => Service.Add(item.ToModel()));
     }
 
     [RequiredPermission(PermissionType.Delete)]
@@ -38,7 +39,7 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     {
         return ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(id);
+            await Service.Delete(id);
             return true;
         });
     }
@@ -47,20 +48,20 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     [RequiredPermission(PermissionType.Update)]
     public override Task<IActionResult> Update(TUpdateDto item)
     {
-        return ServiceCallResult(() => DatabaseService.Update(item.ToModel()));
+        return ServiceCallResult(() => Service.Update(item.ToModel()));
     }
 
 
     [RequiredPermission(PermissionType.Add)]
     public override Task<IActionResult> BulkInsert(IEnumerable<TAddDto> items)
     {
-        return ServiceCallResult(() => DatabaseService.Add(items.Select(i => i.ToModel())));
+        return ServiceCallResult(() => Service.Add(items.Select(i => i.ToModel())));
     }
 
     [RequiredPermission(PermissionType.Update)]
     public override Task<IActionResult> BulkUpdate(IEnumerable<TUpdateDto> items)
     {
-        return ServiceCallResult(() => DatabaseService.Update(items.Select(i => i.ToModel())));
+        return ServiceCallResult(() => Service.Update(items.Select(i => i.ToModel())));
     }
 
 
@@ -68,7 +69,7 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     public override Task<IActionResult> Restore(string id)
         => ServiceCallResult(async () =>
         {
-            await DatabaseService.Restore(id);
+            await Service.Restore(id);
             return true;
         });
 
@@ -77,7 +78,7 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     public override Task<IActionResult> Restore(IEnumerable<string> ids)
         => ServiceCallResult(async () =>
         {
-            await DatabaseService.Restore(ids);
+            await Service.Restore(ids);
             return true;
         });
 
@@ -86,7 +87,7 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     public override Task<IActionResult> PermanentlyDelete(string id)
         => ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(id, false);
+            await Service.Delete(id, false);
             return true;
         });
 
@@ -95,7 +96,7 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     public override Task<IActionResult> PermanentlyDelete(IEnumerable<string> ids)
         => ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(ids, false);
+            await Service.Delete(ids, false);
             return true;
         });
 
@@ -103,12 +104,12 @@ public abstract class GenericController<TModel, TAddDto, TUpdateDto> : ApiContro
     public override Task<IActionResult> BulkDelete(List<string> itemIds)
         => ServiceCallResult(async () =>
         {
-            await DatabaseService.Delete(itemIds);
+            await Service.Delete(itemIds);
             return true;
         });
 
 
     [RequiredPermission(PermissionType.Read)]
     public override Task<IActionResult> Get(string id)
-        => ServiceCallResult(() => DatabaseService.Get(id));
+        => ServiceCallResult(() => Service.Get(id));
 }

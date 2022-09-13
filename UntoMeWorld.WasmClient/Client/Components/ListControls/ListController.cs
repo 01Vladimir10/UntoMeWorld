@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Newtonsoft.Json;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Data.Model;
@@ -12,8 +11,8 @@ public class ListController<TKey, TItem>
     private readonly Func<TItem, TKey> _keySelector;
     private readonly PaginationHelper<TItem> _paginationHelper;
     public Func<Task> OnDataRefresh { get; set; } = () => Task.CompletedTask;
-    public List<ListItem<TKey, TItem>> Items { get; set; }
-    public ItemsProviderDelegate<ListItem<TKey, TItem>> ItemsProvider { get; set; }
+    public List<ListItem<TKey, TItem>> Items { get; }
+    public ItemsProviderDelegate<ListItem<TKey, TItem>> ItemsProvider { get; }
     public int SelectedItemsCount { get; set; }
     public bool IsMultiSelecting { get; set; }
 
@@ -28,7 +27,6 @@ public class ListController<TKey, TItem>
 
     private async ValueTask<ItemsProviderResult<ListItem<TKey, TItem>>> GetItems(ItemsProviderRequest request)
     {
-        Console.WriteLine($"Requesting more items => {JsonConvert.SerializeObject(request)}, callApi?: {request.StartIndex + request.Count > Items.Count}");
         if (request.StartIndex + request.Count > Items.Count)
             await CallApi();
         
@@ -51,9 +49,15 @@ public class ListController<TKey, TItem>
             OnSelectionChanged = OnItemSelectionChanged
         }));
     }
-    public Task SetFilter(QueryFilter filter)
+    public Task SetFilter(QueryFilter? filter)
     {
         _paginationHelper.UpdateQueryFilter(filter);
+        return Refresh();
+    }
+
+    public Task SetTextQuery(string query)
+    {
+        _paginationHelper.TextQuery = query;
         return Refresh();
     }
     public Task SetSortField(SortField sort)
