@@ -8,7 +8,7 @@ namespace UntoMeWorld.Infrastructure.Helpers
 {
     public static class QueryFilterConverter
     {
-        public static FilterDefinition<T> Convert<T>(QueryFilter filter, HashSet<string> propertyNames = null)
+        public static FilterDefinition<T> Convert<T>(QueryFilter? filter, HashSet<string>? propertyNames = null)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace UntoMeWorld.Infrastructure.Helpers
         private static HashSet<string> GetPropertyNames<T>()
         => new HashSet<string>(typeof(T).GetProperties().Select(p => p.Name));
 
-        private static object Deserialize(object element)
+        private static object? Deserialize(object element)
         {
             if (element is JsonElement jsonElement)
                 return jsonElement.ValueKind switch
@@ -75,7 +75,7 @@ namespace UntoMeWorld.Infrastructure.Helpers
             return element;
         }
 
-        private static IEnumerable<object> DeserializeArray(object param)
+        private static IEnumerable<object?>? DeserializeArray(object param)
         {
             if (param is JsonElement jsonElement)
                 return jsonElement.Deserialize<IEnumerable<object>>()?.Select(Deserialize);

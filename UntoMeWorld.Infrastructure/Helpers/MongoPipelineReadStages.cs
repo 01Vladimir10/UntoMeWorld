@@ -8,48 +8,6 @@ namespace UntoMeWorld.Infrastructure.Helpers;
 public static class MongoPipelineReadStages
 {
     public static readonly List<IPipelineStageDefinition>
-        ChurchPipeLineStages =
-            new()
-            {
-                // Convert pastor's id into ObjectId
-                new BsonDocumentPipelineStageDefinition<Church, Church>(
-                    new BsonDocument("$addFields",
-                        new BsonDocument("PastorObjectId",
-                            new BsonDocument("$convert",
-                                new BsonDocument
-                                {
-                                    { "input", "$PastorId" },
-                                    { "to", "objectId" },
-                                    { "onError", "" },
-                                    { "onNull", "" }
-                                })))),
-                // Find related pastors (it returns an array)
-                new BsonDocumentPipelineStageDefinition<Church, Church>(
-                    new BsonDocument("$lookup",
-                        new BsonDocument
-                        {
-                            { "from", "pastors" },
-                            { "localField", "PastorObjectId" },
-                            { "foreignField", "_id" },
-                            { "as", "PastorArray" }
-                        })
-                ),
-                // Fetch the first item of the pastors array and save it to the field Called Pastor
-                new BsonDocumentPipelineStageDefinition<Church, Church>(
-                    new BsonDocument("$addFields",
-                        new BsonDocument("Pastor",
-                            new BsonDocument("$first", "$PastorArray")))
-                ),
-                // Remove the pastors array and the pastor object id
-                new BsonDocumentPipelineStageDefinition<Church, MongoChurchReadModel>(
-                    new BsonDocument("$project",
-                        new BsonDocument
-                        {
-                            { "PastorArray", 0 },
-                            { "PastorObjectId", 0 }
-                        }))
-            };
-    public static readonly List<IPipelineStageDefinition>
         ChildrenPipeLineStages =
             new()
             {

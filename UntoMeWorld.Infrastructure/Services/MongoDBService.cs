@@ -4,14 +4,14 @@ namespace UntoMeWorld.Infrastructure.Services
 {
     public class MongoDbService
     {
-        private MongoClient _client;
-        private IMongoDatabase _database;
+        private MongoClient _client = null!;
+        private IMongoDatabase _database = null!;
 
-        public MongoDbService(string connectionString, string database = default)
+        public MongoDbService(string connectionString, string? database = default)
         {
-            InitializeDatabase(connectionString, database);
+            InitializeDatabase(connectionString, database ?? "default");
         }
-        private void InitializeDatabase(string connection, string database = "default")
+        private void InitializeDatabase(string connection, string database)
         {
             try
             {

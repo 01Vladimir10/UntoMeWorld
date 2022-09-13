@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Infrastructure.Helpers
@@ -8,11 +8,11 @@ namespace UntoMeWorld.Infrastructure.Helpers
     public static class MongoConverterExtensions
     {
         public static async Task<(int totalPages, IReadOnlyList<TResult> readOnlyList)>
-            QueryByPageAndSort<T, TResult>(this IMongoCollection<T> collection, QueryFilter queryFilter, 
-                string textQuery,
-                string sortBy,
+            QueryByPageAndSort<T, TResult>(this IMongoCollection<T> collection, QueryFilter? queryFilter, 
+                string? textQuery,
+                string? sortBy,
                 bool sortAsc, int page, int pageSize,
-                List<IPipelineStageDefinition> additionalDataStages = null)
+                List<IPipelineStageDefinition>? additionalDataStages = null)
             where T : IModel
 
         {
@@ -70,7 +70,7 @@ namespace UntoMeWorld.Infrastructure.Helpers
             return ((int) count, data);
         }
 
-        private static PipelineStageDefinition<T, T> AtlasSearch<T>(string collection, string query, string path = null)
+        private static PipelineStageDefinition<T, T> AtlasSearch<T>(string collection, string query, string? path = null)
             => new BsonDocumentPipelineStageDefinition<T, T>(
                 new BsonDocument()
                     .Add("$search", 

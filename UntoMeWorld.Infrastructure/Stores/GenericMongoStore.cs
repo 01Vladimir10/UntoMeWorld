@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
@@ -13,13 +14,13 @@ namespace UntoMeWorld.Infrastructure.Stores
         where TReadModel : class
     {
         protected readonly IMongoCollection<TModel> Collection;
-        private readonly List<IPipelineStageDefinition> _pipelineStages;
+        private readonly List<IPipelineStageDefinition>? _pipelineStages;
         private readonly Func<TReadModel, TModel> _modelConverter;
 
         protected GenericMongoStore(MongoDbService service, string collection,
-            Func<TReadModel, TModel> modelConverter = null, List<IPipelineStageDefinition> pipelineStages = null)
+            Func<TReadModel, TModel>? modelConverter = null, List<IPipelineStageDefinition>? pipelineStages = null)
         {
-            _modelConverter = modelConverter ?? (x => x as TModel);
+            _modelConverter = modelConverter ?? (x => (x as TModel)!);
             _pipelineStages = pipelineStages;
             Collection = service.GetCollection<TModel>(collection);
         }
@@ -50,9 +51,9 @@ namespace UntoMeWorld.Infrastructure.Stores
             return await result.ToListAsync();
         }
 
-        public async Task<PaginationResult<TModel>> Query(QueryFilter filter, 
-            string textQuery = null,
-            string orderBy = null,
+        public async Task<PaginationResult<TModel>> Query(QueryFilter? filter, 
+            string? textQuery = null,
+            string? orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
             var (totalItems, result) =
@@ -125,7 +126,7 @@ namespace UntoMeWorld.Infrastructure.Stores
                     .Update.Set(m => m.IsDeleted, false)
                     .Set(m => m.DeletedOn, DateTime.UtcNow));
 
-        public async Task<TModel> Get(string id)
+        public async Task<TModel?> Get(string id)
         {
             if (_pipelineStages == null)
                 return await Collection.AsQueryable().FirstOrDefaultAsync(i => i.Id == id);

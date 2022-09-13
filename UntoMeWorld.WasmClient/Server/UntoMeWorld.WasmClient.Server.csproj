@@ -42,6 +42,5 @@
   
   <ItemGroup>
     <Folder Include="Common\Model" />
-    <Folder Include="Services\Base" />
   </ItemGroup>
 </Project>

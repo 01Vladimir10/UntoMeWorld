@@ -6,5 +6,5 @@ namespace UntoMeWorld.Infrastructure.ReadModels;
 public class MongoChurchReadModel : Church
 {
     [BsonElement("Pastor")]
-    public new Pastor Pastor { get; set; }
+    public new Pastor? Pastor { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Application.Common;
+using UntoMeWorld.Domain.Common;
 
 namespace UntoMeWorld.Application.Stores
 {
@@ -18,7 +19,7 @@ namespace UntoMeWorld.Application.Stores
         public Task DeleteMany(IEnumerable<string> data);
         public Task PurgeMany(IEnumerable<string> data);
         public Task RestoreMany(IEnumerable<string> keys);
-        public Task<T> Get(string id);
+        public Task<T?> Get(string id);
 
     }
 }
