@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using UntoMeWorld.Domain.Common;
 
-namespace UntoMeWorld.Domain.Common
+namespace UntoMeWorld.Application.Common
 {
     public class QueryFilter
     {
+        #nullable disable
         public string PropertyName { get; set; }
         public object Value { get; set; }
         public string Operator { get; set; } = QueryOperator.Eq;

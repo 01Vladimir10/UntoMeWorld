@@ -1,4 +1,4 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using UntoMeWorld.Domain.Validation;
 
 namespace UntoMeWorld.Domain.Errors
 {

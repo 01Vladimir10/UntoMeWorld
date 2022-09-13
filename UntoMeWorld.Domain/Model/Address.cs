@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Domain.Model
 {
