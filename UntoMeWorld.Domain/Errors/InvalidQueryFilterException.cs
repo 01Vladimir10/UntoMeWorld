@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace UntoMeWorld.Domain.Errors
+﻿namespace UntoMeWorld.Domain.Errors
 {
     public class InvalidQueryFilterException : UserErrorException
     {

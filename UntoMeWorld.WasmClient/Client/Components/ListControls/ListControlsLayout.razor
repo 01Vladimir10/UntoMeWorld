@@ -1,6 +1,6 @@
 ﻿@inherits BaseListControlsLayout
 
-@if (IsMultiSelecting)
+@if (IsMultiSelecting ?? false)
 {
     @MultiSelectControls
 }

@@ -5,30 +5,30 @@ namespace UntoMeWorld.WasmClient.Client.Components.Base;
 
 public abstract class BaseListView<TKey, TItem> : ComponentBase, IComponent
 {
-    public string CssClass { get; set; }
+    public string? CssClass { get; set; }
     public bool IsLoading { get; set; }
     public bool IsEmpty { get; set; }
     
     public bool IsMultiSelecting { get; set; }
-    [Parameter] public ItemsProviderDelegate<ListItem<TKey, TItem>> ItemsProvider { get; set; }
+    [Parameter] public ItemsProviderDelegate<ListItem<TKey, TItem>>? ItemsProvider { get; set; }
+
+    [Parameter] public List<ListColumn> Columns { get; set; } = new();
     
-    [Parameter] public List<ListColumn> Columns { get; set; }
-#nullable enable
     [Parameter] public RenderFragment? ListHeaders { get; set; }
     [Parameter] public RenderFragment? EmptyTemplate { get; set; }
     [Parameter] public RenderFragment? LoadingTemplate { get; set; }
     [Parameter] public RenderFragment<ListCell<TKey, TItem>>? ItemTemplate { get; set; }
     
     [Parameter] public RenderFragment<TItem>? ExpandableItemContentTemplate { get; set; }
-#nullable disable
     public abstract Task Reset();
 }
 
-public class ListColumn {
-    public string CssClass { get;  }
-    public string Header { get; }
+public class ListColumn
+{
+    public string CssClass { get; } = "";
+    public string Header { get; } = "";
 
-    public string HeaderCssClass { get; set; }
+    public string HeaderCssClass { get; set; } = "";
     public ListColumn()
     {
         
@@ -43,7 +43,7 @@ public class ListColumn {
 
 public class ListCell<TKey, T>
 {
-    public TKey RowKey { get; set; }
+    public TKey? RowKey { get; set; }
     public int ColumnIndex { get; set; }
-    public T Data { get; set; }
+    public T? Data { get; set; }
 }

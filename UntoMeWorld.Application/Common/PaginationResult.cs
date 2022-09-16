@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace UntoMeWorld.Domain.Common
+﻿namespace UntoMeWorld.Domain.Common
 {
     public class PaginationResult<T>
     {

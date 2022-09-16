@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using UntoMeWorld.WasmClient.Client.Components.Icons;
 
 namespace UntoMeWorld.WasmClient.Client.Components.Base;
 

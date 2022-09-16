@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UntoMeWorld.Application.Extensions.Security;
-using UntoMeWorld.Application.Services;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Security;
 using UntoMeWorld.WasmClient.Server.Security.Authorization.Attributes;
-using UntoMeWorld.WasmClient.Shared.Model;
-using UntoMeWorld.WasmClient.Shared.Security.Utils;
 
 namespace UntoMeWorld.WasmClient.Server.Controllers;
 

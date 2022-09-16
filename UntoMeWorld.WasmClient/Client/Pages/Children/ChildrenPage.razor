@@ -11,7 +11,7 @@
 
     <div class="list-layout">
         <div class="list-layout__controls">
-            <ListControlsLayout IsMultiSelecting="@ListController.IsMultiSelecting">
+            <ListControlsLayout IsMultiSelecting="@(ListController?.IsMultiSelecting ?? false)">
                 <NormalControls>
                     <SearchView
                         OnSearch="OnSearchSubmit"
@@ -45,7 +45,7 @@
                 OnEditClicked="EditChild"
                 OnDeleteClicked="DeleteChild"
                 @ref="ListView"
-                ItemsProvider="ListController.ItemsProvider"/>
+                ItemsProvider="@(ListController?.ItemsProvider)"/>
         </div>
     </div>
 </AuthorizationContext>

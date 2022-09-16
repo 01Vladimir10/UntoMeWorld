@@ -1,8 +1,9 @@
-﻿namespace UntoMeWorld.WasmClient.Client.Data.Model;
+﻿// ReSharper disable NonReadonlyMemberInGetHashCode
+namespace UntoMeWorld.WasmClient.Client.Data.Model;
 
 public class SortField
 {
-    public string FieldName { get; set; }
+    public string FieldName { get; set; } = "";
     public bool Descendent { get; set; }
 
     public SortField()
@@ -20,10 +21,10 @@ public class SortField
     }
     public static SortField Asc(string fieldName)
     {
-        return new SortField(fieldName, false);
+        return new SortField(fieldName);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj switch
         {

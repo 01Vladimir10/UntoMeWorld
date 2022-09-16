@@ -2,12 +2,15 @@
 
 public static class RazorUtils
 {
-    public static T If<T>(bool condition, T value)
+    public static T? If<T>(bool condition, T value)
     {
         return condition ? value : default;
     }
     public static string BoolToString(bool value)
     {
         return value ? "Yes" : "No";
+    }    public static string BoolToString(bool? value)
+    {
+        return value ?? false ? "Yes" : "No";
     }
 }

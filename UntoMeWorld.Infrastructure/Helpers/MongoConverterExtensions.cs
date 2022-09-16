@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using UntoMeWorld.Application.Common;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 
 namespace UntoMeWorld.Infrastructure.Helpers

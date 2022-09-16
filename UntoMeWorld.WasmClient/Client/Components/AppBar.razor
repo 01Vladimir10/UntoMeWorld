@@ -14,11 +14,11 @@
 
 @code {
     [Parameter]
-    public RenderFragment Options { get; set; }
+    public RenderFragment? Options { get; set; }
     
     
     [Parameter]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
 
     protected override void OnInitialized()
@@ -35,7 +35,7 @@
         StateHasChanged();
     }
 
-    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         UpdateTitle(e.Location);
     }

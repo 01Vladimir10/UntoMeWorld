@@ -13,7 +13,7 @@ namespace UntoMeWorld.WasmClient.Client.Utils.Common;
 /// </summary>
 public class SimpleTaskManager
 {
-    private Task _currentTask;
+    private Task? _currentTask;
 
     public Task ExecuteTask(Func<Task> function)
     {
@@ -40,7 +40,7 @@ public class SimpleTaskManager
 /// <typeparam name="T"></typeparam>
 public class SimpleTaskManager<T>
 {
-    private Task<T> _currentTask;
+    private Task<T>? _currentTask;
 
     public Task<T> ExecuteTask(Func<Task<T>> function)
     {

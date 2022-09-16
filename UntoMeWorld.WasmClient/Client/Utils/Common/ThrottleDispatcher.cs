@@ -21,7 +21,7 @@ public class ThrottleDispatcher : IDisposable
         _jobs = new Queue<Func<Task>>();
     }
 
-    private async void OnTimerElapsed(object sender, ElapsedEventArgs e)
+    private async void OnTimerElapsed(object? sender, ElapsedEventArgs e)
     {
         if (_jobs.Count < 1)
         {
@@ -39,6 +39,6 @@ public class ThrottleDispatcher : IDisposable
 
     public void Dispose()
     {
-        _timer?.Dispose();
+        _timer.Dispose();
     }
 }

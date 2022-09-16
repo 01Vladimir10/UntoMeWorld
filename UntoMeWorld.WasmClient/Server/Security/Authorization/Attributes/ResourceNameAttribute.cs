@@ -1,7 +1,6 @@
 ﻿
 
 using UntoMeWorld.Domain.Security;
-using UntoMeWorld.WasmClient.Server.Common;
 
 namespace UntoMeWorld.WasmClient.Server.Security.Authorization.Attributes;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UntoMeWorld.Application.Common;
+﻿using UntoMeWorld.Application.Common;
 
 namespace UntoMeWorld.Domain.Common
 {

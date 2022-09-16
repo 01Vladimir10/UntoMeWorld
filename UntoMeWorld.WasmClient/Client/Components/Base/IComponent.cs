@@ -2,6 +2,6 @@
 
 public interface IComponent
 {
-    public string CssClass { get; set; }
+    public string? CssClass { get; set; }
     
 }

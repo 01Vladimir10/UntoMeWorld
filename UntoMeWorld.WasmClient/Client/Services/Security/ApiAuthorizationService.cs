@@ -72,6 +72,9 @@ public class ApiAuthorizationService : IAuthorizationProviderService
 
         var result = new Dictionary<ApiResource, Permission>();
 
+        if (permissions == null)
+            return result;
+        
         foreach (var resource in permissions.Keys)
         {
             if (Enum.TryParse<ApiResource>(resource, out var apiResource))

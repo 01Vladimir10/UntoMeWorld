@@ -10,7 +10,7 @@ namespace UntoMeWorld.WasmClient.Client.Components.Base.Security;
 public class AuthorizationContext : ComponentBase
 {
     [Parameter] public ApiResource ApiResource { get;set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {

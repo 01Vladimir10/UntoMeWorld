@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using UntoMeWorld.Application.Common;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Data.Model;
 
@@ -68,6 +67,9 @@ public class ListController<TKey, TItem>
     }
     private void OnItemSelectionChanged(ListItem<TKey, TItem> item, bool isSelected)
     {
+        if (item.Item == null)
+            return;
+        
         var key = _keySelector(item.Item);
         if (_selectedItems.Contains(key))
             _selectedItems.Remove(key);

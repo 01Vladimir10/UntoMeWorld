@@ -1,6 +1,4 @@
-﻿using UntoMeWorld.WasmClient.Shared.DTOs.Children;
-
-namespace UntoMeWorld.WasmClient.Shared.DTOs.Church;
+﻿namespace UntoMeWorld.WasmClient.Shared.DTOs.Church;
 using Domain.Model;
 
 public class UpdateChurchDto : ChurchDto, IUpdateDto<Church>

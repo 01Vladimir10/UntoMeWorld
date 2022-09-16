@@ -7,12 +7,12 @@ namespace UntoMeWorld.WasmClient.Client.Components.SearchControls;
 
 public class SearchViewBase : BaseSearchView
 {
-    [Inject] public ILocalStorageService LocalStorageService { get; set; }
+    [Inject] public ILocalStorageService? LocalStorageService { get; set; }
     private bool _hasHistoryBeenLoaded;
-    private HashSet<string> _history;
-    protected List<SearchSuggestion> Suggestions { get; private set; }
+    private HashSet<string> _history = new();
+    protected List<SearchSuggestion> Suggestions { get; private set; } = new();
 
-    protected async Task OnSuggestionClicked(string suggestion)
+    protected async Task OnSuggestionClicked(string? suggestion)
     {
         Query = suggestion;
         await FireSearch();
@@ -36,7 +36,7 @@ public class SearchViewBase : BaseSearchView
 
     private async Task FireSearch()
     {
-        if (Query.Length >= MinQueryLength)
+        if (Query?.Length >= MinQueryLength)
         {
             IsSearching = false;
             await OnSearch(Query);
@@ -63,9 +63,8 @@ public class SearchViewBase : BaseSearchView
         if (EnableSuggestions)
             suggestions.AddRange(await GetSearchHistory(query));
 
-        if (QuerySuggestionProvider != null)
-            suggestions.AddRange(
-                (await QuerySuggestionProvider(query)).Select(s => new SearchSuggestion { Suggestion = s }));
+        suggestions.AddRange(
+            (await QuerySuggestionProvider(query)).Select(s => new SearchSuggestion { Suggestion = s }));
         var i = 0;
         Suggestions = suggestions
             .Where(s => !string.IsNullOrEmpty(s.Suggestion) && s.Suggestion.Length > 1)
@@ -75,7 +74,7 @@ public class SearchViewBase : BaseSearchView
                 Suggestion = s.Suggestion,
                 HtmlSuggestion = string.IsNullOrEmpty(query) || query.Length < 1
                     ? s.Suggestion
-                    : s.Suggestion.Replace(query, $"<b>{query}</b>", StringComparison.InvariantCultureIgnoreCase),
+                    : s.Suggestion?.Replace(query, $"<b>{query}</b>", StringComparison.InvariantCultureIgnoreCase),
                 Id = i++, IsFromHistory = s.IsFromHistory
             }).ToList();
         Query = query;
@@ -86,8 +85,9 @@ public class SearchViewBase : BaseSearchView
     {
         if (_hasHistoryBeenLoaded)
             return;
-        _history = await LocalStorageService.GetItemAsync<HashSet<string>>(HistoryCollectionKey) ??
-                   new HashSet<string>();
+        if (LocalStorageService != null)
+            _history = await LocalStorageService.GetItemAsync<HashSet<string>>(HistoryCollectionKey) ??
+                       new HashSet<string>();
         _hasHistoryBeenLoaded = true;
     }
 
@@ -98,7 +98,8 @@ public class SearchViewBase : BaseSearchView
             return;
 
         _history.Add(query);
-        await LocalStorageService.SetItemAsync(HistoryCollectionKey, _history);
+        if (LocalStorageService != null)
+            await LocalStorageService.SetItemAsync(HistoryCollectionKey, _history);
     }
 
     private async Task<List<SearchSuggestion>> GetSearchHistory(string query)
@@ -119,8 +120,8 @@ public class SearchViewBase : BaseSearchView
 
 public class SearchSuggestion
 {
-    public string HtmlSuggestion { get; set; }
-    public string Suggestion { get; set; }
+    public string? HtmlSuggestion { get; set; }
+    public string? Suggestion { get; set; }
     public bool IsFromHistory { get; set; }
     public int Id { get; set; }
 }

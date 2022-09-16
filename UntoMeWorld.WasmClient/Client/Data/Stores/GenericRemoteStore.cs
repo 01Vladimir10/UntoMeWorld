@@ -1,4 +1,5 @@
 ﻿using UntoMeWorld.Application.Common;
+using UntoMeWorld.Application.Extensions;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Application.Stores;
@@ -29,8 +30,8 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
         => await Query(Ne(nameof(IRecyclableModel.IsDeleted), true)).ContinueWith(t => t.Result.Result);
 
     public async Task<IEnumerable<TModel>> All(string query)
-        => string.IsNullOrEmpty(query) 
-            ? await All() 
+        => string.IsNullOrEmpty(query)
+            ? await All()
             : await Query(TextSearch(query)).ContinueWith(t => t.Result.Result);
 
     public Task<IEnumerable<TModel>> All(Predicate<TModel> query)
@@ -38,27 +39,30 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
         throw new NotImplementedException();
     }
 
-    public Task<PaginationResult<TModel>> Query(QueryFilter? filter = null, 
+    public Task<PaginationResult<TModel>> Query(QueryFilter? filter = null,
         string? textQuery = null,
         string? orderBy = null,
         bool orderByDesc = false,
         int page = 1,
         int pageSize = 100)
         => _client.PostJsonAsync<PaginationResult<TModel>>(Paths.Query, new QueryRequestDto
-        {
-            Filter = filter,
-            TextQuery = textQuery,
-            OrderBy = orderBy ?? string.Empty,
-            OrderDesc = orderByDesc,
-            Page = page,
-            PageSize = pageSize
-        });
+            {
+                Filter = filter,
+                TextQuery = textQuery,
+                OrderBy = orderBy ?? string.Empty,
+                OrderDesc = orderByDesc,
+                Page = page,
+                PageSize = pageSize
+            })
+            .OrElse(new PaginationResult<TModel>());
 
     public Task<TModel> AddOne(TModel data)
-        => _client.PostJsonAsync<TModel>(Paths.Add, ToAddDto(data));
+        => _client.PostJsonAsync<TModel>(Paths.Add, ToAddDto(data))
+            .OrElse(data);
 
     public Task<TModel> UpdateOne(TModel data)
-        => _client.PutJsonAsync<TModel>(Paths.Update, ToUpdateDto(data));
+        => _client.PutJsonAsync<TModel>(Paths.Update, ToUpdateDto(data))
+            .OrElse(data);
 
     public Task DeleteOne(string key)
         => _client.DeleteJsonAsync<bool>($"{Paths.Delete}/{key}");
@@ -79,12 +83,14 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
         => _client.PostJsonAsync<bool>(Paths.RestoreMany, keys);
 
     public Task<IEnumerable<TModel>> AddMany(List<TModel> data)
-        => _client.PostJsonAsync<IEnumerable<TModel>>(Paths.AddMany, data.Select(ToAddDto));
+        => _client.PostJsonAsync<IEnumerable<TModel>>(Paths.AddMany, data.Select(ToAddDto))
+            .OrElse(new List<TModel>());
 
     public Task<IEnumerable<TModel>> UpdateMany(List<TModel> data)
-        => _client.PostJsonAsync<IEnumerable<TModel>>(Paths.UpdateMany, data.Select(ToUpdateDto));
+        => _client.PostJsonAsync<IEnumerable<TModel>>(Paths.UpdateMany, data.Select(ToUpdateDto))
+            .OrElse(new List<TModel>());
 
-    public Task<TModel> Get(string id)
+    public Task<TModel?> Get(string id)
         => _client.GetJsonAsync<TModel>($"{Paths.GetOne}/{id}");
 
     protected abstract TAddDto ToAddDto(TModel model);

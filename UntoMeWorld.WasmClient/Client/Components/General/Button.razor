@@ -20,7 +20,7 @@
 
 @code {
     [Parameter]
-    public string IconName { get; set; }
+    public string? IconName { get; set; }
 
     [Parameter]
     public IconWeight IconWeight { get; set; } = IconWeight.Bold;
@@ -29,7 +29,7 @@
     public ButtonStyle Style { get; set; } = ButtonStyle.Flat;
     
     [Parameter]
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     private string StyleClass => Style.ToString().ToLower();
 

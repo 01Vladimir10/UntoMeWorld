@@ -17,25 +17,25 @@
             
             case 0:
                 <span class="text subtitle m-0 text-normal">
-                    @child.FullName()
+                    @child?.FullName()
                 </span>
                 <span class=" text secondary">
-                    @(child.Church?.Name)
+                    @(child?.Church?.Name)
                 </span>
                 break;
             case 1:
                 <span class="text secondary">
-                    @child.Age
+                    @child?.Age
                 </span>
                 break;
             case 2:
                 <span class="text secondary">
-                    @child.Gender.ToString()
+                    @child?.Gender.ToString()
                 </span>
                 break;
             case 3:
                 <span class="text secondary">
-                    @RazorUtils.BoolToString(child.IsSponsored)
+                    @RazorUtils.BoolToString(child?.IsSponsored)
                 </span>
                 break;
         }
@@ -232,16 +232,16 @@
         new ListColumn("Sponsored", "d-none d-md-block col-md-3")
     };
 
-    private ListView<string, Child> _listView;
+    private ListView<string, Child> _listView = new();
 
     [Parameter]
-    public Action<Child> OnEditClicked { get; set; }
+    public Action<Child> OnEditClicked { get; set; } = _ => { };
+
+        [Parameter]
+    public Action<Child> OnDeleteClicked { get; set; } = _ => { };
 
     [Parameter]
-    public Action<Child> OnDeleteClicked { get; set; }
-
-    [Parameter]
-    public ItemsProviderDelegate<ListItem<string, Child>> ItemsProvider { get; set; }
+    public ItemsProviderDelegate<ListItem<string, Child>>? ItemsProvider { get; set; }
 
     public Task Reset() => _listView.Reset();
 }

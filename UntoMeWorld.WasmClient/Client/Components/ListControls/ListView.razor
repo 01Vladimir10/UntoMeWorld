@@ -5,7 +5,7 @@
 
 <div class="list-view">
     <div class="list-view__header">
-        @if (Columns?.Any() ?? false)
+        @if (Columns.Any())
         {
             <div class="row">
                 @foreach (var column in Columns)
@@ -59,7 +59,7 @@
                                 }
                             </Header>
                             <Content>
-                                @if (ExpandableItemContentTemplate != null)
+                                @if (ExpandableItemContentTemplate != null && item.Item != null)
                                 {
                                     @ExpandableItemContentTemplate(item.Item)
                                 }
@@ -79,13 +79,14 @@
 </div>
 
 @code {
-    private Virtualize<ListItem<TKey, TItem>> _virtualize;
+    private Virtualize<ListItem<TKey, TItem>>? _virtualize;
 
     public override async Task Reset()
     {
         await InvokeAsync(async () =>
         {
-            await _virtualize.RefreshDataAsync();
+            if (_virtualize != null)
+                await _virtualize.RefreshDataAsync();
             StateHasChanged();
         });
     }

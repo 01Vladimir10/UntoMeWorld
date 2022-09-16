@@ -18,13 +18,13 @@
         </button>
     }
 
-    @if (IsSearching && Suggestions != null)
+    @if (IsSearching)
     {
         <ul class="search-view__suggestions">
             @foreach (var suggestion in Suggestions)
             {
                 <li class="search-view-suggestion" @onclick="() => OnSuggestionClicked(suggestion.Suggestion)">
-                    <h5 class="search-view-suggestion__text">@((MarkupString) suggestion.HtmlSuggestion)</h5>
+                    <h5 class="search-view-suggestion__text">@((MarkupString) (suggestion.HtmlSuggestion ?? ""))</h5>
                     @if (suggestion.IsFromHistory)
                     {
                         <i class="search-view-suggestion__icon ph-clock-counter-clockwise">

@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using UntoMeWorld.Application.Extensions.Security;
-using UntoMeWorld.Application.Services;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
-using UntoMeWorld.WasmClient.Server.Security.Utils;
-using UntoMeWorld.WasmClient.Shared.Security.Utils;
 
 namespace UntoMeWorld.WasmClient.Server.Security.Authentication;
 

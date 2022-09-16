@@ -871,7 +871,7 @@ h1, h2, h3, h4, h5 {
   isolation: isolate;
   border-radius: 0.25em;
   font-size: 0.925rem;
-  box-shadow: 0 0 8px var(--shadow-color-2);
+  box-shadow: 0 0 8px var(--gray-50);
   display: inline-flex;
   align-items: center;
   font-weight: 500;

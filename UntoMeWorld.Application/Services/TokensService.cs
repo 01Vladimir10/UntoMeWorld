@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using UntoMeWorld.Application.Errors;
 using UntoMeWorld.Application.Extensions.Security;

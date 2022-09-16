@@ -4,8 +4,8 @@ namespace UntoMeWorld.WasmClient.Client.Components.Base;
 
 public class BaseDropDown<T> : ComponentBase, IComponent
 {
-    private T _selectedValue;
-    private IEnumerable<DropDownOption<T>> _options;
+    private T? _selectedValue;
+    private IEnumerable<DropDownOption<T>> _options = Enumerable.Empty<DropDownOption<T>>();
 
     [Parameter]
     public IEnumerable<DropDownOption<T>> Options
@@ -14,20 +14,21 @@ public class BaseDropDown<T> : ComponentBase, IComponent
         set
         {
             _options = value;
-            SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(SelectedValue)) ?? Options.FirstOrDefault();
+            SelectedOption = Options.FirstOrDefault(o => o.Value?.Equals(SelectedValue) ?? false) ??
+                             Options.FirstOrDefault();
             OptionsChanged.InvokeAsync();
         }
     }
 
-    [Parameter] public T DefaultOption { get; set; }
-    [Parameter] public string Placeholder { get; set; }
-    [Parameter] public string CssClass { get; set; }
-    [Parameter] public Func<T, Task> OnSelectionChangedAsync { get; set; }
-    [Parameter] public Action<T> OnSelectionChanged { get; set; }
-    [Parameter] public DropDownOption<T> SelectedOption { get; set; }
+    [Parameter] public T? DefaultOption { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public Func<T, Task>? OnSelectionChangedAsync { get; set; }
+    [Parameter] public Action<T>? OnSelectionChanged { get; set; }
+    [Parameter] public DropDownOption<T>? SelectedOption { get; set; }
 
     [Parameter]
-    public T SelectedValue
+    public T? SelectedValue
     {
         get => _selectedValue;
         set
@@ -35,18 +36,16 @@ public class BaseDropDown<T> : ComponentBase, IComponent
             if (value == null || value.Equals(_selectedValue))
                 return;
             _selectedValue = value;
-            SelectedOption = Options.FirstOrDefault(o => o.Value.Equals(value));
+            SelectedOption = Options.FirstOrDefault(o => o.Value?.Equals(value) ?? false);
             SelectedValueChanged.InvokeAsync(value);
         }
     }
-    
-    [Parameter]
-    public EventCallback<T> SelectedValueChanged { get; set; }
-    [Parameter]
-    public EventCallback<IEnumerable<DropDownOption<T>>> OptionsChanged { get; set; }
+
+    [Parameter] public EventCallback<T> SelectedValueChanged { get; set; }
+    [Parameter] public EventCallback<IEnumerable<DropDownOption<T>>> OptionsChanged { get; set; }
 
     [Parameter] public int MaxDisplayCharLength { get; set; } = 100;
-    
+
     public void AddSelectionChangedListener(Func<T, Task> onSelectionChanged)
     {
         if (OnSelectionChangedAsync == null)
