@@ -20,7 +20,7 @@
                 </h6>
             </NavLink>
         </AuthorizedPanel>
-        
+
         <AuthorizedPanel ApiResource="ApiResource.Churches" RequiredPermissions="_crudPermissions">
             <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.ChurchesRoute" class="navigation-menu-item">
                 <PhosphorIcon IconName="PhosphorIcons.HouseLine" CssClass="navigation-menu-item__icon"/>
@@ -29,24 +29,27 @@
                 </h6>
             </NavLink>
         </AuthorizedPanel>
-        
+
         <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.ReportsRoute" class="navigation-menu-item">
             <PhosphorIcon IconName="PhosphorIcons.ChartPieSlice" CssClass="navigation-menu-item__icon"/>
             <h6 class="navigation-menu-item__title">
                 @PageRoutes.Routes[PageRoutes.ReportsRoute]
             </h6>
         </NavLink>
-        <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.SettingsRoute" class="navigation-menu-item">
-            <PhosphorIcon IconName="PhosphorIcons.GearSix" CssClass="navigation-menu-item__icon"/>
-            <h6 class="navigation-menu-item__title">
-                @PageRoutes.Routes[PageRoutes.SettingsRoute]
-            </h6>
-        </NavLink>
+        <AuthorizedPanel ApiResource="ApiResource.Roles" RequiredPermissions="_crudPermissions">
+            <NavLink ActiveClass="active" Match="NavLinkMatch.Prefix" href="@PageRoutes.SettingsRoute" class="navigation-menu-item">
+                <PhosphorIcon IconName="PhosphorIcons.GearSix" CssClass="navigation-menu-item__icon"/>
+                <h6 class="navigation-menu-item__title">
+                    @PageRoutes.Routes[PageRoutes.SettingsRoute]
+                </h6>
+            </NavLink>
+        </AuthorizedPanel>
     </div>
 </div>
 <div class="navigation-menu-overlay @(_isExpanded ? "visible" : "")">
-    
+
 </div>
+
 @code {
 
     private List<PermissionType> _crudPermissions = new()
@@ -56,6 +59,7 @@
         PermissionType.Read,
         PermissionType.Update
     };
+
     private bool _isExpanded = false;
 
     private void ToggleMenu()
@@ -66,7 +70,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
+
         Manager.LocationChanged += (_, _) =>
         {
             _isExpanded = false;

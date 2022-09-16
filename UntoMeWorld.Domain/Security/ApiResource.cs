@@ -8,6 +8,7 @@
         Roles,
         Tokens,
         Wildcard,
+        Settings,
         Unknown
     }
 }

@@ -2,6 +2,6 @@
 
 public class AuthorizationServiceOptions
 {
-    public string PermissionSelectionMode { get; set; }
-    public string RoleSelectionMode { get; set; }
+    public string PermissionSelectionMode { get; set; } = string.Empty;
+    public string RoleSelectionMode { get; set; } = string.Empty;
 }

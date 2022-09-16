@@ -1,4 +1,4 @@
-﻿using UntoMeWorld.WasmClient.Server.Common.Model;
+﻿using UntoMeWorld.Application.Helpers;
 
 namespace UntoMeWorld.Application.Services.Base;
 

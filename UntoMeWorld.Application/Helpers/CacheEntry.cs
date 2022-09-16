@@ -1,10 +1,10 @@
-﻿namespace UntoMeWorld.WasmClient.Server.Common.Model;
+﻿namespace UntoMeWorld.Application.Helpers;
 
 public class CacheEntry<T>
 {
     public DateTime LastUpdated { get; } = DateTime.Now;
     
-    public T Data { get; set; }
+    public T? Data { get; set; }
 #if DEBUG
     public TimeSpan LifeSpan { get; set; } = TimeSpan.Zero;
 #else
