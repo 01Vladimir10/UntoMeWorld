@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Extensions.Security;
 using UntoMeWorld.Application.Helpers;
-using UntoMeWorld.Application.Services;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Security;
-using UntoMeWorld.WasmClient.Server.Common;
 using UntoMeWorld.WasmClient.Server.Security.Authorization.Attributes;
-using UntoMeWorld.WasmClient.Shared.Security.Utils;
 
 namespace UntoMeWorld.WasmClient.Server.Security.Authorization;
 
@@ -36,14 +34,14 @@ public class ApiAuthorizationHandler : AuthorizationHandler<ApiAuthorizationRequ
     private string CurrentRequestController => Request?.RouteValues["controller"]?.ToString() ?? string.Empty;
     private string CurrentRequestAction => Request?.RouteValues["action"]?.ToString() ?? string.Empty;
 
-    private bool IsTokenAuthenticated => (Request?.Headers.ContainsKey(ServerConstants.HeaderToken) ?? false) &&
-                                         !string.IsNullOrEmpty(Request?.Headers[ServerConstants.HeaderToken]
+    private bool IsTokenAuthenticated => (Request?.Headers.ContainsKey(ServerConstants.AuthHeaderToken) ?? false) &&
+                                         !string.IsNullOrEmpty(Request?.Headers[ServerConstants.AuthHeaderToken]
                                              .ToString());
 
     private AppUser CurrentUser => HttpContext?.User.Claims.ToAppUser();
 
     private string CurrentAuthToken =>
-        Request.Headers[ServerConstants.HeaderToken].ToString();
+        Request.Headers[ServerConstants.AuthHeaderToken].ToString();
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         ApiAuthorizationRequirement requirement)
