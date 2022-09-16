@@ -11,25 +11,13 @@ public static class MongoPipelineReadStages
         ChildrenPipeLineStages =
             new()
             {
-                // Convert pastor's id into ObjectId
-                new BsonDocumentPipelineStageDefinition<Child, Child>(
-                    new BsonDocument("$addFields",
-                        new BsonDocument("ChurchObjectId",
-                            new BsonDocument("$convert",
-                                new BsonDocument
-                                {
-                                    { "input", "$ChurchId" },
-                                    { "to", "objectId" },
-                                    { "onError", "" },
-                                    { "onNull", "" }
-                                })))),
-                // Find related pastors (it returns an array)
+                // Find related churches (it returns an array)
                 new BsonDocumentPipelineStageDefinition<Child, Child>(
                     new BsonDocument("$lookup",
                         new BsonDocument
                         {
                             { "from", "churches" },
-                            { "localField", "ChurchObjectId" },
+                            { "localField", "ChurchId" },
                             { "foreignField", "_id" },
                             { "as", "ChurchesArray" }
                         })
@@ -45,8 +33,7 @@ public static class MongoPipelineReadStages
                     new BsonDocument("$project",
                         new BsonDocument
                         {
-                            { "ChurchesArray", 0 },
-                            { "ChurchObjectId", 0 }
+                            { "ChurchesArray", 0 }
                         }))
             };
 }

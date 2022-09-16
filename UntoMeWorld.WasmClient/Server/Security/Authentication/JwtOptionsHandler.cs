@@ -29,14 +29,17 @@ public class JwtOptionsHandler : IPostConfigureOptions<JwtBearerOptions>
                 if (!string.IsNullOrEmpty(context.Principal?.ToAppUser().Id))
                     return;
                 var userId = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var authProvider = context.Principal?.Claims.FirstOrDefault(c => c.Type.Contains("identityprovider"))?.Value ?? "default";
+                var authProvider = context.Principal?.Claims.FirstOrDefault(c =>
+                                       c.Type.Contains("identityProvider", StringComparison.InvariantCultureIgnoreCase))
+                                   ?.Value ??
+                                   "default";
                 if (string.IsNullOrEmpty(userId))
                     return;
                 var user = await _service.GetOrCreateUserByThirdPartyAccountInfo(authProvider, userId, () => new AppUser
                 {
-                    Name = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value,
+                    Name = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value,
                     Lastname = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value,
-                    Email = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
+                    Email = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Upn)?.Value,
                     Phone = context.Principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.MobilePhone)?.Value,
                 });
                 var claims = new List<Claim>

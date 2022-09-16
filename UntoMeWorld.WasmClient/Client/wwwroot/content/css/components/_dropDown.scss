@@ -41,7 +41,7 @@
     width: auto;
     margin: 0;
     max-height: 0;
-    overflow: hidden;
+    overflow: auto;
     z-index: 2;
     background-color: var(--surface-color);
     border-bottom-left-radius: $controlsBorderRadius;
@@ -78,7 +78,7 @@
     }
 
     ul.drop-down__options {
-      max-height: 100vh;
+      max-height: 30vh;
       height: auto;
       opacity: 1;
       min-height: min-content;

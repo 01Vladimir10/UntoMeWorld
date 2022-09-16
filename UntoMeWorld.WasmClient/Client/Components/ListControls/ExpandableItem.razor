@@ -4,8 +4,8 @@
 @implements UntoMeWorld.WasmClient.Client.Components.Base.IComponent
 @inject IJSRuntime JsRuntime
 
-<div class="expandable-list-item @CssClass" id="@_itemId">
-    <div class="expandable-list-item__header">
+<div class="expandable-list-item @CssClass @RazorUtils.If(IsExpanded, "expanded")" >
+    <div class="expandable-list-item__header" @onclick="() => IsExpanded = !IsExpanded">
         @Header
     </div>
     <div class="expandable-list-item__content">
@@ -14,28 +14,18 @@
 </div>
 
 @code {
-    private readonly string _itemId = Guid.NewGuid().ToString();
     private bool IsExpanded { get; set; }
 
     [Parameter]
-    public string CssClass { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool isFirstRender)
-    {
-        await base.OnAfterRenderAsync(isFirstRender);
-        if (isFirstRender)
-        {
-            await JsRuntime.InvokeVoidAsync(InteropFunctions.InitExpandableItem, _itemId);
-        }
-    }
-
-
-#nullable enable
+    public string CssClass { get; set; } = "";
     [Parameter]
     public RenderFragment? Header { get; set; }
 
     [Parameter]
     public RenderFragment? Content { get; set; }
-    
-#nullable disable
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        await base.OnAfterRenderAsync(isFirstRender);
+    }
 }

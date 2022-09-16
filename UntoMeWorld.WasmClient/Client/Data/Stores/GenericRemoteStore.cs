@@ -26,10 +26,12 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
     }
 
     public async Task<IEnumerable<TModel>> All()
-        => await Query(Ne(nameof(IRecyclableModel.IsDeleted), false)).ContinueWith(t => t.Result.Result);
+        => await Query(Ne(nameof(IRecyclableModel.IsDeleted), true)).ContinueWith(t => t.Result.Result);
 
     public async Task<IEnumerable<TModel>> All(string query)
-        => await Query(TextSearch(query)).ContinueWith(t => t.Result.Result);
+        => string.IsNullOrEmpty(query) 
+            ? await All() 
+            : await Query(TextSearch(query)).ContinueWith(t => t.Result.Result);
 
     public Task<IEnumerable<TModel>> All(Predicate<TModel> query)
     {

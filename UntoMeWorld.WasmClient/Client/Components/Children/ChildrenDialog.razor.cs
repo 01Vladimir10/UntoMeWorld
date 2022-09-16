@@ -49,9 +49,7 @@ public class BaseChildrenDialog : BaseDialog<Child, Child>
         {
             foreach (var validationResult in result.Results)
             {
-                await ToastService
-                    .Create("Error: " + validationResult, style: ToastStyle.Error)
-                    .ShowAsync(ToastDuration.Medium);
+                ToastService.Error("Validation error",  validationResult.ToString()).Show(ToastDuration.Medium);
             }
 
             return;

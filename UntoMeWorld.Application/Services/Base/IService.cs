@@ -6,7 +6,7 @@ namespace UntoMeWorld.Application.Services.Base;
 public interface IService <T, in TKey>
 {
     public Task<T> Add(T item);
-    public Task<T> Get(TKey id);
+    public Task<T?> Get(TKey id);
     public Task<T> Update(T item);
     public Task Restore(TKey item);
     public Task Delete(TKey id, bool softDelete = true);

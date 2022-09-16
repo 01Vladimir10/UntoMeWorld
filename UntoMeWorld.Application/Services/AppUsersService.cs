@@ -6,6 +6,7 @@ using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Application.Services.Options;
 using UntoMeWorld.Application.Stores;
 using UntoMeWorld.Domain.Model;
+#pragma warning disable CS8619
 
 namespace UntoMeWorld.Application.Services;
 
@@ -16,7 +17,7 @@ public class AppUsersService : GenericService<AppUser>, IUserService
     private readonly bool _enableCache;
     private readonly IUserStore _userStore;
 
-    public AppUsersService(IUserStore store, IMemoryCache cache, IOptions<UserServiceOptions> options) : base(store)
+    public AppUsersService(IUserStore store, IMemoryCache cache, IOptions<UserServiceOptions> options, ILogsService logsService) : base(store, logsService, "Users")
     {
         _userStore = store;
         _enableCache = options.Value?.EnableCaching ?? false;
@@ -30,7 +31,7 @@ public class AppUsersService : GenericService<AppUser>, IUserService
         return createdItem;
     }
 
-    public new Task<AppUser> Get(string id)
+    public new Task<AppUser?> Get(string id)
         => _enableCache
             ? _cache.Get(id, () => base.Get(id))
             : base.Get(id);

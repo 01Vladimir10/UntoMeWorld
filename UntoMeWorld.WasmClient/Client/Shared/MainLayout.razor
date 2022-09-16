@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <div class="page-container">
     <div class="page">
@@ -22,3 +24,22 @@
         </CascadingDialogService>
     </div>
 </div>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var autState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (autState.User.Identity?.IsAuthenticated ?? false)
+            return;
+
+        AuthenticationStateProvider.AuthenticationStateChanged += _ =>
+        {
+            // Reload
+            NavigationManager.NavigateTo("/", forceLoad:true);
+        };
+        NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+    }
+
+}

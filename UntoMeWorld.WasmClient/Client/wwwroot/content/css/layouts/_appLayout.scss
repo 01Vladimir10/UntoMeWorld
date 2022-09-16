@@ -7,7 +7,7 @@
 
 .page {
   display: flex;
-  height: 100dvh;
+  height: 100vh;
   width: 100%;
   max-width: 1380px;
   position: relative;
@@ -56,7 +56,7 @@
       border-radius: 10px;
       -webkit-box-shadow: inset 0 0 6px #dddd;
       background-color: #adadad;
-      
+
     }
   }
 
@@ -73,18 +73,11 @@
 }
 
 
-.list-layout {
-  display: block;
-  padding: 0 1rem;
+.mongo-report  {
   height: 100%;
-
-  .list-controls {
-    display: flex;
-    align-items: center;
-
-    .search-view {
-      flex: 1 1 40%;
-      max-width: 40%;
-    }
-  }
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface-color);
+  border: none;
+  border-radius: 2px;
 }

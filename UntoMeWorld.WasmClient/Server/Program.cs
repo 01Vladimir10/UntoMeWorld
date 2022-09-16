@@ -8,6 +8,7 @@ using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Application.Services.Options;
 using UntoMeWorld.Infrastructure;
 using UntoMeWorld.WasmClient.Server.Common.Swagger;
+using UntoMeWorld.WasmClient.Server.Security.Authentication;
 using UntoMeWorld.WasmClient.Server.Security.Utils;
 
 try
@@ -23,17 +24,23 @@ try
 
 // Add services that consume the datastore services and are used by the controllers.
     builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
+    builder.Services.AddSingleton<IAuthStateProviderService, AuthStateProviderService>();
     builder.Services.AddTransient<IChurchesService, ChurchesService>();
     builder.Services.AddTransient<IChildrenService, ChildrenService>();
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
-
+    builder.Services.AddTransient<ILogsService, LogsService>();
     builder.Services.AddSwaggerGen(c =>
     {
         c.AddServer(new OpenApiServer
         {
             Description = "Local host",
             Url = "https://localhost:5001"
+        });
+        c.AddServer(new OpenApiServer
+        {
+            Description = "Production",
+            Url = "https://untome.gandu.net"
         });
         c.SupportNonNullableReferenceTypes();
         c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
@@ -78,6 +85,7 @@ try
     app.UseRouting();
 
     app.UseAuthentication();
+    
     app.UseAuthorization();
 
 

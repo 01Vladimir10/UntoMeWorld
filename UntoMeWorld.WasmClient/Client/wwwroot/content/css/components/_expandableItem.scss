@@ -9,22 +9,17 @@
     cursor: pointer;
   }
   .expandable-list-item__content {
-    position: absolute;
     opacity: 0;
+    height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 125ms linear;
   }
-  &.initialized {
+  &.expanded {
     .expandable-list-item__content {
-      position: static;
-      opacity: 1;
       height: 100%;
-      max-height: 0;
-      overflow: hidden;
-      transition: all 200ms ease;
-    }
-    &.expanded {
-      .expandable-list-item__content {
-        max-height: var(--max-content-height);
-      }
+      transform: scaleY(1);
+      opacity: 1;
     }
   }
 }

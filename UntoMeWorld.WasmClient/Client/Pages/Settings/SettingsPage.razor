@@ -1,9 +1,6 @@
-﻿@page "/Counter"
+@page "/SettingsPage"
 @using UntoMeWorld.WasmClient.Shared.Model
-@using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
-@inject HttpClient _client
-
+@inject HttpClient Client
 
 <button @onclick="GenerateToken">Generate token</button>
 <br>
@@ -25,12 +22,12 @@ else
 
 @code {
     private bool _loading;
-    private string _token;
+    private string? _token;
 
     private async Task GenerateToken()
     {
         _loading = true;
-        var result = await _client.GetFromJsonAsync<ResponseDto<string>>("api/tokens/add");
+        var result = await Client.GetFromJsonAsync<ResponseDto<string>>("api/tokens/add");
         _loading = false;
         _token = result?.IsSuccessful ?? false ? result.Data : string.Empty;
     }

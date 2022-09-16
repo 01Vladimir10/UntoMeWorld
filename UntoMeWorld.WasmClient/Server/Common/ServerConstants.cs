@@ -1,9 +1,6 @@
 ﻿namespace UntoMeWorld.WasmClient.Server.Common;
 
-public static class ServerConstants
-{
-    public const string HeaderToken = "ApiToken";
-}
+
 
 
 public static class RoleSelectionModes

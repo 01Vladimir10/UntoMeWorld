@@ -2,71 +2,79 @@
 
 #toastsContainer {
   position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 4rem;
+  right: 5%;
   height: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: end;
   gap: .5rem;
   z-index: 1200;
 }
 
 .toast {
-  padding: .5em .75em;
+  --toast-color: black;
+  --toast-on-color: white;
+  
+  padding: .5em;
   position: relative;
   isolation: isolate;
-  border-radius: $controlsBorderRadius;
-  font-size: $controlsFontSize;
+  border-radius: .25em;
+  font-size: .925rem;
   box-shadow: 0 0 8px var(--shadow-color-2);
-  color: var(--primary-text-color);
   display: inline-flex;
   align-items: center;
-  gap: .5em;
-  background-color: transparent;
+  font-weight: 500;
   overflow: hidden;
   opacity: 0;
-  transform: translateY(50%);
+  transform: translateY(100%);
   transition: all 500ms ease;
+  background-color: var(--toast-on-color);
+  border: 2px solid var(--toast-color);
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    background-color: var(--toast-background-color);
-  }
 
   &.show {
     opacity: 1;
     transform: translateY(0);
   }
-  .toast-content {
-    color: inherit;
+  
+  .toast-title {
+    color: var(--toast-color);
+  }
+  .toast-subtitle {
+    color: var(--secondary-text-color);
+    font-size: .875em;
+    font-weight: 400;
+  }
+  
+  .toast-close-button {
+    margin-left: 1em;
+    font-size: 1em;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    color: var(--secondary-text-color);
+    align-self: start;
   }
   .toast-icon {
-    color: inherit;
-    font-size: 1.25em;
+    margin-right: .5em;
+    font-size: 1.5em;
+    color: var(--toast-color);
   }
   &.error {
-    --toast-background-color: var(--error-color, #ea5959);
-    
-    color: var(--on-error-color, white);
+    --toast-color: var(--error-color);
+    --toast-on-color: var(--on-error-color);
   }
-  &.primary {
-    --toast-background-color: var(--primary-color, white);
-    color: var(--primary-text-color, black);
+  &.info {
+    --toast-color: var(--primary-color);
+    --toast-on-color: var(--on-primary-color);
   }
   &.warning {
-    --toast-background-color: var(--warning-color, #e39b12);
-    color: var(--on-warning-color, black);
+    --toast-color: var(--warning-color);
+    --toast-on-color: var(--on-warning-color);
   }
   &.success {
-    --toast-background-color: var(--success-color, #67c062);
-    color: var(--on-success-color, white);
+    --toast-color: var(--success-color);
+    --toast-on-color: var(--on-success-color);
   }
 }

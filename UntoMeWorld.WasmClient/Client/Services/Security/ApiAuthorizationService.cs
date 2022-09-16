@@ -8,7 +8,7 @@ namespace UntoMeWorld.WasmClient.Client.Services.Security;
 
 public class ApiAuthorizationService : IAuthorizationProviderService
 {
-    public IDictionary<ApiResource, Permission> CurrentUserPermissions { get; set; }
+    public IDictionary<ApiResource, Permission>? CurrentUserPermissions { get; set; }
     private readonly HttpClient _httpClient;
     private readonly SimpleTaskManager _manager = new();
 
@@ -19,6 +19,7 @@ public class ApiAuthorizationService : IAuthorizationProviderService
 
     private Task Init()
     {
+        
         return CurrentUserPermissions != null
             ? Task.CompletedTask
             : _manager.ExecuteTask(async () => CurrentUserPermissions = await GetCurrentUsersPermission());
@@ -33,10 +34,10 @@ public class ApiAuthorizationService : IAuthorizationProviderService
 
     private bool Challenge(ApiResource apiResource, PermissionType requiredPermission)
     {
-        if (CurrentUserPermissions.ContainsKey(apiResource))
+        if (CurrentUserPermissions!.ContainsKey(apiResource))
             return ChallengePermissions(CurrentUserPermissions[apiResource], requiredPermission);
 
-        return CurrentUserPermissions.ContainsKey(ApiResource.Wildcard) &&
+        return CurrentUserPermissions!.ContainsKey(ApiResource.Wildcard) &&
                ChallengePermissions(CurrentUserPermissions[ApiResource.Wildcard], requiredPermission);
     }
 
@@ -71,7 +72,7 @@ public class ApiAuthorizationService : IAuthorizationProviderService
 
         var result = new Dictionary<ApiResource, Permission>();
 
-        foreach (var resource in permissions.Keys.Where(resource => resource != null))
+        foreach (var resource in permissions.Keys)
         {
             if (Enum.TryParse<ApiResource>(resource, out var apiResource))
                 result[apiResource] = permissions[resource];
@@ -84,6 +85,7 @@ public class ApiAuthorizationService : IAuthorizationProviderService
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _httpClient.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

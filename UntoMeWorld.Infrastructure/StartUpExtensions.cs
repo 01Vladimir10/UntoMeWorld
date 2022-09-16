@@ -22,6 +22,7 @@ public static class StartUpExtensions
             services.AddTransient<ITokenStore, MongoTokensStore>();
             services.AddTransient<IRoleStore, MongoRolesStore>();
             services.AddTransient<IUserStore, MongoUsersStore>();
+            services.AddTransient<IActionLogsStore, MongoActionLogsStore>();
             Debug.WriteLine("Mongodb set up was successful!");
         }
         catch (Exception e)

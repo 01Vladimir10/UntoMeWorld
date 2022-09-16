@@ -8,6 +8,7 @@ using UntoMeWorld.Application.Stores;
 using UntoMeWorld.WasmClient.Client;
 using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Data.Stores;
+using UntoMeWorld.WasmClient.Client.Services;
 using UntoMeWorld.WasmClient.Client.Services.Security;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -28,6 +29,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<IAuthorizationProviderService, ApiAuthorizationService>();
 builder.Services.AddTransient<IChurchesService, ChurchesService>();
 builder.Services.AddTransient<IChildrenService, ChildrenService>();
+builder.Services.AddTransient<ILogsService, WasmLogService>();
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("UntoMeWorld.WasmClient.ServerAPI"));

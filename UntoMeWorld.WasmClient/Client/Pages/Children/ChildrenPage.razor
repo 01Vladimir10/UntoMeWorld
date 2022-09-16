@@ -10,7 +10,7 @@
 <AuthorizationContext ApiResource="ApiResource.Children">
 
     <div class="list-layout">
-        <div class="list-controls">
+        <div class="list-layout__controls">
             <ListControlsLayout IsMultiSelecting="@ListController.IsMultiSelecting">
                 <NormalControls>
                     <SearchView
@@ -40,12 +40,13 @@
                 </MultiSelectControls>
             </ListControlsLayout>
         </div>
-        <br>
-        <ChildrenList
-            OnEditClicked="EditChild"
-            OnDeleteClicked="DeleteChild"
-            @ref="ListView"
-            ItemsProvider="ListController.ItemsProvider"/>
+        <div class="list-layout__body">
+            <ChildrenList
+                OnEditClicked="EditChild"
+                OnDeleteClicked="DeleteChild"
+                @ref="ListView"
+                ItemsProvider="ListController.ItemsProvider"/>
+        </div>
     </div>
 </AuthorizationContext>
 
@@ -75,4 +76,5 @@
         new DropDownOption<SortField>(SortField.Asc(nameof(Child.ReceivesChristmasGift)), "XMas Gift",
             PhosphorIcons.Render(PhosphorIcons.ArrowDown)),
     };
+
 }

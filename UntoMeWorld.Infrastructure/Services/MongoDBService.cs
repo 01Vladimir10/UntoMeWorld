@@ -7,14 +7,17 @@ namespace UntoMeWorld.Infrastructure.Services
         private MongoClient _client = null!;
         private IMongoDatabase _database = null!;
 
-        public MongoDbService(string connectionString, string? database = default)
+        public MongoDbService(string? connectionString, string? database = default)
         {
             InitializeDatabase(connectionString, database ?? "default");
         }
-        private void InitializeDatabase(string connection, string database)
+        private void InitializeDatabase(string? connection, string database)
         {
             try
             {
+                if (string.IsNullOrEmpty(connection))
+                    throw new Exception("The connection string was empty");
+                
                 _client = new MongoClient(connection);
                 _database = _client.GetDatabase(database);
             }

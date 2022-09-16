@@ -5,16 +5,11 @@ namespace UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 public class MultiSelectController<TModel> where TModel : IModel
 {
     public bool IsMultiSelecting { get; set; }
-    public Action OnMultiSelectStop { get; set; }
+    public Action OnMultiSelectStop { get; set; } = () => { };
     
     public int SelectedItemsCount => SelectedItemsKeys.Count;
     protected HashSet<string> SelectedItemsKeys { get; set; } = new();
 
-    public MultiSelectController()
-    {
-        
-    }
-    
     public bool IsItemSelected(TModel item)
         => SelectedItemsKeys.Contains(item.Id);
     

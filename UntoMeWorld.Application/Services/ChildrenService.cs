@@ -7,7 +7,7 @@ namespace UntoMeWorld.Application.Services;
 
 public class ChildrenService : GenericService<Child>, IChildrenService
 {
-    public ChildrenService(IChildrenStore store) : base(store)
+    public ChildrenService(IChildrenStore store, ILogsService logsService) : base(store, logsService, "Children")
     {
     }
 }

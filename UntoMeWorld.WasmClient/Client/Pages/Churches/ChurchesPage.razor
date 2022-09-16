@@ -3,6 +3,8 @@
 @using UntoMeWorld.Domain.Model
 @using UntoMeWorld.Application.Services.Base
 @using UntoMeWorld.WasmClient.Client.Utils.Extensions
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 @inject IChurchesService ChurchesService
 
@@ -12,7 +14,7 @@
         RequiredPermission="PermissionType.Read">
 
         <div class="list-layout">
-            <div class="list-controls">
+            <div class="list-layout__controls">
                 <SearchView
                     OnSearch="OnSearchSubmit"
                     Placeholder="Search churches"
@@ -21,33 +23,35 @@
                     HistoryCollectionKey="churches__queries">
                 </SearchView>
             </div>
-            <ListView
-                @ref="_listView"
-                Columns="Columns"
-                ItemsProvider="_listController?.ItemsProvider">
+            <div class="list-layout__body">
+                <ListView
+                    @ref="_listView"
+                    Columns="Columns"
+                    ItemsProvider="_listController?.ItemsProvider">
 
-                <ItemTemplate Context="item">
-                    @switch (item.ColumnIndex)
-                    {
-                        case 0:
-                            <span class="text-secondary py-1 font-normal">
-                                @item.Data?.Name
-                            </span>
-                            break;
-                        case 1:
-                            <span class="text-secondary py-1 font-normal">
-                                @(item.Data.Address?.AddressLine1)
-                            </span>
-                            break;
-                        default:
-                            <span class="text-secondary py-1 font-normal">
-                                @(item.Data.Pastor?.Name)
-                            </span>
-                            break;
-                    }
-                </ItemTemplate>
+                    <ItemTemplate Context="item">
+                        @switch (item.ColumnIndex)
+                        {
+                            case 0:
+                                <span class="text-secondary py-1 font-normal">
+                                    @item.Data?.Name
+                                </span>
+                                break;
+                            case 1:
+                                <span class="text-secondary py-1 font-normal">
+                                    @(item.Data.Address?.AddressLine1)
+                                </span>
+                                break;
+                            default:
+                                <span class="text-secondary py-1 font-normal">
+                                    @(item.Data.Pastor?.Name)
+                                </span>
+                                break;
+                        }
+                    </ItemTemplate>
 
-            </ListView>
+                </ListView>
+            </div>
         </div>
 
 
@@ -61,10 +65,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _listController = new ListController<string, Church>(c => c.Id, new PaginationHelper<Church>(ChurchesService.Paginate) { PageSize = 50 })
+        _listController = new ListController<string, Church>(c => c.Id, new PaginationHelper<Church>(ChurchesService.PaginateActive) { PageSize = 50 })
         {
             OnDataRefresh = () => _listView?.Reset()!
         };
+        await _listController.Refresh();
     }
 
     private static List<ListColumn> Columns => new()

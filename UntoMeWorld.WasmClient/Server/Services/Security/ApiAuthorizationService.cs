@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using UntoMeWorld.Application.Errors;
-using UntoMeWorld.Application.Services;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Application.Services.Options;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Security;
-using UntoMeWorld.WasmClient.Server.Common;
 
 namespace UntoMeWorld.WasmClient.Server.Services.Security;
 
@@ -40,7 +38,7 @@ public class ApiAuthorizationService : IApiAuthorizationService
         if (string.IsNullOrEmpty(jwtToken) || !await _tokens.Validate(jwtToken))
             return false;
         var token = _tokens.Read(jwtToken);
-        var permissions = await _roles.GetEffectivePermissionByRole(token.Roles);
+        var permissions = await _roles.GetEffectivePermissionByRole(token?.Roles ?? new List<string>());
         return ValidateActionOnController(permissions, apiResource, requiredPermission);
     }
 

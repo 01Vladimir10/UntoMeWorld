@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Utils.Common;
 
@@ -6,8 +7,7 @@ namespace UntoMeWorld.WasmClient.Client.Components.Interop;
 
 public enum ToastStyle
 {
-    General,
-    Primary,
+    Info,
     Success,
     Warning,
     Error
@@ -22,6 +22,10 @@ public enum ToastDuration
 
 public class Toast
 {
+    public string Title { get; set; } = "";
+    public string SubTitle { get; set; } = "";
+    public string CssClass { get; set; } = "";
+    public ToastStyle ToastStyle { get; set; }
     private readonly ToastService _service;
 
     public Toast(ToastService service)
@@ -33,14 +37,11 @@ public class Toast
     {
         _service.Show(this, duration);
     }
+
     public Task ShowAsync(ToastDuration duration = ToastDuration.Short)
     {
         return _service.ShowAsync(this, duration);
     }
-
-    public string Content { get; set; }
-    public string Icon { get; set; }
-    public string CssClass { get; set; }
 }
 
 public class ToastService
@@ -54,33 +55,36 @@ public class ToastService
         _dispatcher = new ThrottleDispatcher(TimeSpan.FromMilliseconds(250));
     }
 
-    public Task ShowErrorAsync(string content, string icon = null, ToastDuration duration = ToastDuration.Medium)
-    {
-        return Create(content, icon, ToastStyle.Error).ShowAsync(duration);
-    } 
-    public Task ShowSuccessAsync(string content, string icon = null, ToastDuration duration = ToastDuration.Medium)
-    {
-        return Create(content, icon, ToastStyle.Success).ShowAsync(duration);
-    } 
+    public Toast Error(string title, string subtitle = "")
+        => Create(title, subtitle, ToastStyle.Error);
 
-    public Toast Create(string content, string icon = null, ToastStyle style = ToastStyle.General,
-        IconWeight iconWeight = IconWeight.Bold, string cssClass = null)
+    public Toast Success(string title, string subtitle = "")
+        => Create(title, subtitle, ToastStyle.Success);
+    public Toast Warning(string title, string subtitle = "")
+        => Create(title, subtitle, ToastStyle.Warning);
+    public Toast Info(string title, string subtitle = "")
+        => Create(title, subtitle);
+
+    public Toast Create(string title, string subTitle = "", ToastStyle style = ToastStyle.Info, string cssClass = "")
         => new(this)
         {
-            Content = content,
-            Icon = string.IsNullOrEmpty(icon) ? "" : $"{icon}-{iconWeight.ToString().ToLower()}",
-            CssClass = $"{style.ToString().ToLower()} {cssClass}"
+            Title = title,
+            SubTitle = subTitle,
+            ToastStyle = style,
+            CssClass = cssClass
         };
 
     private Task ShowToast(Toast toast, ToastDuration duration)
     {
         _dispatcher.AddTask(async () =>
         {
-            await _runtime.InvokeVoidAsync(InteropFunctions.CreateToast, toast.Content, toast.Icon, toast.CssClass,
-                (int)duration);
+            Console.WriteLine("Showing toast " + JsonConvert.SerializeObject(toast));
+            await _runtime.InvokeVoidAsync(InteropFunctions.CreateToast, toast.ToastStyle.ToString().ToLower(),
+                toast.Title, toast.SubTitle, toast.CssClass, (int)duration);
         });
         return Task.CompletedTask;
     }
+
     public async void Show(Toast toast, ToastDuration duration) => await ShowToast(toast, duration);
     public async Task ShowAsync(Toast toast, ToastDuration duration) => await ShowToast(toast, duration);
 }

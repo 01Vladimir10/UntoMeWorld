@@ -32,7 +32,7 @@ public static class AuthExtensions
         var isDisabled = claims.GetOrDefault(CustomClaims.IsDisabled)?.Value.ToLower() == "true";
         var name = claims.GetOrDefault(ClaimTypes.Name)?.Value;
         var lastName = claims.GetOrDefault(ClaimTypes.Surname)?.Value;
-        var email = claims.GetOrDefault(ClaimTypes.Email)?.Value;
+        var email = claims.GetOrDefault(ClaimTypes.Upn)?.Value;
         var thirdPartyId = claims.GetOrDefault(ClaimTypes.NameIdentifier)?.Value;
         var issuer = claims.GetOrDefault(ClaimTypes.NameIdentifier)?.Issuer;
         return new AppUser
@@ -48,6 +48,7 @@ public static class AuthExtensions
             AuthProviderUserId = thirdPartyId
         };
     }
+    
 
     public static IEnumerable<Claim?> ToClaims(this Token? token)
         => token == null ? Array.Empty<Claim>() :

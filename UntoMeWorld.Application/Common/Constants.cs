@@ -6,3 +6,7 @@ public static class PermissionSelectionModes
     public const string LeastPermissive = "LeastPermissive";
     public const string MostSpecific = "MostSpecific";
 }
+public static class ServerConstants
+{
+    public const string AuthHeaderToken = "ApiToken";
+}

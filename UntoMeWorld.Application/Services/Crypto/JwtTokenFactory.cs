@@ -27,7 +27,7 @@ public class JwtTokenFactory : IJwtTokenFactory
 
         var descriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity(claims!),
             Expires = expiresOn == default ? DateTime.UtcNow.AddMinutes(_options.DefaultTokenDurationInMinutes) : expiresOn,
             Issuer = Issuer,
             Audience = Audience,

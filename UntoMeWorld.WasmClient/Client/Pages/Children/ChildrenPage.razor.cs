@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Components.Children;
 using UntoMeWorld.WasmClient.Client.Components.Dialogs;
-using UntoMeWorld.WasmClient.Client.Components.Icons;
 using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Components.ListControls;
 using UntoMeWorld.WasmClient.Client.Data.Model;
@@ -12,6 +12,7 @@ using UntoMeWorld.WasmClient.Client.Utils.Extensions;
 
 namespace UntoMeWorld.WasmClient.Client.Pages.Children;
 
+[Authorize]
 public class ChildrenPageBase : ComponentBase
 {
     [Inject] public IChildrenService ChildrenService { get; set; } = null!;
@@ -25,7 +26,7 @@ public class ChildrenPageBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var paginationHelper = new PaginationHelper<Child>(r => ChildrenService.Paginate(r)) { PageSize = 50 };
+        var paginationHelper = new PaginationHelper<Child>(r => ChildrenService.PaginateActive(r)) { PageSize = 200 };
         
         ListController = new ListController<string, Child>(c => c.Id, paginationHelper)
         {
@@ -34,6 +35,7 @@ public class ChildrenPageBase : ComponentBase
                 if (ListView != null)
                     await ListView.Reset();
             }
+            
         };
         await ListController.SetFilter(null);
     }
@@ -58,11 +60,11 @@ public class ChildrenPageBase : ComponentBase
                 {
                     await ChildrenService.Add(child);
                     await ListController?.Refresh()!;
-                    await ToastService.ShowSuccessAsync("Saved successfully!", PhosphorIcons.Check);
+                    await ToastService.Success("Added",$"{child.Name} was successfully added!").ShowAsync();
                 }
                 catch (Exception e)
                 {
-                    await ToastService.ShowErrorAsync($"Error: {e.Message}", PhosphorIcons.XCircle);
+                    await ToastService.Error(e.GetType().Name,e.Message).ShowAsync();
                 }
             }
         }, isCancellable: false);
@@ -78,11 +80,11 @@ public class ChildrenPageBase : ComponentBase
                 {
                     await ChildrenService.Update(child);
                     await ListController?.Refresh()!;
-                    await ToastService.ShowSuccessAsync("Saved successfully!", PhosphorIcons.Check);
+                    await ToastService.Success("Edited",$"changes on {child.Name} were saved successfully!").ShowAsync();
                 }
                 catch (Exception e)
                 {
-                    await ToastService.ShowErrorAsync($"Error: {e.Message}", PhosphorIcons.XCircle);
+                    await ToastService.Error(e.GetType().Name,e.Message).ShowAsync();
                 }
             }
         }, isCancellable: false);
@@ -100,11 +102,11 @@ public class ChildrenPageBase : ComponentBase
                 {
                     await ChildrenService.Delete(child.Id);
                     await ListController?.Refresh()!;
-                    await ToastService.ShowSuccessAsync("Deleted successfully!", PhosphorIcons.Check);
+                    await ToastService.Success("Deleted",$"{child.Name} was successfully deleted").ShowAsync();
                 }
                 catch (Exception e)
                 {
-                    await ToastService.ShowErrorAsync($"Error: {e.Message}", PhosphorIcons.XCircle);
+                    await ToastService.Error(e.GetType().Name,e.Message).ShowAsync();
                 }
             });
     }

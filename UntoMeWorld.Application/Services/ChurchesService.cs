@@ -7,7 +7,7 @@ namespace UntoMeWorld.Application.Services;
 
 public class ChurchesService : GenericService<Church>, IChurchesService
 {
-    public ChurchesService(IChurchesStore store) : base(store)
+    public ChurchesService(IChurchesStore store, ILogsService logsService) : base(store, logsService, "Churches")
     {
     }
 }

@@ -56,9 +56,11 @@ namespace UntoMeWorld.Infrastructure.Stores
             string? orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
         {
+            await Task.Yield();
             var (totalItems, result) =
                 await Collection.QueryByPageAndSort<TModel, TReadModel>(filter, textQuery, orderBy ?? string.Empty, orderDesc, page, pageSize,
                     _pipelineStages);
+            await Task.Delay(1);
             return new PaginationResult<TModel>
             {
                 Result = result.Select(_modelConverter).ToList(),

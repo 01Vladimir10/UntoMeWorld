@@ -1,37 +1,30 @@
 ﻿@page "/reports"
-@using UntoMeWorld.WasmClient.Shared.Model
+@inject IJSRuntime Runtime
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
-@inject HttpClient _client
 
 
-<button @onclick="GenerateToken">Generate token</button>
-<br>
-@if (_loading)
+@foreach (var report in Reports)
 {
-    <p>loading...</p>
+    <iframe
+        src="@report"
+        class="mongo-report">
+    </iframe>
 }
-else
-{
-    if (string.IsNullOrEmpty(_token))
-    {
-        <p>Something went wrong</p>
-    }
-    else
-    {
-        <p>@_token</p>
-    }
-}
+
 
 @code {
-    private bool _loading;
-    private string _token;
 
-    private async Task GenerateToken()
+    private static IEnumerable<string> Reports
+        => new List<string> ()
+        {
+            "https://charts.mongodb.com/charts-project-0-ouxbo/embed/dashboards?id=9b25da01-fe9d-4d52-9b89-78569cc7f20f&theme=light&autoRefresh=true&maxDataAge=300&showTitleAndDesc=true&scalingWidth=fixed&scalingHeight=fixed",
+            "https://charts.mongodb.com/charts-project-0-ouxbo/embed/dashboards?id=7dfceba9-e448-4304-93a4-2368d54b74c7&theme=light&autoRefresh=true&maxDataAge=300&showTitleAndDesc=true&scalingWidth=fixed&scalingHeight=fixed",
+        };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _loading = true;
-        var result = await _client.GetFromJsonAsync<ResponseDto<string>>("api/tokens/add");
-        _loading = false;
-        _token = result?.IsSuccessful ?? false ? result.Data : string.Empty;
+        await base.OnAfterRenderAsync(firstRender);
     }
+
 }
