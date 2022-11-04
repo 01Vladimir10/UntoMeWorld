@@ -1,25 +1,26 @@
 ﻿@typeparam TItem
 @using UntoMeWorld.WasmClient.Client.Utils.Extensions
-@inherits DropDownBase<TItem>
+@using Microsoft.IdentityModel.Tokens
+@inherits BaseDropDown<TItem>
 
-<button class="drop-down@(IsOpened ? " open" : "") @CssClass" type="button" @onclick="OpenDropdown">
+<button class="drop-down@(_isOpened ? " open" : "") @CssClass" type="button" @onclick="OpenDropdown">
     <span class="sort-by__label">
         @Placeholder
     </span>
 
     <span class="drop-down__option">
-        @SelectedOption?.DisplayValue.Truncate(MaxDisplayCharLength)
-        @SelectedOption?.Icon
+        @_selectedOption?.DisplayValue.Truncate(MaxDisplayCharLength)
+        @_selectedOption?.Icon
     </span>
-    @if (SelectedOption != null)
+    @if (_selectedOption != null)
     {
     }
     <PhosphorIcon IconName="PhosphorIcons.CaretDown" CssClass="drop-down__icon"/>
     <ul class="drop-down__options">
         @foreach (var option in Options)
         {
-            <li class="@(SelectedOption != null && option.Value.Equals(SelectedOption.Value) ? "selected" : "")"
-                @onclick="() => OnOptionSelected(option)">
+            <li class="@(_selectedOption != null && option.Value.Equals(_selectedOption.Value) ? "selected" : "")"
+                @onclick="() => OnOptionSelected(option)" @key="option.Value">
                 <span>
                     @option.DisplayValue
                 </span>
@@ -28,3 +29,34 @@
         }
     </ul>
 </button>
+
+@code {
+
+    private bool _isOpened;
+
+    private void OpenDropdown()
+    {
+        _isOpened = !_isOpened;
+    }
+
+    private DropDownOption<TItem>? _selectedOption;
+
+    protected override TItem? CurrentValue
+    {
+        get => _selectedOption == null ? default : _selectedOption.Value;
+        set
+        {
+            if (value == null)
+            {
+                _selectedOption = null;
+                return;
+            }
+            _selectedOption = Options.FirstOrDefault(o => o.Value != null && o.Value.Equals(value));
+        }
+    }
+
+    private async Task OnOptionSelected(DropDownOption<TItem> option)
+    {
+        await UpdateValueAsync(option.Value);
+    }
+}

@@ -1,5 +1,4 @@
 ﻿using UntoMeWorld.Application.Services.Base;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.WasmClient.Client.Data.Model;
@@ -61,15 +60,10 @@ public class GenericViewModel<TModel> where TModel : IModel
             OnError(e);
         }
     }
-    public async Task Filter(string query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-            await UpdateList();
-        Items = (await _service.Query(QueryLanguage.TextSearch(query))).Result;
-    }
     public async Task UpdateList()
     {
-        Items =  (await _service.Query(null, null,SortField.FieldName, SortField.Descendent)).Result;
+        var result = await _service.Query(null, null, SortField.FieldName, SortField.Descendent);
+        Items =  result.Result ?? new List<TModel>();
     }
     public async Task SortElementsBy(string fieldName, bool desc = false)
     {

@@ -4,13 +4,12 @@ namespace UntoMeWorld.WasmClient.Client.Components.Base;
 
 public class DropDownOption<T>
 {
-    public T Value { get; set; }
-    public string DisplayValue { get; set; }
-#nullable enable
+    public T Value { get; set; } = default!;
+    public string DisplayValue { get; set; } = string.Empty;
     public RenderFragment? Icon { get; set; }
-#nullable disable
     public DropDownOption()
     {
+        
     }
 
     public DropDownOption(T value, string displayValue, RenderFragment icon = null)

@@ -34,11 +34,11 @@
             <Virtualize
                 @ref="_virtualize"
                 Context="item"
-                ItemSize="50"
-                OverscanCount="5"
+                ItemSize="60"
+                OverscanCount="15"
                 ItemsProvider="ItemsProvider">
                 <ItemContent>
-                    <div class="list-view-item">
+                    <div class="list-view-item" @key="item.Key">
                         <ExpandableItem>
                             <Header>
                                 @if (ItemTemplate != null)
@@ -81,7 +81,7 @@
 @code {
     private Virtualize<ListItem<TKey, TItem>>? _virtualize;
 
-    public override async Task Reset()
+    public override async Task Refresh()
     {
         await InvokeAsync(async () =>
         {

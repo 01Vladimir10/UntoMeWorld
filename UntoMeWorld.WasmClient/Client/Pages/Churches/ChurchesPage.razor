@@ -65,11 +65,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _listController = new ListController<string, Church>(c => c.Id, new PaginationHelper<Church>(ChurchesService.PaginateActive) { PageSize = 50 })
-        {
-            OnDataRefresh = () => _listView?.Reset()!
-        };
-        await _listController.Refresh();
     }
 
     private static List<ListColumn> Columns => new()

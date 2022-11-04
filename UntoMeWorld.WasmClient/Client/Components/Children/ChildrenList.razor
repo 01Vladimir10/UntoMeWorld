@@ -14,7 +14,6 @@
         var child = cell.Data;
         switch (cell.ColumnIndex)
         {
-            
             case 0:
                 <span class="text subtitle m-0 text-normal">
                     @child?.FullName()
@@ -197,25 +196,42 @@
         </div>
     </div>
     <div class="d-flex align-items-center my-2">
-        <AuthorizedPanel
-            RequiredPermission="PermissionType.Update">
+        @if (!child.IsDeleted)
+        {
+            <AuthorizedPanel
+                RequiredPermission="PermissionType.Update">
 
-            <Button IconName="@PhosphorIcons.PencilLine"
-                    IconWeight="IconWeight.Bold"
-                    Text="Edit"
-                    OnClick="() => OnEditClicked(child)"
-                    CssClass="font-semiBold"
-                    Style="@ButtonStyle.Primary">
-            </Button>
-        </AuthorizedPanel>
-        <AuthorizedPanel RequiredPermission="PermissionType.Delete">
-            <Button IconName="@PhosphorIcons.TrashSimple"
-                    Text="Delete" Style="@ButtonStyle.Danger"
-                    IconWeight="IconWeight.Bold"
-                    OnClick="() => OnDeleteClicked(child)"
-                    CssClass="ms-2 font-semiBold">
-            </Button>
-        </AuthorizedPanel>
+                <Button IconName="@PhosphorIcons.PencilLine"
+                        IconWeight="IconWeight.Bold"
+                        Text="Edit"
+                        OnClick="() => OnEditClicked.InvokeAsync(child)"
+                        CssClass="font-semiBold"
+                        Style="@ButtonStyle.Primary">
+                </Button>
+            </AuthorizedPanel>
+            <AuthorizedPanel RequiredPermission="PermissionType.Delete">
+                <Button IconName="@PhosphorIcons.TrashSimple"
+                        Text="Delete" Style="@ButtonStyle.Danger"
+                        IconWeight="IconWeight.Bold"
+                        OnClick="() => OnDeleteClicked.InvokeAsync(child)"
+                        CssClass="ms-2 font-semiBold">
+                </Button>
+            </AuthorizedPanel>
+        }
+        else
+        {
+            <AuthorizedPanel
+                RequiredPermission="PermissionType.Restore">
+
+                <Button IconName="@PhosphorIcons.ArrowCounterClockwise"
+                        IconWeight="IconWeight.Bold"
+                        Text="Restore"
+                        OnClick="() => OnRestoreClicked.InvokeAsync(child)"
+                        CssClass="font-semiBold"
+                        Style="@ButtonStyle.Primary">
+                </Button>
+            </AuthorizedPanel>
+        }
     </div>
 </ExpandableItemContentTemplate>
 
@@ -235,13 +251,15 @@
     private ListView<string, Child> _listView = new();
 
     [Parameter]
-    public Action<Child> OnEditClicked { get; set; } = _ => { };
-
-        [Parameter]
-    public Action<Child> OnDeleteClicked { get; set; } = _ => { };
+    public EventCallback<Child> OnEditClicked { get; set; } = EventCallback<Child>.Empty;
 
     [Parameter]
-    public ItemsProviderDelegate<ListItem<string, Child>>? ItemsProvider { get; set; }
+    public EventCallback<Child> OnDeleteClicked { get; set; } = EventCallback<Child>.Empty;
+    [Parameter]
+    public EventCallback<Child> OnRestoreClicked { get; set; } = EventCallback<Child>.Empty;
 
-    public Task Reset() => _listView.Reset();
+    [Parameter]
+    public ItemsProviderDelegate<ListItem<string, Child>> ItemsProvider { get; set; } = default!;
+
+    public Task Refresh() => _listView.Refresh();
 }

@@ -1,42 +1,6 @@
-﻿using UntoMeWorld.WasmClient.Client.Components.Base;
+using UntoMeWorld.WasmClient.Client.Components.Base;
 
 namespace UntoMeWorld.WasmClient.Client.Components.ListControls;
-
-public class DropDownBase<T> : BaseDropDown<T>
-{
-    protected bool IsOpened { get; private set; }
-
-    private bool _isFirstTime = true;
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        if (!_isFirstTime)
-            return;
-        
-        if (SelectedOption == null && DefaultOption != null)
-            SelectedOption = Options.FirstOrDefault(o => o.Value?.Equals(DefaultOption) ?? false) ?? Options.FirstOrDefault();
-        
-        _isFirstTime = false;
-    }
-
-    protected void OpenDropdown()
-    {
-        IsOpened = !IsOpened;
-    }
-
-    protected async Task OnOptionSelected(DropDownOption<T> option)
-    {
-        await InvokeAsync(() =>
-        {
-            SelectedOption = option;
-            SelectedValue = option.Value;
-            OnSelectionChanged?.Invoke(option.Value);
-            OnSelectionChangedAsync?.Invoke(option.Value);
-        });
-    }
-}
-
 public static class DropDowns
 {
     public static readonly IReadOnlyList<DropDownOption<bool>> Boolean = new List<DropDownOption<bool>>

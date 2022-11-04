@@ -1,13 +1,14 @@
 ﻿@inherits SearchViewBase
 
 <div class="search-view @CssClass">
-    
+
     <i class="search-view__icon ph-magnifying-glass">
     </i>
     <input
-        @bind="Query"
-        @onkeydown="OnInputKeyDown"
-        @onfocusin="OnSearchFocusIn"
+        @bind="Value"
+        @bind:event="onchange"
+        @onfocusin="() => IsSearching = true"
+        @onfocusout="() => IsSearching = true"
         @oninput="OnQueryChanged"
         type="text"
         class="search-view__input"
@@ -24,7 +25,7 @@
             @foreach (var suggestion in Suggestions)
             {
                 <li class="search-view-suggestion" @onclick="() => OnSuggestionClicked(suggestion.Suggestion)">
-                    <h5 class="search-view-suggestion__text">@((MarkupString) (suggestion.HtmlSuggestion ?? ""))</h5>
+                    <h5 class="search-view-suggestion__text">@((MarkupString)(suggestion.HtmlSuggestion ?? ""))</h5>
                     @if (suggestion.IsFromHistory)
                     {
                         <i class="search-view-suggestion__icon ph-clock-counter-clockwise">

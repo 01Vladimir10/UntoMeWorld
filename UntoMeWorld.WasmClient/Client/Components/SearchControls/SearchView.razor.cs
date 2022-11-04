@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 
 namespace UntoMeWorld.WasmClient.Client.Components.SearchControls;
@@ -14,47 +13,22 @@ public class SearchViewBase : BaseSearchView
 
     protected async Task OnSuggestionClicked(string? suggestion)
     {
-        Query = suggestion;
-        await FireSearch();
+        if (string.IsNullOrEmpty(suggestion))
+            return;
+        await UpdateValueAsync(suggestion);
     }
 
-    protected async Task OnClearSearch()
+    protected Task OnClearSearch()
     {
         IsSearching = false;
-        Query = string.Empty;
-        await OnSearch(string.Empty);
+        return UpdateValueAsync(string.Empty);
     }
 
     protected async Task OnQueryChanged(ChangeEventArgs args)
     {
-        IsSearching = true;
         var query = args.Value?.ToString() ?? string.Empty;
-        Query = query;
         if (EnableSuggestions)
-            await UpdateSuggestions(Query);
-    }
-
-    private async Task FireSearch()
-    {
-        if (Query?.Length >= MinQueryLength)
-        {
-            IsSearching = false;
-            await OnSearch(Query);
-            if (EnableSuggestions)
-                await SaveToHistory(Query);
-        }
-    }
-
-    protected void OnSearchFocusIn()
-    {
-        IsSearching = true;
-        StateHasChanged();
-    }
-
-    protected async Task OnInputKeyDown(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-            await FireSearch();
+            await UpdateSuggestions(query);
     }
 
     private async Task UpdateSuggestions(string query)
@@ -77,7 +51,6 @@ public class SearchViewBase : BaseSearchView
                     : s.Suggestion?.Replace(query, $"<b>{query}</b>", StringComparison.InvariantCultureIgnoreCase),
                 Id = i++, IsFromHistory = s.IsFromHistory
             }).ToList();
-        Query = query;
     }
 
 
@@ -115,6 +88,17 @@ public class SearchViewBase : BaseSearchView
                 IsFromHistory = true
             })
             .ToList();
+    }
+
+    protected override bool AreEqual(string? currentValue, string? newValue)
+        => string.Equals(currentValue, newValue, StringComparison.OrdinalIgnoreCase);
+    protected override async Task UpdateValueAsync(string? value)
+    {
+        if (EnableSuggestions && !string.IsNullOrEmpty(value))
+        {
+            await SaveToHistory(value);
+        }
+        await base.UpdateValueAsync(value);
     }
 }
 

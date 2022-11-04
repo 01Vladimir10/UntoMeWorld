@@ -30,7 +30,7 @@
   transform: translateY(100%);
   transition: all 500ms ease;
   background-color: var(--toast-on-color);
-  border: 2px solid var(--toast-color);
+  border: 1px solid var(--toast-color);
   
 
   &.show {

@@ -1,0 +1,20 @@
+
+@if (RenderHeader)
+{
+    <th>
+        
+    </th>
+}
+
+@code {
+
+    [Parameter, EditorRequired]
+    public string Header { get; set; } = string.Empty;
+    
+    [CascadingParameter]
+    public bool RenderHeader { get; set; }
+
+    [Parameter]
+    public string ColumnClass { get; set; } = string.Empty;
+
+}

@@ -10,7 +10,7 @@ public abstract class BaseListView<TKey, TItem> : ComponentBase, IComponent
     public bool IsEmpty { get; set; }
     
     public bool IsMultiSelecting { get; set; }
-    [Parameter] public ItemsProviderDelegate<ListItem<TKey, TItem>>? ItemsProvider { get; set; }
+    [Parameter] public ItemsProviderDelegate<ListItem<TKey, TItem>> ItemsProvider { get; set; } = default!;
 
     [Parameter] public List<ListColumn> Columns { get; set; } = new();
     
@@ -18,9 +18,8 @@ public abstract class BaseListView<TKey, TItem> : ComponentBase, IComponent
     [Parameter] public RenderFragment? EmptyTemplate { get; set; }
     [Parameter] public RenderFragment? LoadingTemplate { get; set; }
     [Parameter] public RenderFragment<ListCell<TKey, TItem>>? ItemTemplate { get; set; }
-    
     [Parameter] public RenderFragment<TItem>? ExpandableItemContentTemplate { get; set; }
-    public abstract Task Reset();
+    public abstract Task Refresh();
 }
 
 public class ListColumn
