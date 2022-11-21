@@ -3,10 +3,11 @@ using UntoMeWorld.Application.Extensions;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
 using UntoMeWorld.Application.Stores;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.WasmClient.Client.Utils.Extensions;
 using UntoMeWorld.WasmClient.Shared.DTOs;
 using UntoMeWorld.WasmClient.Shared.Model;
-using static UntoMeWorld.Domain.Common.QueryLanguage;
+using static UntoMeWorld.Domain.Query.QueryLanguage;
 
 namespace UntoMeWorld.WasmClient.Client.Data.Stores;
 

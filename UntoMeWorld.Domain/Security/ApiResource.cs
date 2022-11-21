@@ -9,6 +9,7 @@
         Tokens,
         Wildcard,
         Settings,
-        Unknown
+        Unknown,
+        LabelReports
     }
 }

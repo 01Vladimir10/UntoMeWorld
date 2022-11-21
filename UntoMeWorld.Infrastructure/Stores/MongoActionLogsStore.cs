@@ -1,8 +1,8 @@
 using MongoDB.Driver;
 using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Stores;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.Infrastructure.Helpers;
 using UntoMeWorld.Infrastructure.Services;
 

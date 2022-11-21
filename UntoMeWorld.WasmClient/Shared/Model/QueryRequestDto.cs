@@ -1,5 +1,6 @@
 ﻿using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Errors;
+using UntoMeWorld.Domain.Query;
 
 namespace UntoMeWorld.WasmClient.Shared.Model;
 

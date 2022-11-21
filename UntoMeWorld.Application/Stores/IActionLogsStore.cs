@@ -1,6 +1,7 @@
 using UntoMeWorld.Application.Common;
 using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model;
+using UntoMeWorld.Domain.Query;
 
 namespace UntoMeWorld.Application.Stores;
 

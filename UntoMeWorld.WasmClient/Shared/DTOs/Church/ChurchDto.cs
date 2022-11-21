@@ -22,7 +22,6 @@ public class ChurchDto : IDto<Domain.Model.Church>
             Address = Address,
             Pastor = Pastor
         };
-
     public virtual ChurchDto From(Domain.Model.Church church)
     {
         IsActive = church.IsActive;

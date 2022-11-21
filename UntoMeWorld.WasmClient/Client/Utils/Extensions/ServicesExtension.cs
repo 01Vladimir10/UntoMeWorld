@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Components.Web.Virtualization;
 using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model.Abstractions;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.WasmClient.Shared.Model;
-using static UntoMeWorld.Domain.Common.QueryLanguage;
+using static UntoMeWorld.Domain.Query.QueryLanguage;
 
 namespace UntoMeWorld.WasmClient.Client.Utils.Extensions;
 

@@ -1,5 +1,6 @@
 ﻿using UntoMeWorld.Application.Common;
 using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.WasmClient.Client.Data.Model;
 using UntoMeWorld.WasmClient.Shared.Model;
 

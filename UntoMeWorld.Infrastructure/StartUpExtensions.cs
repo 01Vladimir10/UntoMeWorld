@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Stores;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Infrastructure.Services;
 using UntoMeWorld.Infrastructure.Stores;
 
@@ -22,8 +22,8 @@ public static class StartUpExtensions
             services.AddTransient<ITokenStore, MongoTokensStore>();
             services.AddTransient<IRoleStore, MongoRolesStore>();
             services.AddTransient<IUserStore, MongoUsersStore>();
+            services.AddTransient<ILabelReportsStore, MongoLabelReportStore>();
             services.AddTransient<IActionLogsStore, MongoActionLogsStore>();
-            Debug.WriteLine("Mongodb set up was successful!");
         }
         catch (Exception e)
         {

@@ -1,6 +1,7 @@
 ﻿using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.WasmClient.Client.Data.Model;
 using UntoMeWorld.WasmClient.Client.Utils.UIHelpers;
 

@@ -1,4 +1,4 @@
-﻿namespace UntoMeWorld.Domain.Common
+﻿namespace UntoMeWorld.Domain.Query
 {
     public static class QueryOperator
     {

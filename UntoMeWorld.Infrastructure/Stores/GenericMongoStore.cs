@@ -2,8 +2,8 @@
 using MongoDB.Driver.Linq;
 using UntoMeWorld.Application.Common;
 using UntoMeWorld.Application.Stores;
-using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Model.Abstractions;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.Infrastructure.Helpers;
 using UntoMeWorld.Infrastructure.Services;
 
@@ -70,13 +70,13 @@ namespace UntoMeWorld.Infrastructure.Stores
             };
         }
 
-        public async Task<TModel> AddOne(TModel church)
+        public virtual async Task<TModel> AddOne(TModel church)
         {
             await Collection.InsertOneAsync(church);
             return church;
         }
 
-        public async Task<TModel> UpdateOne(TModel data)
+        public virtual async Task<TModel> UpdateOne(TModel data)
         {
             data.LastUpdatedOn = DateTime.UtcNow;
             await Collection.ReplaceOneAsync(Builders<TModel>.Filter.Eq(c => c.Id, data.Id), data);
@@ -97,13 +97,13 @@ namespace UntoMeWorld.Infrastructure.Stores
                     .Set(m => m.LastUpdatedOn, DateTime.UtcNow));
 
 
-        public async Task<IEnumerable<TModel>> AddMany(List<TModel> data)
+        public virtual async Task<IEnumerable<TModel>> AddMany(List<TModel> data)
         {
             await Collection.InsertManyAsync(data);
             return data;
         }
 
-        public async Task<IEnumerable<TModel>> UpdateMany(List<TModel> data)
+        public virtual async Task<IEnumerable<TModel>> UpdateMany(List<TModel> data)
         {
             var tasks =
                 from item in data

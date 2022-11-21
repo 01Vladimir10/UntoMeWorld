@@ -1,6 +1,7 @@
-﻿using UntoMeWorld.Domain.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace UntoMeWorld.Application.Common
+namespace UntoMeWorld.Domain.Query
 {
     public class QueryFilter
     {

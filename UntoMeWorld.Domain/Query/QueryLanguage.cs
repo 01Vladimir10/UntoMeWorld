@@ -1,6 +1,8 @@
-﻿using UntoMeWorld.Application.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace UntoMeWorld.Domain.Common
+namespace UntoMeWorld.Domain.Query
 {
     public static class QueryLanguage
     {

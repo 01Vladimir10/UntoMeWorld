@@ -6,6 +6,7 @@ using UntoMeWorld.Domain.Common;
 using UntoMeWorld.Domain.Errors;
 using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Domain.Model.Abstractions;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.Domain.Validation;
 
 namespace UntoMeWorld.Application.Services.Abstractions;

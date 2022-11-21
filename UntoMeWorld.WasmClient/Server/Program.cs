@@ -30,8 +30,10 @@ try
     builder.Services.AddTransient<IUserService, AppUsersService>();
     builder.Services.AddTransient<IRolesService, RolesService>();
     builder.Services.AddTransient<ILogsService, LogsService>();
+    builder.Services.AddTransient<ILabelReportsService, LabelReportsService>();
     builder.Services.AddSwaggerGen(c =>
     {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "UntoMe World", Version = "v1" });
         c.AddServer(new OpenApiServer
         {
             Description = "Local host",
@@ -61,11 +63,11 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseWebAssemblyDebugging();
+        app.UseDeveloperExceptionPage();
     }
     else
     {
         app.UseExceptionHandler("/Error");
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
     }
 
@@ -75,20 +77,13 @@ try
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
         });
-        //app.UseHttpsRedirection();
     }
-    
     
     app.UseBlazorFrameworkFiles();
     app.UseStaticFiles();
-
     app.UseRouting();
-
     app.UseAuthentication();
-    
     app.UseAuthorization();
-
-
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UntoMeWorld API V1"));
     app.MapSwagger();

@@ -1,5 +1,6 @@
 ﻿using UntoMeWorld.Application.Common;
 using UntoMeWorld.Domain.Common;
+using UntoMeWorld.Domain.Query;
 
 namespace UntoMeWorld.Application.Services.Base;
 

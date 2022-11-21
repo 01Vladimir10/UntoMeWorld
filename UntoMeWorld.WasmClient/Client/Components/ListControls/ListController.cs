@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using UntoMeWorld.Application.Common;
+using UntoMeWorld.Domain.Query;
 using UntoMeWorld.WasmClient.Client.Components.Base;
 using UntoMeWorld.WasmClient.Client.Data.Model;
 

@@ -1,4 +1,4 @@
-﻿namespace UntoMeWorld.Domain.Common
+﻿namespace UntoMeWorld.Application.Common
 {
     public static class EnvironmentVariables
     {
