@@ -19,8 +19,9 @@ public static class HttpExtensions
     public static Task<HttpResponseMessage> PatchAsJsonAsync(this HttpClient client, string url, object? body)
         => client.SendAsync(new HttpRequestMessage
         {
-            Content = body == null ? null : 
-                new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8,"application/json"),
+            Content = body == null
+                ? null
+                : new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"),
             Method = HttpMethod.Patch,
             RequestUri = new Uri(url)
         });
@@ -40,15 +41,14 @@ public static class HttpExtensions
 
     private static Task<T?> ExecuteRequest<T>(HttpClient client, HttpMethod method, string url, object? body = null)
     {
-        return method.Method.ToUpper() switch
+        var request = new HttpRequestMessage { Method = method };
+        request.RequestUri = new Uri(url, UriKind.Relative);
+        if (body != null)
         {
-            "DELETE" => InterpretResponse<T>(client.DeleteAsync(url)),
-            "HEAD" => InterpretResponse<T>(client.SendHeadAsync(url)),
-            "POST" => InterpretResponse<T>(client.PostAsJsonAsync(url, body)),
-            "PATCH" => InterpretResponse<T>(client.PatchAsJsonAsync(url, body)),
-            "PUT" => InterpretResponse<T>(client.PutAsJsonAsync(url, body)),
-            _ => InterpretResponse<T>(client.GetAsync(url))
-        };
+            request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+        }
+
+        return InterpretResponse<T>(client.SendAsync(request));
     }
 
     private static async Task<TResult?> InterpretResponse<TResult>(Task<HttpResponseMessage> responseTask)
@@ -56,7 +56,7 @@ public static class HttpExtensions
         var response = await responseTask;
 
         if (response.IsSuccessStatusCode)
-            return await response.Content.ReadFromJsonAsync<TResult>();
+            return JsonConvert.DeserializeObject<TResult>(await response.Content.ReadAsStringAsync());
 
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
             throw new UnauthorizedAccessException("You do not have sufficient permissions to execute this task");

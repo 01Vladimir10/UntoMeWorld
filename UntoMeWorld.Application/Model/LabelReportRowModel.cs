@@ -1,7 +1,7 @@
 ﻿namespace UntoMeWorld.Application.Model;
 
-public class LabelReportRowModel<T>
+public class LabelReportRowModel
 {
-    public T Item { get; set; } = default!;
+    public dynamic Item { get; set; } = default!;
     public int Index { get; set; }
 }

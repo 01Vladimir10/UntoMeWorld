@@ -1,0 +1,75 @@
+@page "/reports"
+
+@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.Application.Services.Base
+@using UntoMeWorld.Domain.Model.Abstractions
+@using UntoMeWorld.Domain.Query
+@using UntoMeWorld.WasmClient.Client.Components.Base.Buttons
+@inject ILabelReportsService ReportsService
+@inject NavigationManager Navigation
+
+<div class="list-layout h-100">
+    <div class="list-layout__body h-100">
+            <div class="list-view">
+                <div class="list-view__header">
+                    <div class="d-flex align-items-center">
+        
+                        <div class="col-4 list-header">
+                            Name
+                        </div>
+                        <div class="col-4 list-header">
+                            Collection
+                        </div>
+                    </div>
+                </div>
+                <div class="list-vew__body">
+                    @foreach (var report in _reports)
+                    {
+                        <div class="list-view-item" @key="report.Id">
+                            <div class="d-flex align-items-center">
+                                <div class="col-4">
+                                    @report.Name
+                                </div>
+                                <div class="col-4">
+                                    @report.Collection
+                                </div>
+                                <div class="col-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <Button
+                                            Style="@ButtonStyle.Flat"
+                                            IconName="@PhosphorIcons.Pen" Text="Edit"
+                                            OnClick="() => Edit(report.Id)">
+                                        </Button>
+                                        <Button
+                                            Style="@ButtonStyle.Primary"
+                                            IconName="@PhosphorIcons.Play" Text="Run">
+                                        </Button>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                    }
+        
+                </div>
+            </div>
+
+    </div>
+</div>
+
+@code {
+    private List<LabelReport> _reports = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var result = await ReportsService.Query(pageSize: 100, page: 1, orderBy: nameof(LabelReport.Name), orderDesc: true, filter: QueryLanguage.Eq(nameof(IRecyclableModel.IsDeleted), false));
+        _reports = result.Result ?? new List<LabelReport>();
+    }
+
+    private void Edit(string reportId)
+    {
+        Navigation.NavigateTo($"/reports/{reportId}");
+    }
+
+}

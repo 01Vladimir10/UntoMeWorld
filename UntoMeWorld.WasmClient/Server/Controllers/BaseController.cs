@@ -6,7 +6,7 @@ namespace UntoMeWorld.WasmClient.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public abstract class BaseController : ControllerBase
+public abstract class BaseController : Controller
 {
     protected async Task<IActionResult> ServiceCallResult<TResponse>(
         Func<Task<TResponse>> func)

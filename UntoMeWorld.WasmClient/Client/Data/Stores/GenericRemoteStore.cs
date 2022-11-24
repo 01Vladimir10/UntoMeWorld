@@ -27,10 +27,10 @@ public abstract class GenericRemoteStore<TModel, TAddDto, TUpdateDto> : IStore<T
         Paths = new ServerActionsPaths(EndPoint);
     }
 
-    public async Task<IEnumerable<TModel>> All()
+    public async Task<IEnumerable<TModel>?> All()
         => await Query(Ne(nameof(IRecyclableModel.IsDeleted), true)).ContinueWith(t => t.Result.Result);
 
-    public async Task<IEnumerable<TModel>> All(string query)
+    public async Task<IEnumerable<TModel>?> All(string query)
         => string.IsNullOrEmpty(query)
             ? await All()
             : await Query(TextSearch(query)).ContinueWith(t => t.Result.Result);

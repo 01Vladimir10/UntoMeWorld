@@ -37,7 +37,7 @@ public static class ObservableExtensions
         return propertyInfo;
     }
 
-    public static IObservable<TProperty> OnPropertyChanged<T, TProperty>(this T source,
+    public static IObservable<TProperty> OnPropChanged<T, TProperty>(this T source,
         Expression<Func<T, TProperty>> property)
         where T : BaseViewModel
     {
@@ -49,9 +49,9 @@ public static class ObservableExtensions
             .Where(e => e.EventArgs.PropertyName == propertyName)
             .Select(_ => propertySelector(source));
     }
-    public static IObservable<T> OnPropertiesChanged<T>(
+    public static IObservable<T> OnPropsChanged<T>(
         this T source,
-        params Expression<Func<T, object>>[] properties
+        params Expression<Func<T, object?>>[] properties
     )
         where T : BaseViewModel
     {

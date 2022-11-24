@@ -1,0 +1,47 @@
+@page "/reports/{ReportId}"
+@using UntoMeWorld.WasmClient.Client.ViewModels
+@using UntoMeWorld.WasmClient.Client.Utils.Extensions
+@inject LabelReportEditorViewModel ViewModel
+
+<div class="report-editor">
+    <div class="report-editor__grid">
+        <div class="report-editor__html" data-language="css">
+            <textarea @oninput="e => ViewModel.StyleSheet = e.Value?.ToString() ?? string.Empty">@ViewModel.StyleSheet</textarea>
+        </div>
+        <div class="report-editor__html" data-language="html">
+            <textarea @oninput="e => ViewModel.Template = e.Value?.ToString() ?? string.Empty">@ViewModel.Template</textarea>
+        </div>
+        <div class="report-editor__preview-wrapper">
+            <style scoped="scoped">
+                @((MarkupString)ViewModel.StyleSheet)                
+            </style>
+            <div class="report-editor-preview">
+                <ul class="report">
+                    <li class="report-item">
+                        @((MarkupString)ViewModel.RenderedTemplate)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="report-editor__header">
+        <Button Text="Save Changes"
+                IconName="@PhosphorIcons.FloppyDisk"
+                OnClick="() => ViewModel.SaveChangesAsync()">
+        </Button>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string ReportId { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ViewModel.Initialize(ReportId);
+        ViewModel.OnPropChanged(p => p.Report).Subscribe(() => InvokeAsync(StateHasChanged));
+    }
+
+}

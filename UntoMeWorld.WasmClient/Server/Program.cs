@@ -1,3 +1,4 @@
+using DotLiquid;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Caching.Memory;
@@ -6,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using UntoMeWorld.Application.Services;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Application.Services.Options;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.Infrastructure;
 using UntoMeWorld.WasmClient.Server.Common.Swagger;
 using UntoMeWorld.WasmClient.Server.Security.Authentication;
@@ -47,6 +49,9 @@ try
         c.SupportNonNullableReferenceTypes();
         c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
     });
+    Template.RegisterSafeType(typeof(LabelReport), typeof(LabelReport).GetProperties().Select(p => p.Name).ToArray());
+    Template.RegisterSafeType(typeof(Church), typeof(Church).GetProperties().Select(p => p.Name).ToArray());
+    Template.RegisterSafeType(typeof(Child), typeof(Child).GetProperties().Select(p => p.Name).ToArray());
 
     builder.Services.Configure<RolesServiceOptions>(builder.Configuration.GetSection("Services")
         .GetSection("RolesService"));

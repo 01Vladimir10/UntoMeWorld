@@ -59,6 +59,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\styles\_text.scss" />
     <_ContentIncludedByDefault Remove="wwwroot\css\_utils.scss" />
     <_ContentIncludedByDefault Remove="wwwroot\css\_variables.scss" />
+    <_ContentIncludedByDefault Remove="Pages\Reports\ReportsPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
