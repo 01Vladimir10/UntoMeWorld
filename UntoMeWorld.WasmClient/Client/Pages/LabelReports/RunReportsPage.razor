@@ -1,0 +1,71 @@
+@page "/reports/{ReportId}/run"
+@using System.Dynamic
+@using System.Text
+@using DotLiquid
+@using UntoMeWorld.Application.Common
+@using UntoMeWorld.Application.Services.Base
+@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Shared.Model
+@using UntoMeWorld.WasmClient.Client.Utils.Extensions
+@inject HttpClient Client
+@inject ILabelReportsService ReportsService
+
+@if (_report != null)
+{
+    <style>
+        @_report.StyleSheet
+    </style>
+    <div>
+        <ul class="report">
+            @((MarkupString)_body)
+        </ul>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string ReportId { get; set; } = string.Empty;
+
+    private string _body = string.Empty;
+    private LabelReport? _report;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _report = await ReportsService.Get(ReportId);
+        if (_report == null)
+            return;
+
+        var result = await Client.PostJsonAsync<PaginationResult<ExpandoObject>>(
+            $"/api/{_report.Collection}/query",
+            new QueryRequestDto
+            {
+                Filter = _report.Query,
+                OrderBy = _report.OrderBy,
+                OrderDesc = _report.OrderDesc,
+                Page = 1,
+                PageSize = 1_000,
+                TextQuery = null
+            });
+        if (result?.Result is null) return;
+        var builder = new StringBuilder();
+        var template = Template
+            .Parse($"<li>{_report.Template}</li>");
+
+        for (var i = 0; i < result.Result.Count; i++)
+        {
+            builder.Append(
+                template.Render(
+                    Hash.FromAnonymousObject(
+                        new
+                        {
+                            index = i,
+                            item = result.Result[i]
+                        })))
+                ;
+        }
+        _body = builder.ToString();
+    }
+
+}

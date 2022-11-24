@@ -1,0 +1,82 @@
+﻿@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.Utils.Extensions
+@model System.Collections.Generic.List<UntoMeWorld.Domain.Model.Child>
+<link rel="stylesheet" href="/content/css/styles.css"/>
+<link rel="stylesheet" href="/content/css/bootstrap/bootstrap.min.css">
+
+<style>
+    table tbody tr:nth-child(odd) td {
+        background-color: var(--gray-40);
+    }
+    table {
+        border-collapse: collapse;
+        font-size: .875rem;
+    }
+    table td,
+    table th {
+        padding: .25em .5em;
+    }
+    table th {
+        background-color: var(--gray-80);
+        color:  var(--surface-color);
+        border: 1px solid var(--gray-80);
+    }
+    table td {
+        border: 1px solid var(--gray-80);
+        color:  var(--primary-text-color);
+        font-weight: 500;
+    }
+    @@media print{ @@page {size: landscape} }
+    
+</style>
+
+<div class="d-flex align-items-center flex-column">
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="text-start">
+                Name
+            </th>
+            <th class="text-start">
+                Church
+            </th>
+            <th class="text-start">
+                Gender
+            </th>
+            <th class="text-start">
+                Grade
+            </th>
+            <th class="text-start">
+                Shoe
+            </th>
+            <th>
+               Packed 
+            </th>
+            <th>
+               Delivered 
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @{
+            var index = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-start">@(index++)</td>
+                <td class="text-start">
+                    @item.Name.Truncate(40)
+                </td>
+                <td class="text-start">@item.Church.Name.Truncate(30)</td>
+                <td class="text-start">@(item.Gender == Gender.Male ? "Boy" : "Girl")</td>
+                <td class="text-start">@(item.Grade >= 7 ? "HS" : "EL")</td>
+                <td class="text-start">@(item.ShoeSize)</td>
+                <td class="text-start"></td>
+                <td class="text-start"></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

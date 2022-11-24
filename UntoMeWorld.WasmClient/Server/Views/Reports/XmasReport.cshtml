@@ -1,0 +1,126 @@
+﻿@using UntoMeWorld.Domain.Model
+@using UntoMeWorld.WasmClient.Client.Utils.Extensions
+@model System.Collections.Generic.List<UntoMeWorld.Domain.Model.Child>
+<link rel="stylesheet" href="/content/css/styles.css"/>
+<link rel="stylesheet" href="/content/css/bootstrap/bootstrap.min.css">
+
+<style>
+    .xmas-report {
+    	display: flex;
+    	flex-direction: column;
+    	justify-content: center;
+    	align-items: stretch;
+    	padding: .5em;
+    	text-align: center;
+    	width: 100%;
+    	position: relative;
+        border-top: 1px dotted var(--gray-60);
+    	gap: .25em;
+        height: var(--item-height);
+        min-height: var(--item-height);
+        max-height: var(--item-height);
+    }
+    
+    .xmas-report .xmas-report__index {
+    	position: absolute;
+    	top: .5em;
+    	right: .5em;
+    	font-size: 1.2rem;
+    	font-weight: 500;
+    	color: var(--gray-70);
+    }
+    
+    .xmas-report .xmas-report__name {
+    	font-weight: 700;
+    	font-size: 2.2rem;
+    }
+    
+    .xmas-report .xmas-report__church {
+    	font-weight: 600;
+    	font-size: 1.875rem;
+    }
+    
+    .xmas-report table {
+    	width: auto;
+    	align-self: center;
+    	border-collapse: separate;
+    	border-spacing: 0;
+    }
+    
+    .xmas-report table th {
+    	font-weight: 600;
+    	color: var(--gray-80);
+    	background-color: var(--gray-35);
+            text-align: center !important;
+    	font-size: 1.2rem;
+    }
+    
+    .xmas-report table th, .xmas-report table td {
+    	padding: .125rem .5rem;
+            text-align: center !important;
+    }
+    
+    .xmas-report table td {
+    	width: 1px !important;
+    	white-space: nowrap;
+    	font-weight: 500;
+    	font-size: 1.4rem;
+    }
+    table th, 
+    table td {
+        border: 1px solid #2222;
+    }
+</style>
+
+<div class="d-flex flex-column align-items-center">
+    <ul class="report" style="--items-per-page: 5">
+        @for (var index = 0; index < Model.Count; index++)
+        {
+            var child = Model[index];
+            var title = $"{child.Name} {child.Lastname}";
+
+            <li class="report-item">
+
+                <div class="xmas-report">
+                    <div class="xmas-report__index">
+                        @(index + 1)
+                    </div>
+                    <div class="xmas-report__name">
+                        @title.Truncate(40)
+                    </div>
+                    <div class="xmas-report__church">
+                        @child.Church.Name.Truncate(30)
+                    </div>
+                    <table class="xmas-report__sizes">
+                        <thead>
+                        <tr>
+                            <th>
+                                Gender
+                            </th>
+                            <th>
+                                Grade
+                            </th>
+                            <th>
+                                Shoe
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                 @(child.Gender == Gender.Male ? "Boy" : "Girl")
+                            </td>
+                            <td>
+                                @(child.Grade >= 7 ? "HS" : "EL")
+                            </td>
+                            <td>
+                                @child.ShoeSize
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

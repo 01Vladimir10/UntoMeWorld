@@ -27,7 +27,8 @@
   --gray-50: #6f757d;
   --gray-45: #dce0e5;
   --gray-40: #E7E8EA;
-  --gray-35: #EZE5EA;
+  --gray-35: rgba(231, 232, 234, 0.76);
+  --gray-30: rgba(231, 232, 234, 0.16);
 
   --error-color: #cb0606;
   --on-error-color: white;
@@ -60,7 +61,7 @@ body, * {
 @import "components/dialog";
 @import "components/forms";
 @import "components/toasts";
-
+@import "components/reportEditor";
 
 @import "layouts/root";
 @import "layouts/appLayout";

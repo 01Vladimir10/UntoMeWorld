@@ -23,7 +23,8 @@
   --gray-50: #6f757d;
   --gray-45: #dce0e5;
   --gray-40: #E7E8EA;
-  --gray-35: #EZE5EA;
+  --gray-35: rgba(231, 232, 234, 0.76);
+  --gray-30: rgba(231, 232, 234, 0.16);
   --error-color: #cb0606;
   --on-error-color: white;
   --success-color: #4D8802;
@@ -925,6 +926,92 @@ h1, h2, h3, h4, h5 {
   --toast-on-color: var(--on-success-color);
 }
 
+.report-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem;
+  padding: 1rem;
+}
+.report-editor__header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+.report-editor__grid {
+  flex: 1 1 90%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 2fr;
+  gap: 1rem;
+}
+.report-editor__preview-wrapper {
+  grid-column: 1/span 2;
+  padding: 1em;
+}
+.report-editor-preview {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.report-editor-preview .report {
+  box-shadow: 0 0 0.5rem var(--shadow-color-2);
+}
+.report-editor__stylesheet, .report-editor__html {
+  grid-row: 2;
+  padding: 0.5em;
+  font-family: Monospace, "Lucida Console", sans-serif;
+  background-color: var(--controls-backround-color);
+  border-radius: 0.5em;
+}
+.report-editor__stylesheet textarea, .report-editor__html textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  resize: none;
+  background-color: transparent;
+}
+.report-editor__stylesheet textarea:hover, .report-editor__stylesheet textarea:active, .report-editor__stylesheet textarea:focus, .report-editor__html textarea:hover, .report-editor__html textarea:active, .report-editor__html textarea:focus {
+  outline: none;
+  background-color: transparent;
+}
+
+.report {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  size: letter;
+}
+
+ul.report {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  --vertical-margin: 0.4in;
+  --horizontal-margin: 2ch;
+  --page-height: calc(297mm - 0.8in);
+  width: 8.5in;
+  height: 100%;
+  max-width: 100%;
+  list-style: none;
+  padding: 0;
+  --item-height: calc(var(--page-height) / var(--items-per-page));
+}
+ul.report > li {
+  height: var(--item-height);
+  min-height: var(--item-height);
+  max-height: var(--item-height);
+  width: 100%;
+  display: flex;
+}
+
+@page {
+  size: A4;
+  margin: 0.4in 0.25in;
+}
 body {
   padding: 0;
   margin: 0;

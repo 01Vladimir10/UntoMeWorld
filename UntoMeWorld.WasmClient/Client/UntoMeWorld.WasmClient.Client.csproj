@@ -9,10 +9,12 @@
   
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="DotLiquid" Version="2.2.656" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +59,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\styles\_text.scss" />
     <_ContentIncludedByDefault Remove="wwwroot\css\_utils.scss" />
     <_ContentIncludedByDefault Remove="wwwroot\css\_variables.scss" />
+    <_ContentIncludedByDefault Remove="Pages\Reports\ReportsPage.razor" />
   </ItemGroup>
 
   <ItemGroup>

@@ -25,7 +25,7 @@ namespace UntoMeWorld.Infrastructure.Stores
             Collection = service.GetCollection<TModel>(collection);
         }
 
-        public async Task<IEnumerable<TModel>> All()
+        public async Task<IEnumerable<TModel>?> All()
         {
             try
             {
@@ -39,7 +39,7 @@ namespace UntoMeWorld.Infrastructure.Stores
             }
         }
 
-        public async Task<IEnumerable<TModel>> All(string query)
+        public async Task<IEnumerable<TModel>?> All(string query)
         {
             var items = await Collection.FindAsync(Builders<TModel>.Filter.Text(query));
             return await items.ToListAsync();
@@ -51,7 +51,7 @@ namespace UntoMeWorld.Infrastructure.Stores
             return await result.ToListAsync();
         }
 
-        public async Task<PaginationResult<TModel>> Query(QueryFilter? filter, 
+        public virtual async Task<PaginationResult<TModel>> Query(QueryFilter? filter, 
             string? textQuery = null,
             string? orderBy = null,
             bool orderDesc = false, int page = 1, int pageSize = 100)
@@ -128,7 +128,7 @@ namespace UntoMeWorld.Infrastructure.Stores
                     .Update.Set(m => m.IsDeleted, false)
                     .Set(m => m.DeletedOn, DateTime.UtcNow));
 
-        public async Task<TModel?> Get(string id)
+        public virtual async Task<TModel?> Get(string id)
         {
             if (_pipelineStages == null)
                 return await Collection.AsQueryable().FirstOrDefaultAsync(i => i.Id == id);

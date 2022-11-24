@@ -7,4 +7,7 @@ public static class StringExtensions
 
     private static bool In(this string text, StringComparison comparison, params string[] strings)
         => strings.Any(str => text.Equals(str, comparison));
+
+    public static string Truncate(string input, int maxLength)
+        => input.Length > maxLength ? input[..(maxLength - 3)] + "..." : input;
 }

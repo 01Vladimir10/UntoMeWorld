@@ -1,15 +1,18 @@
 using Blazored.LocalStorage;
+using DotLiquid;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using UntoMeWorld.Application.Services;
 using UntoMeWorld.Application.Services.Base;
 using UntoMeWorld.Application.Stores;
+using UntoMeWorld.Domain.Model;
 using UntoMeWorld.WasmClient.Client;
 using UntoMeWorld.WasmClient.Client.Components.Interop;
 using UntoMeWorld.WasmClient.Client.Data.Stores;
 using UntoMeWorld.WasmClient.Client.Services;
 using UntoMeWorld.WasmClient.Client.Services.Security;
+using UntoMeWorld.WasmClient.Client.ViewModels;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,12 +20,14 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
 builder.Services
-    .AddHttpClient("UntoMeWorld.WasmClient.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+    .AddHttpClient("UntoMeWorld.WasmClient.ServerAPI",
+        client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
 builder.Services.AddSingleton<ToastService>();
 builder.Services.AddTransient<IChurchesStore, RemoteChurchesStore>();
 builder.Services.AddTransient<IChildrenStore, RemoteChildrenStore>();
+builder.Services.AddTransient<ILabelReportsStore, RemoteLabelReportsStore>();
 
 builder.Services.AddBlazoredLocalStorage();
 
@@ -30,10 +35,16 @@ builder.Services.AddSingleton<IAuthorizationProviderService, ApiAuthorizationSer
 builder.Services.AddTransient<IChurchesService, ChurchesService>();
 builder.Services.AddTransient<IChildrenService, ChildrenService>();
 builder.Services.AddTransient<ILogsService, WasmLogService>();
+builder.Services.AddTransient<ILabelReportsService, LabelReportsService>();
+builder.Services.AddTransient<LabelReportEditorViewModel>();
+
+Template.RegisterSafeType(typeof(LabelReport), typeof(LabelReport).GetProperties().Select(p => p.Name).ToArray());
+Template.RegisterSafeType(typeof(Church), typeof(Church).GetProperties().Select(p => p.Name).ToArray());
+Template.RegisterSafeType(typeof(Child), typeof(Child).GetProperties().Select(p => p.Name).ToArray());
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
-builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("UntoMeWorld.WasmClient.ServerAPI"));
-
+builder.Services.AddScoped(sp =>
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient("UntoMeWorld.WasmClient.ServerAPI"));
 
 
 builder.Services.AddMsalAuthentication(options =>
